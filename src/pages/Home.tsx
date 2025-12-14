@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ChefHat, TrendingUp, Sparkles, ArrowLeft, Clock } from 'lucide-react';
+import { ChefHat, TrendingUp, Sparkles, ArrowLeft, Clock, Info } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { RecipeCard } from '@/components/RecipeCard';
 import { BottomNav } from '@/components/BottomNav';
@@ -9,9 +9,12 @@ import { recipes } from '@/lib/recipes';
 
 export const Home: React.FC = () => {
   const navigate = useNavigate();
-  const { progress, calculateMonthlySavings } = useApp();
+  const { progress, calculateMonthlySavings, calculatePotentialSavings } = useApp();
   
-  const monthlySavings = calculateMonthlySavings();
+  const actualMonthlySavings = calculateMonthlySavings();
+  const potentialMonthlySavings = calculatePotentialSavings();
+  const hasCooked = progress.totalMealsCooked > 0;
+  
   const todayRecipe = recipes[Math.floor(Math.random() * recipes.length)];
   const quickRecipes = recipes.filter(r => r.prepTime + r.cookTime <= 20).slice(0, 3);
 
@@ -30,25 +33,56 @@ export const Home: React.FC = () => {
             </div>
           </div>
 
-          {/* Savings Summary */}
+          {/* Savings Summary - Show Potential OR Actual based on cooking history */}
           <div className="bg-card rounded-2xl p-4 shadow-elevated">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-muted-foreground text-sm mb-1">חסכת החודש</p>
-                <p className="text-2xl font-bold text-savings">₪{monthlySavings}</p>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="text-center">
-                  <p className="text-2xl font-bold">{progress.totalMealsCooked}</p>
-                  <p className="text-xs text-muted-foreground">ארוחות</p>
+            {hasCooked ? (
+              // Show actual savings after cooking
+              <>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-muted-foreground text-sm mb-1">חסכת החודש 🎉</p>
+                    <p className="text-2xl font-bold text-savings">₪{actualMonthlySavings}</p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="text-center">
+                      <p className="text-2xl font-bold">{progress.totalMealsCooked}</p>
+                      <p className="text-xs text-muted-foreground">ארוחות</p>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-            {progress.totalMealsCooked > 0 && (
-              <div className="flex items-center gap-2 mt-3 text-sm text-savings">
-                <TrendingUp className="w-4 h-4" />
-                <span>ממשיכים להתקדם! 💪</span>
-              </div>
+                <div className="flex items-center gap-2 mt-3 text-sm text-savings">
+                  <TrendingUp className="w-4 h-4" />
+                  <span>ממשיכים להתקדם! 💪</span>
+                </div>
+                {/* Small potential reminder */}
+                <div className="mt-3 pt-3 border-t border-border/50">
+                  <p className="text-xs text-muted-foreground flex items-center gap-1">
+                    <Sparkles className="w-3 h-3" />
+                    פוטנציאל חיסכון חודשי: ₪{potentialMonthlySavings}
+                  </p>
+                </div>
+              </>
+            ) : (
+              // Show potential savings before cooking
+              <>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="flex items-center gap-2 mb-1">
+                      <p className="text-muted-foreground text-sm">פוטנציאל חיסכון ✨</p>
+                      <span className="bg-savings-light text-savings text-xs px-2 py-0.5 rounded-full">הערכה</span>
+                    </div>
+                    <p className="text-2xl font-bold text-savings">₪{potentialMonthlySavings}</p>
+                    <p className="text-xs text-muted-foreground">בחודש</p>
+                  </div>
+                  <div className="w-14 h-14 bg-savings-light rounded-2xl flex items-center justify-center">
+                    <Sparkles className="w-7 h-7 text-savings" />
+                  </div>
+                </div>
+                <div className="flex items-center gap-1.5 mt-3 text-xs text-muted-foreground">
+                  <Info className="w-3.5 h-3.5" />
+                  <span>התחל לבשל כדי לראות חיסכון בפועל</span>
+                </div>
+              </>
             )}
           </div>
         </div>
@@ -115,8 +149,8 @@ export const Home: React.FC = () => {
           </div>
         </div>
 
-        {/* Motivation Card */}
-        {progress.totalMealsCooked === 0 && (
+        {/* Motivation Card - Only show when no meals cooked */}
+        {!hasCooked && (
           <div className="bg-secondary rounded-2xl p-5 text-center">
             <p className="text-3xl mb-3">🌟</p>
             <p className="font-medium mb-1">עדיין לא בישלת?</p>
