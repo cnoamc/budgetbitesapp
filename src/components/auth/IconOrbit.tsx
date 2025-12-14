@@ -11,16 +11,26 @@ const icons = [
 
 export const IconOrbit: React.FC = () => {
   return (
-    <div className="relative w-48 h-48 mx-auto">
+    <div className="relative w-52 h-52 mx-auto">
       {/* Orbit ring */}
-      <div className="absolute inset-0 rounded-full border-2 border-white/20" />
+      <div 
+        className="absolute inset-0 rounded-full"
+        style={{ 
+          border: '2px solid rgba(0, 0, 0, 0.05)'
+        }}
+      />
       
       {/* Center glow */}
-      <div className="absolute inset-8 rounded-full bg-gradient-to-br from-primary/30 to-primary/10 blur-xl" />
+      <div 
+        className="absolute inset-12 rounded-full blur-2xl opacity-40"
+        style={{ 
+          background: 'linear-gradient(135deg, #4A90D9 0%, #88CCFF 100%)'
+        }}
+      />
       
       {/* Orbiting icons */}
       {icons.map(({ Icon, angle }, index) => {
-        const radius = 80;
+        const radius = 85;
         const radian = (angle * Math.PI) / 180;
         const x = Math.cos(radian) * radius;
         const y = Math.sin(radian) * radius;
@@ -28,21 +38,31 @@ export const IconOrbit: React.FC = () => {
         return (
           <div
             key={index}
-            className="absolute w-12 h-12 rounded-2xl bg-white/90 backdrop-blur-sm shadow-lg flex items-center justify-center transform -translate-x-1/2 -translate-y-1/2 transition-transform hover:scale-110"
+            className="absolute w-12 h-12 rounded-2xl flex items-center justify-center transform -translate-x-1/2 -translate-y-1/2 transition-transform hover:scale-110"
             style={{
               left: `calc(50% + ${x}px)`,
               top: `calc(50% + ${y}px)`,
-              animationDelay: `${index * 0.1}s`,
+              background: 'rgba(255, 255, 255, 0.9)',
+              backdropFilter: 'blur(8px)',
+              boxShadow: '0 4px 16px -4px rgba(0, 0, 0, 0.1)',
+              animation: `float ${3 + index * 0.2}s ease-in-out infinite`,
+              animationDelay: `${index * 0.15}s`,
             }}
           >
-            <Icon className="w-6 h-6 text-primary" />
+            <Icon className="w-5 h-5 text-[#4A90D9]" />
           </div>
         );
       })}
       
       {/* Center icon */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-primary/80 shadow-xl flex items-center justify-center">
-        <ChefHat className="w-8 h-8 text-primary-foreground" />
+      <div 
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 rounded-2xl flex items-center justify-center"
+        style={{
+          background: 'linear-gradient(135deg, #4A90D9 0%, #357ABD 100%)',
+          boxShadow: '0 8px 24px -6px rgba(74, 144, 217, 0.4)',
+        }}
+      >
+        <ChefHat className="w-8 h-8 text-white" />
       </div>
     </div>
   );
