@@ -1,12 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Settings, RefreshCw, User, MapPin, ChefHat, LogOut, Pencil, Camera, X } from 'lucide-react';
+import { Settings, RefreshCw, User, MapPin, ChefHat, LogOut, Pencil, Camera, X, Palette } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { BottomNav } from '@/components/BottomNav';
 import { useApp } from '@/contexts/AppContext';
 import { useAuth } from '@/contexts/AuthContext';
-import { getBBProfile, saveBBProfile, BBProfile } from '@/lib/storage';
+import { useTheme } from '@/contexts/ThemeContext';
+import { getBBProfile, saveBBProfile, BBProfile, ThemeColor } from '@/lib/storage';
 import { toast } from 'sonner';
 import {
   Dialog,
@@ -16,10 +17,19 @@ import {
   DialogFooter,
 } from '@/components/ui/dialog';
 
+const themeOptions: { value: ThemeColor; label: string; color: string }[] = [
+  { value: 'orange', label: 'כתום', color: 'hsl(16 85% 60%)' },
+  { value: 'blue', label: 'כחול', color: 'hsl(210 85% 55%)' },
+  { value: 'purple', label: 'סגול', color: 'hsl(270 70% 60%)' },
+  { value: 'green', label: 'ירוק', color: 'hsl(160 60% 45%)' },
+  { value: 'pink', label: 'ורוד', color: 'hsl(340 75% 60%)' },
+];
+
 export const Profile: React.FC = () => {
   const navigate = useNavigate();
   const { profile, progress } = useApp();
   const { user, signOut } = useAuth();
+  const { theme, setTheme } = useTheme();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [bbProfile, setBBProfile] = useState<BBProfile>(() => getBBProfile());
@@ -141,6 +151,11 @@ export const Profile: React.FC = () => {
     toast.success('התמונה הוסרה');
   };
 
+  const handleThemeChange = (newTheme: ThemeColor) => {
+    setTheme(newTheme);
+    toast.success('הצבע עודכן בהצלחה');
+  };
+
   return (
     <div className="min-h-screen bg-background pb-24">
       <div className="p-6">
@@ -245,6 +260,33 @@ export const Profile: React.FC = () => {
           <div className="bg-card rounded-2xl p-4 shadow-card border border-border/50 text-center">
             <p className="text-3xl font-bold mb-1">{progress.totalMealsCooked}</p>
             <p className="text-sm text-muted-foreground">ארוחות שבושלו</p>
+          </div>
+        </div>
+
+        {/* Theme Selector */}
+        <div className="bg-card rounded-2xl p-5 shadow-card border border-border/50 mb-6">
+          <h3 className="font-semibold mb-4 flex items-center gap-2">
+            <Palette className="w-5 h-5" />
+            צבע האפליקציה
+          </h3>
+          <div className="flex justify-center gap-3">
+            {themeOptions.map((option) => (
+              <button
+                key={option.value}
+                onClick={() => handleThemeChange(option.value)}
+                className={`relative w-12 h-12 rounded-full transition-transform hover:scale-110 ${
+                  theme === option.value ? 'ring-2 ring-offset-2 ring-foreground scale-110' : ''
+                }`}
+                style={{ backgroundColor: option.color }}
+                title={option.label}
+              >
+                {theme === option.value && (
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="w-3 h-3 bg-white rounded-full" />
+                  </div>
+                )}
+              </button>
+            ))}
           </div>
         </div>
 
