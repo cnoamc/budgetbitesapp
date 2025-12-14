@@ -7,6 +7,7 @@ import { BottomNav } from '@/components/BottomNav';
 import { GradientBackground } from '@/components/ui/GradientBackground';
 import { PremiumCard } from '@/components/ui/PremiumCard';
 import { InactivityAlert } from '@/components/notifications';
+import { TutorialOverlay } from '@/components/TutorialOverlay';
 import { useApp } from '@/contexts/AppContext';
 import { useInactivityTracker } from '@/hooks/useInactivityTracker';
 import { recipes } from '@/lib/recipes';
@@ -184,6 +185,7 @@ export const Home: React.FC = () => {
         </div>
 
         <BottomNav />
+        <TutorialOverlay />
       </div>
     </GradientBackground>
   );
