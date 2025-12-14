@@ -12,8 +12,8 @@ export const EmojiOrbit: React.FC = () => {
         style={{ background: 'linear-gradient(135deg, #FFB088 0%, #88CCFF 50%, #88DDAA 100%)' }}
       />
       
-      {/* Center chef icon */}
-      <div className="absolute inset-0 m-auto w-20 h-20 rounded-2xl overflow-hidden shadow-glow">
+      {/* Center chef icon with subtle animation */}
+      <div className="absolute inset-0 m-auto w-20 h-20 rounded-2xl overflow-hidden shadow-glow animate-icon-delight-delayed">
         <img src={chefIcon} alt="BudgetBites" className="w-full h-full object-cover" />
       </div>
       

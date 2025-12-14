@@ -249,6 +249,17 @@
   .animate-bounce-soft {
     animation: bounce-soft 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
   }
+
+  /* Apple-style subtle icon animation */
+  .animate-icon-delight {
+    animation: icon-delight 1.2s ease-in-out infinite;
+    animation-delay: 0s;
+    animation-play-state: running;
+  }
+
+  .animate-icon-delight-delayed {
+    animation: icon-delight-cycle 8s ease-in-out infinite;
+  }
 }
 
 /* Keyframes */
@@ -309,6 +320,44 @@
 @keyframes shimmer {
   0% { background-position: -200% 0; }
   100% { background-position: 200% 0; }
+}
+
+/* Apple-style subtle icon delight animation - gentle wave/float */
+@keyframes icon-delight {
+  0%, 100% { 
+    transform: translateY(0) scale(1);
+    filter: brightness(1);
+  }
+  50% { 
+    transform: translateY(-3px) scale(1.02);
+    filter: brightness(1.05);
+  }
+}
+
+/* Delayed cycle animation - runs every 6-8 seconds */
+@keyframes icon-delight-cycle {
+  0%, 12%, 100% { 
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+  6% { 
+    transform: translateY(-3px) scale(1.03);
+    opacity: 1;
+  }
+}
+
+/* Subtle glow pulse for loading states */
+@keyframes glow-pulse {
+  0%, 100% { 
+    box-shadow: 0 0 20px hsl(214 84% 56% / 0.08);
+  }
+  50% { 
+    box-shadow: 0 0 28px hsl(214 84% 56% / 0.12);
+  }
+}
+
+.animate-glow-pulse {
+  animation: glow-pulse 2s ease-in-out infinite;
 }
 
 /* Scrollbar styling */

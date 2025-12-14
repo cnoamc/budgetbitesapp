@@ -98,7 +98,9 @@ const Auth: React.FC = () => {
     return <div className="min-h-screen flex items-center justify-center" style={{
       background: 'linear-gradient(165deg, #F7F8FF 0%, #FFF2E9 45%, #ECFFF4 100%)'
     }}>
-        <div className="w-8 h-8 border-4 border-foreground border-t-transparent rounded-full animate-spin" />
+        <div className="w-16 h-16 rounded-2xl overflow-hidden shadow-glow animate-icon-delight animate-glow-pulse">
+          <img src={chefIcon} alt="BudgetBites" className="w-full h-full object-cover" />
+        </div>
       </div>;
   }
 
@@ -131,7 +133,7 @@ const Auth: React.FC = () => {
 
           {/* Header */}
           <div className="text-center mb-10 animate-fade-in">
-            <div className="w-20 h-20 mx-auto mb-4 rounded-2xl overflow-hidden shadow-glow">
+            <div className="w-20 h-20 mx-auto mb-4 rounded-2xl overflow-hidden shadow-glow animate-icon-delight-delayed">
               <img src={chefIcon} alt="BudgetBites" className="w-full h-full object-cover" />
             </div>
             <h1 className="text-2xl font-bold text-foreground mb-2">

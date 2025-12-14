@@ -28,8 +28,8 @@ const Index: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center">
-      <div className="text-center animate-pulse-soft">
-        <div className="w-16 h-16 mx-auto mb-4 rounded-2xl overflow-hidden shadow-glow">
+      <div className="text-center">
+        <div className="w-16 h-16 mx-auto mb-4 rounded-2xl overflow-hidden shadow-glow animate-icon-delight-delayed animate-glow-pulse">
           <img src={chefIcon} alt="BudgetBites" className="w-full h-full object-cover" />
         </div>
         <p className="text-muted-foreground">טוען...</p>
