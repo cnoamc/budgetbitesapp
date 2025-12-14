@@ -8,11 +8,10 @@ import { useApp } from '@/contexts/AppContext';
 
 export const Savings: React.FC = () => {
   const navigate = useNavigate();
-  const { profile, progress, calculatePotentialSavings, calculateMonthlySavings } = useApp();
+  const { profile, progress, potentialMonthlySavings, monthlySavings, yearlySavings } = useApp();
   
-  const potentialMonthlySavings = calculatePotentialSavings();
-  const potentialYearlySavings = potentialMonthlySavings * 12;
-  const actualMonthlySavings = calculateMonthlySavings();
+  const potentialYearlySavings = yearlySavings;
+  const actualMonthlySavings = monthlySavings;
   const hasCooked = progress.totalMealsCooked > 0;
 
   const examples = [

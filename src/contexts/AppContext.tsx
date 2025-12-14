@@ -8,11 +8,12 @@ interface AppContextType {
   profile: UserProfile;
   progress: UserProgress;
   loading: boolean;
+  monthlySavings: number;
+  potentialMonthlySavings: number;
+  yearlySavings: number;
   updateProfile: (updates: Partial<UserProfile>) => Promise<void>;
   completeOnboarding: () => Promise<void>;
   addCookedMeal: (meal: CookedMeal) => Promise<void>;
-  calculateMonthlySavings: () => number;
-  calculatePotentialSavings: () => number;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -22,6 +23,30 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const [profile, setProfile] = useState<UserProfile>(defaultUserProfile);
   const [progress, setProgress] = useState<UserProgress>(defaultUserProgress);
   const [loading, setLoading] = useState(true);
+  const [monthlySavings, setMonthlySavings] = useState(0);
+  const [potentialMonthlySavings, setPotentialMonthlySavings] = useState(0);
+  const [yearlySavings, setYearlySavings] = useState(0);
+
+  // Precompute savings when profile or progress changes
+  useEffect(() => {
+    // Calculate potential monthly savings
+    const homeCookingFactor = 0.55;
+    const potential = Math.round(profile.monthlySpending * homeCookingFactor);
+    setPotentialMonthlySavings(potential);
+    
+    // Calculate yearly savings (rounded to nearest 50)
+    const yearly = Math.round((potential * 12) / 50) * 50;
+    setYearlySavings(yearly);
+    
+    // Calculate actual monthly savings
+    const now = new Date();
+    const thisMonthMeals = progress.cookedMeals.filter(meal => {
+      const mealDate = new Date(meal.date);
+      return mealDate.getMonth() === now.getMonth() && mealDate.getFullYear() === now.getFullYear();
+    });
+    const actualMonthly = thisMonthMeals.reduce((sum, m) => sum + m.savings, 0);
+    setMonthlySavings(actualMonthly);
+  }, [profile.monthlySpending, progress.cookedMeals]);
 
   // Load profile and progress from database when user changes
   useEffect(() => {
@@ -166,31 +191,17 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     }
   };
 
-  const calculateMonthlySavings = (): number => {
-    const now = new Date();
-    const thisMonth = progress.cookedMeals.filter(meal => {
-      const mealDate = new Date(meal.date);
-      return mealDate.getMonth() === now.getMonth() && mealDate.getFullYear() === now.getFullYear();
-    });
-    return thisMonth.reduce((sum, m) => sum + m.savings, 0);
-  };
-
-  const calculatePotentialSavings = (): number => {
-    // Based on user's monthly spending and home cooking factor (55% savings)
-    const homeCookingFactor = 0.55;
-    return Math.round(profile.monthlySpending * homeCookingFactor);
-  };
-
   return (
     <AppContext.Provider value={{
       profile,
       progress,
       loading,
+      monthlySavings,
+      potentialMonthlySavings,
+      yearlySavings,
       updateProfile,
       completeOnboarding,
       addCookedMeal,
-      calculateMonthlySavings,
-      calculatePotentialSavings,
     }}>
       {children}
     </AppContext.Provider>
