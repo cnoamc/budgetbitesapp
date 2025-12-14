@@ -3,9 +3,6 @@ import { UserProfile, UserProgress, defaultUserProfile, defaultUserProgress } fr
 const PROFILE_KEY = 'budgetbites_profile';
 const PROGRESS_KEY = 'budgetbites_progress';
 const BB_PROFILE_KEY = 'bb_profile';
-const THEME_KEY = 'bb_theme';
-
-export type ThemeColor = 'orange' | 'blue' | 'purple' | 'green' | 'pink';
 
 export interface BBProfile {
   displayName: string;
@@ -15,18 +12,6 @@ export interface BBProfile {
 const defaultBBProfile: BBProfile = {
   displayName: 'השף הביתי',
   photoDataUrl: null,
-};
-
-export const getTheme = (): ThemeColor => {
-  const stored = localStorage.getItem(THEME_KEY);
-  if (stored && ['orange', 'blue', 'purple', 'green', 'pink'].includes(stored)) {
-    return stored as ThemeColor;
-  }
-  return 'orange';
-};
-
-export const saveTheme = (theme: ThemeColor): void => {
-  localStorage.setItem(THEME_KEY, theme);
 };
 
 export const getProfile = (): UserProfile => {
