@@ -4,15 +4,15 @@ import { Search, ChefHat } from 'lucide-react';
 import { RecipeCard } from '@/components/RecipeCard';
 import { BottomNav } from '@/components/BottomNav';
 import { GradientBackground } from '@/components/ui/GradientBackground';
-import { recipes, categoryLabels } from '@/lib/recipes';
+import { recipes, categoryLabels, categoryEmojis } from '@/lib/recipes';
 import { cn } from '@/lib/utils';
-import type { Recipe } from '@/lib/types';
+import type { RecipeCategory } from '@/lib/types';
 
-const categories: Array<Recipe['category'] | 'all'> = ['all', 'easy', 'beginner', 'cheap', 'fast'];
+const categories: Array<RecipeCategory | 'all'> = ['all', 'beginner', 'fast', 'cheap', 'protein', 'vegetarian', 'easy'];
 
 export const Recipes: React.FC = () => {
   const navigate = useNavigate();
-  const [activeCategory, setActiveCategory] = useState<Recipe['category'] | 'all'>('all');
+  const [activeCategory, setActiveCategory] = useState<RecipeCategory | 'all'>('all');
   const [searchQuery, setSearchQuery] = useState('');
 
   const filteredRecipes = recipes.filter(recipe => {
@@ -58,7 +58,7 @@ export const Recipes: React.FC = () => {
                     : "bg-card text-muted-foreground hover:bg-secondary border border-border/50"
                 )}
               >
-                {category === 'all' ? 'הכל' : categoryLabels[category]}
+                {category === 'all' ? '🍽️ הכל' : `${categoryEmojis[category]} ${categoryLabels[category]}`}
               </button>
             ))}
           </div>
