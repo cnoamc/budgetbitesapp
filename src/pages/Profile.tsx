@@ -1,23 +1,31 @@
 import React from 'react';
-import { Settings, RefreshCw, User, MapPin, ChefHat } from 'lucide-react';
+import { Settings, RefreshCw, User, MapPin, ChefHat, LogOut } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { BottomNav } from '@/components/BottomNav';
 import { useApp } from '@/contexts/AppContext';
-import { resetAll } from '@/lib/storage';
+import { useAuth } from '@/contexts/AuthContext';
+import { toast } from 'sonner';
 
 export const Profile: React.FC = () => {
   const navigate = useNavigate();
   const { profile, progress } = useApp();
+  const { user, signOut } = useAuth();
 
   const skillLabels = ['מתחיל', 'בסיסי', 'מתקדם', 'מומחה', 'שף!'];
 
-  const handleReset = () => {
-    if (window.confirm('האם אתה בטוח שאתה רוצה לאפס את כל הנתונים?')) {
-      resetAll();
-      navigate('/');
-      window.location.reload();
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+      toast.success('התנתקת בהצלחה');
+      navigate('/auth');
+    } catch (error) {
+      toast.error('שגיאה בהתנתקות');
     }
+  };
+
+  const handleRestartOnboarding = () => {
+    navigate('/onboarding');
   };
 
   return (
@@ -32,6 +40,11 @@ export const Profile: React.FC = () => {
           <p className="text-muted-foreground">
             {skillLabels[progress.skillLevel - 1]} • {progress.totalMealsCooked} ארוחות
           </p>
+          {user && (
+            <p className="text-sm text-muted-foreground mt-2" dir="ltr">
+              {user.email}
+            </p>
+          )}
         </div>
 
         {/* Stats Cards */}
@@ -85,7 +98,7 @@ export const Profile: React.FC = () => {
           <Button
             variant="outline"
             className="w-full justify-start"
-            onClick={() => navigate('/')}
+            onClick={handleRestartOnboarding}
           >
             <RefreshCw className="w-5 h-5" />
             מילוי שאלון מחדש
@@ -94,10 +107,10 @@ export const Profile: React.FC = () => {
           <Button
             variant="ghost"
             className="w-full justify-start text-destructive hover:text-destructive hover:bg-destructive/10"
-            onClick={handleReset}
+            onClick={handleSignOut}
           >
-            <RefreshCw className="w-5 h-5" />
-            איפוס כל הנתונים
+            <LogOut className="w-5 h-5" />
+            התנתק
           </Button>
         </div>
 

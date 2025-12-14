@@ -14,7 +14,78 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      cooked_meals: {
+        Row: {
+          cooked_at: string
+          difficulty_rating: number
+          id: string
+          recipe_id: string
+          savings: number | null
+          taste_rating: number
+          user_id: string
+          would_make_again: boolean | null
+        }
+        Insert: {
+          cooked_at?: string
+          difficulty_rating: number
+          id?: string
+          recipe_id: string
+          savings?: number | null
+          taste_rating: number
+          user_id: string
+          would_make_again?: boolean | null
+        }
+        Update: {
+          cooked_at?: string
+          difficulty_rating?: number
+          id?: string
+          recipe_id?: string
+          savings?: number | null
+          taste_rating?: number
+          user_id?: string
+          would_make_again?: boolean | null
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          cooking_skill: number | null
+          country: string | null
+          created_at: string
+          id: string
+          monthly_spending: number | null
+          onboarding_complete: boolean | null
+          preferred_food: string[] | null
+          updated_at: string
+          user_id: string
+          weekly_orders: number | null
+        }
+        Insert: {
+          cooking_skill?: number | null
+          country?: string | null
+          created_at?: string
+          id?: string
+          monthly_spending?: number | null
+          onboarding_complete?: boolean | null
+          preferred_food?: string[] | null
+          updated_at?: string
+          user_id: string
+          weekly_orders?: number | null
+        }
+        Update: {
+          cooking_skill?: number | null
+          country?: string | null
+          created_at?: string
+          id?: string
+          monthly_spending?: number | null
+          onboarding_complete?: boolean | null
+          preferred_food?: string[] | null
+          updated_at?: string
+          user_id?: string
+          weekly_orders?: number | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
