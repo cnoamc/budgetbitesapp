@@ -1,94 +1,82 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Mail, Eye, EyeOff, Chrome, Apple, ArrowLeft, ArrowRight } from 'lucide-react';
-import { z } from 'zod';
-import { useAuth } from '@/contexts/AuthContext';
-import { useLanguage } from '@/contexts/LanguageContext';
-import { AuthBackground } from '@/components/auth/AuthBackground';
-import { EmojiOrbit } from '@/components/auth/EmojiOrbit';
-import { LanguageToggle } from '@/components/LanguageToggle';
+import { Mail, Apple, User, ArrowRight, Lock, Eye, EyeOff } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
+import { EmojiOrbit } from '@/components/auth/EmojiOrbit';
+import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
-import appIcon from '@/assets/app-icon.png';
-import { cn } from '@/lib/utils';
+import { z } from 'zod';
 
-const emailSchema = z.string().trim().email();
-const passwordSchema = z.string().min(6);
+const emailSchema = z.string().email('כתובת אימייל לא תקינה');
+const passwordSchema = z.string().min(6, 'הסיסמה חייבת להכיל לפחות 6 תווים');
 
-type AuthView = 'welcome' | 'email-signup' | 'email-signin';
+type AuthView = 'welcome' | 'email-login' | 'email-signup';
 
-export const Auth: React.FC = () => {
+const Auth: React.FC = () => {
   const navigate = useNavigate();
-  const { user, loading, signUp, signIn, signInWithGoogle } = useAuth();
-  const { t, isRTL } = useLanguage();
-  
+  const { user, signIn, signUp, loading } = useAuth();
   const [view, setView] = useState<AuthView>('welcome');
+  const [termsAccepted, setTermsAccepted] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
 
   useEffect(() => {
     if (user && !loading) {
-      navigate('/home');
+      navigate('/');
     }
   }, [user, loading, navigate]);
 
-  const handleEmailAuth = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const validateForm = (): boolean => {
+    const newErrors: { email?: string; password?: string } = {};
     
     const emailResult = emailSchema.safeParse(email);
     if (!emailResult.success) {
-      toast.error(isRTL ? 'כתובת אימייל לא תקינה' : 'Please enter a valid email');
-      return;
+      newErrors.email = emailResult.error.errors[0].message;
     }
     
     const passwordResult = passwordSchema.safeParse(password);
     if (!passwordResult.success) {
-      toast.error(isRTL ? 'הסיסמה חייבת להכיל לפחות 6 תווים' : 'Password must be at least 6 characters');
-      return;
+      newErrors.password = passwordResult.error.errors[0].message;
     }
-
-    setIsLoading(true);
     
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleEmailAuth = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!validateForm()) return;
+    
+    setIsLoading(true);
     try {
       if (view === 'email-signup') {
         const { error } = await signUp(email, password);
         if (error) {
           if (error.message.includes('already registered')) {
-            toast.error(isRTL ? 'האימייל כבר רשום. נסה להתחבר' : 'Email already registered. Try signing in');
+            toast.error('המייל הזה כבר רשום במערכת');
           } else {
             toast.error(error.message);
           }
         } else {
-          toast.success(isRTL ? 'החשבון נוצר בהצלחה!' : 'Account created successfully!');
-          navigate('/onboarding');
+          toast.success('נרשמת בהצלחה! 🎉');
         }
       } else {
         const { error } = await signIn(email, password);
         if (error) {
-          toast.error(isRTL ? 'אימייל או סיסמה שגויים' : 'Invalid email or password');
-        } else {
-          navigate('/home');
+          if (error.message.includes('Invalid login credentials')) {
+            toast.error('אימייל או סיסמה שגויים');
+          } else {
+            toast.error('שגיאה בהתחברות, נסה שוב');
+          }
         }
       }
-    } catch {
-      toast.error(isRTL ? 'משהו השתבש' : 'Something went wrong');
     } finally {
       setIsLoading(false);
-    }
-  };
-
-  const handleGoogleAuth = async () => {
-    try {
-      const { error } = await signInWithGoogle();
-      if (error) {
-        toast.error(isRTL ? 'התחברות עם Google נכשלה' : 'Google sign in failed');
-      }
-    } catch {
-      toast.error(isRTL ? 'התחברות עם Google נכשלה' : 'Google sign in failed');
     }
   };
 
@@ -99,228 +87,336 @@ export const Auth: React.FC = () => {
 
   if (loading) {
     return (
-      <AuthBackground>
-        <div className="min-h-screen flex items-center justify-center">
-          <div className="w-8 h-8 border-4 border-foreground border-t-transparent rounded-full animate-spin" />
-        </div>
-      </AuthBackground>
+      <div className="min-h-screen flex items-center justify-center" style={{ background: 'linear-gradient(165deg, #F7F8FF 0%, #FFF2E9 45%, #ECFFF4 100%)' }}>
+        <div className="w-8 h-8 border-4 border-foreground border-t-transparent rounded-full animate-spin" />
+      </div>
     );
   }
 
-  const BackArrow = isRTL ? ArrowRight : ArrowLeft;
-
-  return (
-    <AuthBackground>
-      <div className="min-h-screen flex flex-col px-6 py-8">
-        {/* Top language toggle */}
-        <div className={cn("flex justify-end mb-4", isRTL && "justify-start")}>
-          <LanguageToggle />
-        </div>
-        
-        {/* Top section - Logo & Title */}
-        <div className="text-center mb-4 animate-fade-in">
-          <div className="w-20 h-20 mx-auto mb-4 rounded-[22px] shadow-elevated overflow-hidden bg-white/50 backdrop-blur-sm border border-white/60">
-            <img src={appIcon} alt="BudgetBites" className="w-full h-full object-cover" />
-          </div>
-          <h1 className="text-3xl font-bold text-foreground mb-2">{t('appName')}</h1>
-          <p className="text-lg text-muted-foreground font-medium">{t('tagline')}</p>
-          <p className="text-sm text-muted-foreground/80 mt-1">{t('aiSubtitle')}</p>
-        </div>
-        
-        {/* Middle section - Emoji orbit */}
-        <div className="flex-1 flex items-center justify-center min-h-[180px]">
-          <EmojiOrbit className="animate-scale-in" />
-        </div>
-        
-        {/* Bottom sheet */}
+  // Email form view
+  if (view === 'email-login' || view === 'email-signup') {
+    return (
+      <div className="min-h-screen relative overflow-hidden flex flex-col" dir="rtl">
+        {/* Background */}
         <div 
-          className="bg-white/90 backdrop-blur-xl rounded-t-[32px] -mx-6 px-6 pt-5 pb-8 shadow-elevated border-t border-white/50 animate-slide-up"
-          style={{ maxHeight: '58vh', overflowY: 'auto' }}
-        >
-          {/* Sheet drag indicator */}
-          <div className="w-12 h-1.5 bg-muted-foreground/20 rounded-full mx-auto mb-5" />
-          
-          {view === 'welcome' ? (
-            <>
-              {/* Sheet title */}
-              <div className="text-center mb-5">
-                <h2 className="text-xl font-bold text-foreground">{t('createAccount')}</h2>
-                <p className="text-sm text-muted-foreground mt-1">{t('saveProgress')}</p>
-              </div>
-              
-              {/* Auth buttons */}
-              <div className="space-y-3">
-                <Button
-                  onClick={() => agreedToTerms && setView('email-signup')}
-                  disabled={!agreedToTerms}
-                  size="lg"
-                  className="w-full h-14 rounded-2xl text-base font-semibold bg-foreground text-background hover:bg-foreground/90 disabled:bg-muted disabled:text-muted-foreground btn-press"
-                >
-                  <Mail className="w-5 h-5" />
-                  {t('continueEmail')}
-                </Button>
-                
-                <Button
-                  onClick={handleGoogleAuth}
-                  disabled={!agreedToTerms}
-                  variant="outline"
-                  size="lg"
-                  className="w-full h-14 rounded-2xl text-base font-semibold bg-white border-2 border-border hover:bg-secondary disabled:opacity-50 btn-press"
-                >
-                  <Chrome className="w-5 h-5" />
-                  {t('continueGoogle')}
-                </Button>
-                
-                <div className="flex gap-3">
-                  <Button
-                    disabled={!agreedToTerms}
-                    variant="outline"
-                    size="lg"
-                    className="flex-1 h-12 rounded-xl text-sm font-medium bg-white border border-border hover:bg-secondary disabled:opacity-50 btn-press"
-                    onClick={() => toast.info(isRTL ? 'Apple Sign-In יהיה זמין בקרוב' : 'Apple Sign-In coming soon')}
-                  >
-                    <Apple className="w-4 h-4" />
-                    Apple
-                  </Button>
-                  <Button
-                    onClick={handleGuestContinue}
-                    variant="outline"
-                    size="lg"
-                    className="flex-1 h-12 rounded-xl text-sm font-medium bg-white border border-border hover:bg-secondary btn-press"
-                  >
-                    {t('continueGuest')}
-                  </Button>
-                </div>
-              </div>
-              
-              {/* Terms checkbox */}
-              <div className={cn("flex items-center gap-3 mt-5", isRTL ? "flex-row" : "flex-row-reverse justify-end")}>
-                <label htmlFor="terms" className="text-sm text-muted-foreground cursor-pointer">
-                  {t('agreeTerms')}
-                </label>
-                <Checkbox
-                  id="terms"
-                  checked={agreedToTerms}
-                  onCheckedChange={(checked) => setAgreedToTerms(checked === true)}
-                />
-              </div>
-              
-              {/* Sign in link */}
-              <div className="text-center mt-4">
-                <button 
-                  onClick={() => setView('email-signin')}
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  {t('alreadyHaveAccount')} <span className="font-semibold text-primary">{t('signIn')}</span>
-                </button>
-              </div>
-              
-              {/* Saving potential badge */}
-              <div className="text-center mt-5">
-                <span className="inline-block px-4 py-2 bg-secondary/60 rounded-full text-xs text-muted-foreground">
-                  {t('savingPotentialBadge')}
-                </span>
-              </div>
-            </>
-          ) : (
-            <>
-              {/* Header */}
-              <div className="text-center mb-5">
-                <h2 className="text-xl font-bold text-foreground">
-                  {view === 'email-signin' ? t('welcomeBack') : t('createAccount')}
-                </h2>
-                <p className="text-sm text-muted-foreground mt-1">
-                  {view === 'email-signin' ? t('signInContinue') : t('saveProgress')}
-                </p>
-              </div>
-              
-              {/* Form */}
-              <form onSubmit={handleEmailAuth} className="space-y-4">
+          className="absolute inset-0"
+          style={{
+            background: 'linear-gradient(165deg, #F7F8FF 0%, #FFF2E9 45%, #ECFFF4 100%)'
+          }}
+        />
+        
+        {/* Blurred blobs */}
+        <div 
+          className="absolute w-72 h-72 rounded-full blur-3xl opacity-25"
+          style={{ background: '#FFB088', top: '-10%', right: '-15%' }}
+        />
+        <div 
+          className="absolute w-56 h-56 rounded-full blur-3xl opacity-20"
+          style={{ background: '#88DDAA', bottom: '20%', left: '-10%' }}
+        />
+
+        {/* Content */}
+        <div className="relative z-10 flex-1 flex flex-col px-6 pt-12 pb-8">
+          {/* Back button */}
+          <button
+            onClick={() => setView('welcome')}
+            className="self-start mb-8 p-2 -mr-2 rounded-full hover:bg-card/50 transition-colors"
+          >
+            <ArrowRight className="w-6 h-6 text-foreground/70" />
+          </button>
+
+          {/* Header */}
+          <div className="text-center mb-10 animate-fade-in">
+            <div 
+              className="w-16 h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center"
+              style={{
+                background: 'rgba(255, 255, 255, 0.8)',
+                backdropFilter: 'blur(12px)',
+                boxShadow: '0 8px 32px -8px rgba(0, 0, 0, 0.1)',
+              }}
+            >
+              <span className="text-3xl">🍳</span>
+            </div>
+            <h1 className="text-2xl font-bold text-foreground mb-2">
+              {view === 'email-signup' ? 'יצירת חשבון' : 'התחברות'}
+            </h1>
+            <p className="text-muted-foreground">
+              {view === 'email-signup' 
+                ? 'מתחילים לבשל ולחסוך' 
+                : 'ברוכים השבים!'}
+            </p>
+          </div>
+
+          {/* Form */}
+          <form onSubmit={handleEmailAuth} className="space-y-4 max-w-sm mx-auto w-full animate-slide-up">
+            <div
+              className="p-6 rounded-3xl space-y-4"
+              style={{
+                background: 'rgba(255, 255, 255, 0.75)',
+                backdropFilter: 'blur(20px)',
+                boxShadow: '0 8px 40px -12px rgba(0, 0, 0, 0.1)',
+              }}
+            >
+              <div className="space-y-1">
                 <div className="relative">
-                  <Mail className={cn(
-                    "absolute top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground",
-                    isRTL ? "right-4" : "left-4"
-                  )} />
-                  <input
+                  <Mail className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                  <Input
                     type="email"
+                    placeholder="אימייל"
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder={t('email')}
-                    className={cn(
-                      "w-full h-14 rounded-2xl bg-secondary/50 border border-border/50 text-base focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all",
-                      isRTL ? "pr-12 pl-4" : "pl-12 pr-4"
-                    )}
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                      setErrors((prev) => ({ ...prev, email: undefined }));
+                    }}
+                    className="h-14 pr-12 rounded-2xl border-0 bg-card/60 text-base px-5"
                     dir="ltr"
                   />
                 </div>
-                
+                {errors.email && (
+                  <p className="text-sm text-destructive pr-1">{errors.email}</p>
+                )}
+              </div>
+
+              <div className="space-y-1">
                 <div className="relative">
+                  <Lock className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                  <Input
+                    type={showPassword ? 'text' : 'password'}
+                    placeholder="סיסמה"
+                    value={password}
+                    onChange={(e) => {
+                      setPassword(e.target.value);
+                      setErrors((prev) => ({ ...prev, password: undefined }));
+                    }}
+                    className="h-14 pr-12 pl-12 rounded-2xl border-0 bg-card/60 text-base px-5"
+                    dir="ltr"
+                  />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className={cn(
-                      "absolute top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors",
-                      isRTL ? "left-4" : "right-4"
-                    )}
+                    className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
                   >
                     {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                   </button>
-                  <input
-                    type={showPassword ? 'text' : 'password'}
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder={t('password')}
-                    className={cn(
-                      "w-full h-14 rounded-2xl bg-secondary/50 border border-border/50 text-base focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all",
-                      isRTL ? "pr-4 pl-12" : "pl-4 pr-12"
-                    )}
-                    dir="ltr"
-                  />
                 </div>
-                
-                <Button
-                  type="submit"
-                  size="lg"
-                  disabled={isLoading}
-                  className="w-full h-14 rounded-2xl text-base font-semibold bg-foreground text-background hover:bg-foreground/90 btn-press"
-                >
-                  {isLoading 
-                    ? (isRTL ? 'מעבד...' : 'Loading...') 
-                    : (view === 'email-signin' ? t('signIn') : t('signUp'))
-                  }
-                </Button>
-              </form>
-              
-              {/* Toggle view */}
-              <div className="text-center mt-4">
-                <button 
-                  type="button"
-                  onClick={() => setView(view === 'email-signup' ? 'email-signin' : 'email-signup')}
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  {view === 'email-signin' ? t('noAccount') : t('alreadyHaveAccount')}{' '}
-                  <span className="font-semibold text-primary">
-                    {view === 'email-signin' ? t('createOne') : t('signIn')}
-                  </span>
-                </button>
+                {errors.password && (
+                  <p className="text-sm text-destructive pr-1">{errors.password}</p>
+                )}
               </div>
               
-              {/* Back button */}
-              <div className="text-center mt-3">
-                <button 
-                  type="button"
-                  onClick={() => setView('welcome')}
-                  className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  <BackArrow className="w-4 h-4" />
-                  {t('back')}
-                </button>
-              </div>
-            </>
-          )}
+              <Button
+                type="submit"
+                disabled={isLoading}
+                className="w-full h-14 rounded-2xl text-base font-medium bg-foreground text-background hover:bg-foreground/90 transition-all active:scale-[0.98]"
+              >
+                {isLoading ? (
+                  <div className="w-5 h-5 border-2 border-background border-t-transparent rounded-full animate-spin" />
+                ) : (
+                  view === 'email-signup' ? 'הרשמה' : 'התחברות'
+                )}
+              </Button>
+            </div>
+
+            <div className="text-center pt-4">
+              <button
+                type="button"
+                onClick={() => {
+                  setView(view === 'email-signup' ? 'email-login' : 'email-signup');
+                  setErrors({});
+                }}
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                {view === 'email-signup' 
+                  ? 'כבר יש לך חשבון? התחבר' 
+                  : 'אין לך חשבון? הירשם'}
+              </button>
+            </div>
+          </form>
         </div>
       </div>
-    </AuthBackground>
+    );
+  }
+
+  // Welcome view
+  return (
+    <div className="min-h-screen relative overflow-hidden flex flex-col" dir="rtl">
+      {/* Background gradient */}
+      <div 
+        className="absolute inset-0"
+        style={{
+          background: 'linear-gradient(165deg, #F7F8FF 0%, #FFF2E9 45%, #ECFFF4 100%)'
+        }}
+      />
+      
+      {/* Blurred blobs for depth */}
+      <div 
+        className="absolute w-80 h-80 rounded-full blur-3xl opacity-25"
+        style={{ background: '#FFB088', top: '-8%', right: '-12%' }}
+      />
+      <div 
+        className="absolute w-64 h-64 rounded-full blur-3xl opacity-20"
+        style={{ background: '#88CCFF', top: '30%', left: '-18%' }}
+      />
+      <div 
+        className="absolute w-72 h-72 rounded-full blur-3xl opacity-20"
+        style={{ background: '#88DDAA', bottom: '25%', right: '-8%' }}
+      />
+
+      {/* Content */}
+      <div className="relative z-10 flex-1 flex flex-col">
+        {/* Top section */}
+        <div className="pt-12 px-6 text-center animate-fade-in">
+          {/* Glass pill with emoji */}
+          <div 
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-6"
+            style={{
+              background: 'rgba(255, 255, 255, 0.7)',
+              backdropFilter: 'blur(12px)',
+              WebkitBackdropFilter: 'blur(12px)',
+              boxShadow: '0 4px 24px -8px rgba(0, 0, 0, 0.08)',
+            }}
+          >
+            <span className="text-xl">🍳</span>
+            <span className="font-semibold text-foreground">BudgetBites</span>
+          </div>
+          
+          <h1 className="text-3xl font-bold text-foreground mb-2">
+            מתחילים לבשל.
+          </h1>
+          <h2 className="text-3xl font-bold text-foreground mb-3">
+            מתחילים לחסוך.
+          </h2>
+        </div>
+
+        {/* Emoji orbit */}
+        <div className="flex-1 flex flex-col items-center justify-center py-4">
+          <EmojiOrbit />
+          <p className="text-muted-foreground text-sm mt-6">
+            כל ארוחה בבית = כסף שנשאר אצלך
+          </p>
+        </div>
+
+        {/* Bottom sheet */}
+        <div 
+          className="animate-slide-up"
+          style={{
+            background: 'rgba(255, 255, 255, 0.85)',
+            backdropFilter: 'blur(24px)',
+            WebkitBackdropFilter: 'blur(24px)',
+            borderRadius: '32px 32px 0 0',
+            boxShadow: '0 -12px 48px -16px rgba(0, 0, 0, 0.1)',
+            maxHeight: '55vh',
+          }}
+        >
+          {/* Drag indicator */}
+          <div className="flex justify-center pt-3">
+            <div className="w-10 h-1 bg-foreground/10 rounded-full" />
+          </div>
+          
+          <div className="px-6 pb-8 pt-4 overflow-y-auto">
+            {/* Header */}
+            <div className="text-center mb-5">
+              <h3 className="text-xl font-bold text-foreground mb-1">נכנסים ומתחילים</h3>
+              <p className="text-muted-foreground text-sm">
+                תוך 20 שניות נחשב לך פוטנציאל חיסכון
+              </p>
+            </div>
+
+            {/* Buttons */}
+            <div className="space-y-3">
+              {/* Email - Primary black */}
+              <Button
+                onClick={() => termsAccepted && setView('email-signup')}
+                disabled={!termsAccepted}
+                className="w-full h-14 rounded-2xl text-base font-medium transition-all active:scale-[0.98]"
+                style={{
+                  background: termsAccepted ? '#1D1D1F' : '#E5E5EA',
+                  color: termsAccepted ? 'white' : '#8E8E93',
+                }}
+              >
+                <Mail className="w-5 h-5 ml-2" />
+                המשך עם אימייל
+              </Button>
+
+              {/* Google - Secondary outline */}
+              <Button
+                onClick={() => toast.info('התחברות עם Google תהיה זמינה בקרוב')}
+                disabled={!termsAccepted}
+                variant="outline"
+                className="w-full h-14 rounded-2xl border-2 text-base font-medium transition-all active:scale-[0.98]"
+                style={{
+                  background: 'rgba(255, 255, 255, 0.6)',
+                  borderColor: termsAccepted ? '#E5E5EA' : '#F2F2F7',
+                  color: termsAccepted ? '#1D1D1F' : '#8E8E93',
+                }}
+              >
+                <svg className="w-5 h-5 ml-2" viewBox="0 0 24 24">
+                  <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                  <path fill="currentColor" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                  <path fill="currentColor" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                  <path fill="currentColor" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                </svg>
+                המשך עם Google
+              </Button>
+
+              {/* Apple & Guest - Half buttons */}
+              <div className="flex gap-3">
+                <Button
+                  onClick={() => toast.info('התחברות עם Apple תהיה זמינה בקרוב')}
+                  disabled={!termsAccepted}
+                  variant="outline"
+                  className="flex-1 h-14 rounded-2xl border-2 text-base font-medium transition-all active:scale-[0.98]"
+                  style={{
+                    background: 'rgba(255, 255, 255, 0.6)',
+                    borderColor: termsAccepted ? '#E5E5EA' : '#F2F2F7',
+                    color: termsAccepted ? '#1D1D1F' : '#8E8E93',
+                  }}
+                >
+                  <Apple className="w-5 h-5 ml-2" />
+                  Apple
+                </Button>
+                <Button
+                  onClick={handleGuestContinue}
+                  variant="outline"
+                  className="flex-1 h-14 rounded-2xl border-2 text-base font-medium transition-all active:scale-[0.98]"
+                  style={{
+                    background: 'rgba(255, 255, 255, 0.6)',
+                    borderColor: '#E5E5EA',
+                    color: '#1D1D1F',
+                  }}
+                >
+                  <User className="w-5 h-5 ml-2" />
+                  אורח
+                </Button>
+              </div>
+            </div>
+
+            {/* Terms checkbox */}
+            <div className="flex items-center justify-center gap-2 mt-5">
+              <Checkbox
+                id="terms"
+                checked={termsAccepted}
+                onCheckedChange={(checked) => setTermsAccepted(checked as boolean)}
+                className="data-[state=checked]:bg-foreground data-[state=checked]:border-foreground rounded-md"
+              />
+              <label htmlFor="terms" className="text-sm text-muted-foreground cursor-pointer">
+                אני מסכים/ה לתנאי השימוש
+              </label>
+            </div>
+
+            {/* Login link */}
+            <div className="text-center mt-4">
+              <button
+                onClick={() => setView('email-login')}
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                כבר יש לך חשבון? <span className="font-medium text-foreground">התחבר</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 
