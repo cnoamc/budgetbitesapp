@@ -1,1 +1,4 @@
 project_id = "awgblmeyyvrevnncfqho"
+
+[functions.cooking-assistant]
+verify_jwt = false

@@ -1,19 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowRight, ArrowLeft, Check, ChefHat } from 'lucide-react';
+import { ArrowRight, ArrowLeft, Check, Send, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { ChatMessage } from '@/components/ChatMessage';
 import { getRecipeById } from '@/lib/recipes';
 import { useApp } from '@/contexts/AppContext';
-import { cn } from '@/lib/utils';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
 
-const encouragements = [
-  'מעולה! ממשיכים 💪',
-  'נהדר! אתה מתקדם יפה! 🌟',
-  'וואו, נראה טעים! 😋',
-  'כל הכבוד! עוד צעד אחד 🎯',
-  'אתה שף אמיתי! 👨‍🍳',
-];
+type Message = { role: 'user' | 'assistant'; content: string };
 
 export const CookingAssistant: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -21,15 +17,18 @@ export const CookingAssistant: React.FC = () => {
   const { addCookedMeal } = useApp();
   const [currentStep, setCurrentStep] = useState(0);
   const [messages, setMessages] = useState<Array<{ text: string; isBot: boolean }>>([]);
+  const [chatHistory, setChatHistory] = useState<Message[]>([]);
+  const [inputText, setInputText] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   
   const recipe = getRecipeById(id || '');
 
   useEffect(() => {
     if (recipe) {
-      setMessages([
-        { text: `היי! בוא נכין ${recipe.name} יחד! 🍳\n\nאני אלווה אותך צעד אחרי צעד.\nמוכן?`, isBot: true },
-      ]);
+      const welcomeMessage = `היי! בוא נכין ${recipe.name} יחד! 🍳\n\nאני שפי, העוזר האישי שלך במטבח. אני אלווה אותך צעד אחרי צעד.\n\nאם יש לך שאלות בדרך - פשוט שאל אותי!\nמוכן להתחיל?`;
+      setMessages([{ text: welcomeMessage, isBot: true }]);
+      setChatHistory([{ role: 'assistant', content: welcomeMessage }]);
     }
   }, [recipe]);
 
@@ -45,35 +44,89 @@ export const CookingAssistant: React.FC = () => {
     );
   }
 
-  const handleNext = () => {
-    const encouragement = encouragements[Math.floor(Math.random() * encouragements.length)];
+  const sendToAI = async (userMessage: string, isStepAction = false) => {
+    setIsLoading(true);
+    
+    const newChatHistory: Message[] = [...chatHistory, { role: 'user', content: userMessage }];
+    
+    try {
+      const { data, error } = await supabase.functions.invoke('cooking-assistant', {
+        body: {
+          messages: newChatHistory,
+          recipeName: recipe.name,
+          currentStep: currentStep,
+          totalSteps: recipe.steps.length,
+          ingredients: recipe.ingredients.map(i => i.name),
+        },
+      });
+
+      if (error) throw error;
+      
+      const aiResponse = data.message;
+      
+      setChatHistory([...newChatHistory, { role: 'assistant', content: aiResponse }]);
+      setMessages(prev => [...prev, { text: aiResponse, isBot: true }]);
+      
+    } catch (error: any) {
+      console.error('AI error:', error);
+      
+      if (error.status === 429) {
+        toast.error('יותר מדי בקשות, נסה שוב בעוד כמה שניות');
+      } else if (error.status === 402) {
+        toast.error('נגמרו הקרדיטים');
+      } else {
+        toast.error('שגיאה בתקשורת עם העוזר');
+      }
+      
+      // Fallback response
+      const fallbackResponses = [
+        'מעולה! ממשיכים 💪',
+        'נהדר! אתה מתקדם יפה! 🌟',
+        'כל הכבוד! עוד צעד אחד 🎯',
+      ];
+      const fallback = fallbackResponses[Math.floor(Math.random() * fallbackResponses.length)];
+      setMessages(prev => [...prev, { text: fallback, isBot: true }]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleNext = async () => {
+    const userText = currentStep === 0 ? 'מוכן להתחיל!' : 'סיימתי את השלב! ✅';
+    setMessages(prev => [...prev, { text: userText, isBot: false }]);
     
     if (currentStep < recipe.steps.length) {
-      setMessages(prev => [
-        ...prev,
-        { text: currentStep === 0 ? 'מוכן!' : 'סיימתי! ✅', isBot: false },
-        { text: recipe.steps[currentStep], isBot: true },
-      ]);
+      const stepInstruction = recipe.steps[currentStep];
+      setMessages(prev => [...prev, { text: stepInstruction, isBot: true }]);
       setCurrentStep(currentStep + 1);
-    }
-
-    if (currentStep > 0 && currentStep < recipe.steps.length - 1) {
-      setTimeout(() => {
-        setMessages(prev => [
-          ...prev,
-          { text: encouragement, isBot: true },
-        ]);
-      }, 1500);
+      
+      // Get AI encouragement
+      const prompt = currentStep === 0 
+        ? `המשתמש מוכן להתחיל לבשל ${recipe.name}. תן לו עידוד קצר והסבר את השלב הראשון בצורה ברורה.`
+        : `המשתמש סיים את שלב ${currentStep}. עודד אותו ותן טיפ קצר לשלב הבא אם רלוונטי.`;
+      
+      await sendToAI(prompt, true);
     }
 
     if (currentStep === recipe.steps.length - 1) {
       setTimeout(() => {
         setMessages(prev => [
           ...prev,
-          { text: '🎉 סיימת לבשל! איך יצא?', isBot: true },
+          { text: '🎉 וואו, סיימת לבשל! איך יצא? אני בטוח שזה טעים!', isBot: true },
         ]);
-      }, 1000);
+      }, 2000);
     }
+  };
+
+  const handleSendMessage = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!inputText.trim() || isLoading) return;
+    
+    const userMessage = inputText.trim();
+    setInputText('');
+    setMessages(prev => [...prev, { text: userMessage, isBot: false }]);
+    
+    await sendToAI(userMessage);
   };
 
   const handleComplete = () => {
@@ -121,13 +174,34 @@ export const CookingAssistant: React.FC = () => {
             isBot={msg.isBot}
           />
         ))}
+        {isLoading && (
+          <div className="flex items-center gap-2 text-muted-foreground">
+            <Loader2 className="w-4 h-4 animate-spin" />
+            <span className="text-sm">שפי חושב...</span>
+          </div>
+        )}
         <div ref={scrollRef} />
       </div>
 
-      {/* Action Button */}
-      <div className="p-4 border-t border-border/50 bg-card">
+      {/* Input Area */}
+      <div className="p-4 border-t border-border/50 bg-card space-y-3">
+        {/* Question Input */}
+        <form onSubmit={handleSendMessage} className="flex gap-2">
+          <Input
+            value={inputText}
+            onChange={(e) => setInputText(e.target.value)}
+            placeholder="יש לך שאלה? שאל אותי..."
+            className="flex-1"
+            disabled={isLoading}
+          />
+          <Button type="submit" size="icon" disabled={isLoading || !inputText.trim()}>
+            <Send className="w-4 h-4" />
+          </Button>
+        </form>
+
+        {/* Step Action Button */}
         {!isComplete ? (
-          <Button onClick={handleNext} size="xl" className="w-full">
+          <Button onClick={handleNext} size="xl" className="w-full" disabled={isLoading}>
             {currentStep === 0 ? 'בואו נתחיל!' : 'הבא'}
             <ArrowLeft className="w-5 h-5" />
           </Button>
