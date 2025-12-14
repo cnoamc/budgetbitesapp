@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ChefHat, TrendingUp, Sparkles, ArrowLeft, Clock, Info } from 'lucide-react';
+import { TrendingUp, Sparkles, ArrowLeft, Clock, Info } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { RecipeCard } from '@/components/RecipeCard';
 import { BottomNav } from '@/components/BottomNav';
@@ -8,6 +8,7 @@ import { GradientBackground } from '@/components/ui/GradientBackground';
 import { PremiumCard } from '@/components/ui/PremiumCard';
 import { useApp } from '@/contexts/AppContext';
 import { recipes } from '@/lib/recipes';
+import appIcon from '@/assets/app-icon.png';
 
 export const Home: React.FC = () => {
   const navigate = useNavigate();
@@ -31,8 +32,8 @@ export const Home: React.FC = () => {
                 <p className="text-muted-foreground text-sm mb-1">שלום! 👋</p>
                 <h1 className="text-2xl font-bold">מה נבשל היום?</h1>
               </div>
-              <div className="w-14 h-14 gradient-primary rounded-2xl flex items-center justify-center shadow-glow">
-                <ChefHat className="w-7 h-7 text-primary-foreground" />
+              <div className="w-14 h-14 rounded-2xl overflow-hidden shadow-glow">
+                <img src={appIcon} alt="BudgetBites" className="w-full h-full object-cover" />
               </div>
             </div>
 
