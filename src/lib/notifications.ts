@@ -39,15 +39,26 @@ export const defaultNotificationSettings: NotificationSettings = {
 
 // Smart savings text based on yearly savings
 export const getSmartSavingsText = (yearlySavings: number): string => {
-  if (yearlySavings < 1500) {
-    return 'מספיק לארוחה חגיגית או בילוי קטן 🎉';
-  } else if (yearlySavings < 4000) {
-    return 'יכול לממן חופשה קצרה בארץ 🏖️';
-  } else if (yearlySavings < 8000) {
-    return 'חופשה משפחתית רצינית ✈️';
+  if (yearlySavings < 2000) {
+    return 'כסף לבילויים בלי רגשות אשם 🎉';
+  } else if (yearlySavings < 5000) {
+    return 'מספיק לחופשה קצרה בארץ 🇮🇱';
+  } else if (yearlySavings < 10000) {
+    return 'טיסה לחו״ל או שדרוג משמעותי ✈️';
   } else {
-    return 'זה כבר חיסכון משמעותי לשנה 💸🔥';
+    return 'שדרוג חיים אמיתי! 🚀';
   }
+};
+
+// Get inactivity message based on days and potential savings lost
+export const getInactivityMessage = (days: number, dailySavingsLost: number): string => {
+  const totalLost = days * dailySavingsLost;
+  return `${days} ימים בלי בישול = ₪${totalLost} יצא החוצה`;
+};
+
+// Get action prompt based on recipe
+export const getActionPrompt = (minutes: number, savings: number): string => {
+  return `יש לך ${minutes} דקות? המתכון הזה חוסך ₪${savings}`;
 };
 
 // Notification templates
