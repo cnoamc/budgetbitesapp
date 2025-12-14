@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowRight, ArrowLeft, Check, Send, Loader2 } from 'lucide-react';
+import { ArrowRight, ArrowLeft, Check, Send } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ChatMessage } from '@/components/ChatMessage';
@@ -8,6 +8,7 @@ import { getRecipeById } from '@/lib/recipes';
 import { useApp } from '@/contexts/AppContext';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import chefIcon from '@/assets/chef-icon.png';
 
 type Message = { role: 'user' | 'assistant'; content: string };
 
@@ -175,8 +176,10 @@ export const CookingAssistant: React.FC = () => {
           />
         ))}
         {isLoading && (
-          <div className="flex items-center gap-2 text-muted-foreground">
-            <Loader2 className="w-4 h-4 animate-spin" />
+          <div className="flex items-center gap-3 text-muted-foreground">
+            <div className="w-8 h-8 rounded-xl overflow-hidden shadow-card animate-icon-delight">
+              <img src={chefIcon} alt="שפי" className="w-full h-full object-cover" />
+            </div>
             <span className="text-sm">שפי חושב...</span>
           </div>
         )}
