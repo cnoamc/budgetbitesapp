@@ -160,10 +160,10 @@ export const Profile: React.FC = () => {
     <div className="min-h-screen bg-background pb-24">
       <div className="p-6">
         {/* Profile Header */}
-        <div className="text-center mb-8 animate-fade-in" style={{ animationDelay: '0ms' }}>
+        <div className="text-center mb-8">
           <div className="relative inline-block">
             <div 
-              className="w-24 h-24 gradient-primary rounded-full mx-auto flex items-center justify-center shadow-glow cursor-pointer overflow-hidden group transition-transform hover:scale-105"
+              className="w-24 h-24 gradient-primary rounded-full mx-auto flex items-center justify-center shadow-glow cursor-pointer overflow-hidden group"
               onClick={handlePhotoClick}
             >
               {bbProfile.photoDataUrl ? (
@@ -253,44 +253,31 @@ export const Profile: React.FC = () => {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-2 gap-4 mb-6">
-          <div 
-            className="bg-card rounded-2xl p-4 shadow-card border border-border/50 text-center animate-fade-in opacity-0"
-            style={{ animationDelay: '100ms', animationFillMode: 'forwards' }}
-          >
+          <div className="bg-card rounded-2xl p-4 shadow-card border border-border/50 text-center">
             <p className="text-3xl font-bold text-savings mb-1">₪{progress.totalSavings}</p>
             <p className="text-sm text-muted-foreground">נחסך בסה״כ</p>
           </div>
-          <div 
-            className="bg-card rounded-2xl p-4 shadow-card border border-border/50 text-center animate-fade-in opacity-0"
-            style={{ animationDelay: '150ms', animationFillMode: 'forwards' }}
-          >
+          <div className="bg-card rounded-2xl p-4 shadow-card border border-border/50 text-center">
             <p className="text-3xl font-bold mb-1">{progress.totalMealsCooked}</p>
             <p className="text-sm text-muted-foreground">ארוחות שבושלו</p>
           </div>
         </div>
 
         {/* Theme Selector */}
-        <div 
-          className="bg-card rounded-2xl p-5 shadow-card border border-border/50 mb-6 animate-fade-in opacity-0"
-          style={{ animationDelay: '200ms', animationFillMode: 'forwards' }}
-        >
+        <div className="bg-card rounded-2xl p-5 shadow-card border border-border/50 mb-6">
           <h3 className="font-semibold mb-4 flex items-center gap-2">
             <Palette className="w-5 h-5" />
             צבע האפליקציה
           </h3>
           <div className="flex justify-center gap-3">
-            {themeOptions.map((option, index) => (
+            {themeOptions.map((option) => (
               <button
                 key={option.value}
                 onClick={() => handleThemeChange(option.value)}
-                className={`relative w-12 h-12 rounded-full transition-all duration-200 hover:scale-110 animate-scale-in opacity-0 ${
+                className={`relative w-12 h-12 rounded-full transition-transform hover:scale-110 ${
                   theme === option.value ? 'ring-2 ring-offset-2 ring-foreground scale-110' : ''
                 }`}
-                style={{ 
-                  backgroundColor: option.color,
-                  animationDelay: `${250 + index * 50}ms`,
-                  animationFillMode: 'forwards'
-                }}
+                style={{ backgroundColor: option.color }}
                 title={option.label}
               >
                 {theme === option.value && (
@@ -304,10 +291,7 @@ export const Profile: React.FC = () => {
         </div>
 
         {/* Profile Info */}
-        <div 
-          className="bg-card rounded-2xl p-5 shadow-card border border-border/50 mb-6 animate-fade-in opacity-0"
-          style={{ animationDelay: '300ms', animationFillMode: 'forwards' }}
-        >
+        <div className="bg-card rounded-2xl p-5 shadow-card border border-border/50 mb-6">
           <h3 className="font-semibold mb-4 flex items-center gap-2">
             <Settings className="w-5 h-5" />
             הגדרות
@@ -341,13 +325,10 @@ export const Profile: React.FC = () => {
         </div>
 
         {/* Actions */}
-        <div 
-          className="space-y-3 animate-fade-in opacity-0"
-          style={{ animationDelay: '400ms', animationFillMode: 'forwards' }}
-        >
+        <div className="space-y-3">
           <Button
             variant="outline"
-            className="w-full justify-start transition-transform hover:scale-[1.02]"
+            className="w-full justify-start"
             onClick={handleRestartOnboarding}
           >
             <RefreshCw className="w-5 h-5" />
@@ -356,7 +337,7 @@ export const Profile: React.FC = () => {
           
           <Button
             variant="ghost"
-            className="w-full justify-start text-destructive hover:text-destructive hover:bg-destructive/10 transition-transform hover:scale-[1.02]"
+            className="w-full justify-start text-destructive hover:text-destructive hover:bg-destructive/10"
             onClick={handleSignOut}
           >
             <LogOut className="w-5 h-5" />
@@ -365,10 +346,7 @@ export const Profile: React.FC = () => {
         </div>
 
         {/* App Info */}
-        <div 
-          className="mt-8 text-center text-sm text-muted-foreground animate-fade-in opacity-0"
-          style={{ animationDelay: '500ms', animationFillMode: 'forwards' }}
-        >
+        <div className="mt-8 text-center text-sm text-muted-foreground">
           <p>BudgetBites v1.0</p>
           <p>נבנה באהבה 🧡</p>
         </div>
