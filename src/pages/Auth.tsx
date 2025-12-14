@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ChefHat, Mail, Lock, ArrowLeft, Eye, EyeOff, ArrowRight, Sparkles } from 'lucide-react';
+import { Mail, Lock, ArrowLeft, Eye, EyeOff, ArrowRight, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useAuth } from '@/contexts/AuthContext';
@@ -9,6 +9,7 @@ import { z } from 'zod';
 import { GradientBackground } from '@/components/auth/GradientBackground';
 import { IconOrbit } from '@/components/auth/IconOrbit';
 import { AuthBottomSheet } from '@/components/auth/AuthBottomSheet';
+import appIcon from '@/assets/app-icon.png';
 
 const emailSchema = z.string().email('כתובת אימייל לא תקינה');
 const passwordSchema = z.string().min(6, 'הסיסמה חייבת להכיל לפחות 6 תווים');
@@ -114,8 +115,8 @@ export const Auth: React.FC = () => {
           <div className="text-center px-6">
             {/* App icon with sparkle */}
             <div className="relative inline-block mb-4">
-              <div className="w-20 h-20 rounded-[22px] bg-gradient-to-br from-primary to-primary/80 shadow-xl flex items-center justify-center">
-                <ChefHat className="w-10 h-10 text-primary-foreground" />
+              <div className="w-20 h-20 rounded-[22px] overflow-hidden shadow-xl">
+                <img src={appIcon} alt="BudgetBites" className="w-full h-full object-cover" />
               </div>
               <div className="absolute -top-1 -right-1 w-6 h-6 bg-white rounded-full shadow-md flex items-center justify-center">
                 <Sparkles className="w-3.5 h-3.5 text-primary" />
@@ -167,8 +168,8 @@ export const Auth: React.FC = () => {
         <div className="max-w-lg mx-auto w-full flex-1 flex flex-col justify-center">
           {/* Header */}
           <div className="text-center mb-8">
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-primary/80 shadow-lg mx-auto flex items-center justify-center mb-4">
-              <ChefHat className="w-8 h-8 text-primary-foreground" />
+            <div className="w-16 h-16 rounded-2xl overflow-hidden shadow-lg mx-auto mb-4">
+              <img src={appIcon} alt="BudgetBites" className="w-full h-full object-cover" />
             </div>
             <h1 className="text-2xl font-bold mb-2">
               {isLogin ? 'שמחים לראות אותך! 👋' : 'יצירת חשבון'}
