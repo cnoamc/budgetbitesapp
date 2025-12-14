@@ -8,8 +8,7 @@ import { useApp } from '@/contexts/AppContext';
 import { getRecipeById } from '@/lib/recipes';
 
 export const Progress: React.FC = () => {
-  const { progress, calculateMonthlySavings } = useApp();
-  const monthlySavings = calculateMonthlySavings();
+  const { progress, monthlySavings } = useApp();
 
   const skillLabels = ['מתחיל', 'בסיסי', 'מתקדם', 'מומחה', 'שף!'];
   const skillEmojis = ['🌱', '🌿', '🌳', '⭐', '👨‍🍳'];
