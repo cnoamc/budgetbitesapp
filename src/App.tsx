@@ -6,6 +6,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { AppProvider } from "@/contexts/AppContext";
 import { ThemeProvider } from "@/contexts/ThemeContext";
+import { NotificationProvider } from "@/contexts/NotificationContext";
+import { NotificationBanner } from "@/components/NotificationBanner";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Onboarding from "./pages/Onboarding";
@@ -26,26 +28,29 @@ const App = () => (
     <ThemeProvider>
       <AuthProvider>
         <AppProvider>
-          <TooltipProvider>
-            <Toaster />
-            <Sonner />
-            <BrowserRouter>
-              <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/auth" element={<Auth />} />
-                <Route path="/onboarding" element={<Onboarding />} />
-                <Route path="/savings" element={<Savings />} />
-                <Route path="/home" element={<Home />} />
-                <Route path="/recipes" element={<Recipes />} />
-                <Route path="/recipe/:id" element={<RecipeDetail />} />
-                <Route path="/cook/:id" element={<CookingAssistant />} />
-                <Route path="/rate/:id" element={<RateMeal />} />
-                <Route path="/progress" element={<Progress />} />
-                <Route path="/profile" element={<Profile />} />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </BrowserRouter>
-          </TooltipProvider>
+          <NotificationProvider>
+            <TooltipProvider>
+              <Toaster />
+              <Sonner />
+              <NotificationBanner />
+              <BrowserRouter>
+                <Routes>
+                  <Route path="/" element={<Index />} />
+                  <Route path="/auth" element={<Auth />} />
+                  <Route path="/onboarding" element={<Onboarding />} />
+                  <Route path="/savings" element={<Savings />} />
+                  <Route path="/home" element={<Home />} />
+                  <Route path="/recipes" element={<Recipes />} />
+                  <Route path="/recipe/:id" element={<RecipeDetail />} />
+                  <Route path="/cook/:id" element={<CookingAssistant />} />
+                  <Route path="/rate/:id" element={<RateMeal />} />
+                  <Route path="/progress" element={<Progress />} />
+                  <Route path="/profile" element={<Profile />} />
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </BrowserRouter>
+            </TooltipProvider>
+          </NotificationProvider>
         </AppProvider>
       </AuthProvider>
     </ThemeProvider>

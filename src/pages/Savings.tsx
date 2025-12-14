@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { GradientBackground } from '@/components/ui/GradientBackground';
 import { PremiumCard } from '@/components/ui/PremiumCard';
 import { useApp } from '@/contexts/AppContext';
+import { getSmartSavingsText } from '@/lib/notifications';
 
 export const Savings: React.FC = () => {
   const navigate = useNavigate();
@@ -62,7 +63,7 @@ export const Savings: React.FC = () => {
             </div>
             <div className="mt-4 pt-4 border-t border-border/30">
               <p className="text-sm text-muted-foreground flex items-center gap-2">
-                ✈️ זה מספיק לחופשה!
+                {getSmartSavingsText(potentialYearlySavings)}
               </p>
             </div>
           </PremiumCard>

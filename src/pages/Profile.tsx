@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Settings, RefreshCw, User, MapPin, ChefHat, LogOut, Pencil, Camera, X, Palette } from 'lucide-react';
+import { Settings, RefreshCw, User, MapPin, ChefHat, LogOut, Pencil, Camera, X, Palette, Bell } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -7,6 +7,8 @@ import { BottomNav } from '@/components/BottomNav';
 import { useApp } from '@/contexts/AppContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTheme } from '@/contexts/ThemeContext';
+import { useNotifications } from '@/contexts/NotificationContext';
+import { NotificationSettings } from '@/components/NotificationSettings';
 import { getBBProfile, saveBBProfile, BBProfile, ThemeColor } from '@/lib/storage';
 import { toast } from 'sonner';
 import {
@@ -15,6 +17,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
+  DialogDescription,
 } from '@/components/ui/dialog';
 
 const themeOptions: { value: ThemeColor; label: string; color: string }[] = [
@@ -30,10 +33,12 @@ export const Profile: React.FC = () => {
   const { profile, progress } = useApp();
   const { user, signOut } = useAuth();
   const { theme, setTheme } = useTheme();
+  const { unreadCount } = useNotifications();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [bbProfile, setBBProfile] = useState<BBProfile>(() => getBBProfile());
   const [isEditingName, setIsEditingName] = useState(false);
+  const [isNotificationSettingsOpen, setIsNotificationSettingsOpen] = useState(false);
   const [editedName, setEditedName] = useState(bbProfile.displayName);
 
   const skillLabels = ['מתחיל', 'בסיסי', 'מתקדם', 'מומחה', 'שף!'];
@@ -329,6 +334,20 @@ export const Profile: React.FC = () => {
           <Button
             variant="outline"
             className="w-full justify-start"
+            onClick={() => setIsNotificationSettingsOpen(true)}
+          >
+            <Bell className="w-5 h-5" />
+            הגדרות התראות
+            {unreadCount > 0 && (
+              <span className="mr-auto bg-primary text-primary-foreground text-xs px-2 py-0.5 rounded-full">
+                {unreadCount}
+              </span>
+            )}
+          </Button>
+          
+          <Button
+            variant="outline"
+            className="w-full justify-start"
             onClick={handleRestartOnboarding}
           >
             <RefreshCw className="w-5 h-5" />
@@ -344,6 +363,17 @@ export const Profile: React.FC = () => {
             התנתק
           </Button>
         </div>
+
+        {/* Notification Settings Dialog */}
+        <Dialog open={isNotificationSettingsOpen} onOpenChange={setIsNotificationSettingsOpen}>
+          <DialogContent className="max-w-md max-h-[80vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>הגדרות התראות</DialogTitle>
+              <DialogDescription>בחר אילו התראות לקבל ומתי</DialogDescription>
+            </DialogHeader>
+            <NotificationSettings />
+          </DialogContent>
+        </Dialog>
 
         {/* App Info */}
         <div className="mt-8 text-center text-sm text-muted-foreground">

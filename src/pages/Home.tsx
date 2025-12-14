@@ -8,20 +8,8 @@ import { GradientBackground } from '@/components/ui/GradientBackground';
 import { PremiumCard } from '@/components/ui/PremiumCard';
 import { useApp } from '@/contexts/AppContext';
 import { recipes } from '@/lib/recipes';
+import { getSmartSavingsText } from '@/lib/notifications';
 import appIcon from '@/assets/app-icon.png';
-
-// Smart context text based on yearly savings
-const getSmartContextText = (yearlySavings: number): string => {
-  if (yearlySavings < 2000) {
-    return 'מספיק לבילויים קטנים בלי רגשות אשם';
-  } else if (yearlySavings < 5000) {
-    return 'מספיק לחופשה קצרה בארץ 🇮🇱';
-  } else if (yearlySavings < 9000) {
-    return 'חופשה רצינית או שדרוג איכות חיים ✈️';
-  } else {
-    return 'זה כבר שינוי כלכלי אמיתי 🚀';
-  }
-};
 
 export const Home: React.FC = () => {
   const navigate = useNavigate();
@@ -30,7 +18,7 @@ export const Home: React.FC = () => {
   const hasCooked = progress.totalMealsCooked > 0;
   const displayMonthlySavings = hasCooked ? monthlySavings : potentialMonthlySavings;
   const displayYearlySavings = hasCooked ? monthlySavings * 12 : yearlySavings;
-  const smartContextText = getSmartContextText(displayYearlySavings);
+  const smartContextText = getSmartSavingsText(displayYearlySavings);
   
   // Memoize recipe selection to prevent re-renders
   const todayRecipe = useMemo(() => recipes[Math.floor(Math.random() * recipes.length)], []);
