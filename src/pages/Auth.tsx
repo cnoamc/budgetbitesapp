@@ -8,6 +8,7 @@ import { PhoneSignupSheet } from '@/components/auth/PhoneSignupSheet';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
 import { z } from 'zod';
+import chefIcon from '@/assets/chef-icon.png';
 
 const emailSchema = z.string().email('כתובת אימייל לא תקינה');
 const passwordSchema = z.string().min(6, 'הסיסמה חייבת להכיל לפחות 6 תווים');
@@ -136,7 +137,9 @@ const Auth: React.FC = () => {
 
           {/* Header */}
           <div className="text-center mb-10 animate-fade-in">
-            <div className="text-5xl mb-4">🍳</div>
+            <div className="w-20 h-20 mx-auto mb-4 rounded-2xl overflow-hidden shadow-glow">
+              <img src={chefIcon} alt="BudgetBites" className="w-full h-full object-cover" />
+            </div>
             <h1 className="text-2xl font-bold text-foreground mb-2">
               {view === 'email-signup' ? 'יצירת חשבון' : 'התחברות'}
             </h1>
@@ -267,7 +270,9 @@ const Auth: React.FC = () => {
         {/* Hero section */}
         <div className="pt-16 px-6 text-center animate-fade-in">
           {/* App icon - emoji style, no white bg */}
-          <div className="text-6xl mb-6">🍳</div>
+          <div className="w-24 h-24 mx-auto mb-6 rounded-3xl overflow-hidden shadow-glow">
+            <img src={chefIcon} alt="BudgetBites" className="w-full h-full object-cover" />
+          </div>
           
           {/* App name */}
           <h1 className="text-lg font-semibold text-foreground/70 tracking-wide mb-4">

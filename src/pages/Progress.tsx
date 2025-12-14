@@ -1,11 +1,12 @@
 import React from 'react';
-import { TrendingUp, ChefHat, Star, Target, Trophy } from 'lucide-react';
+import { TrendingUp, Star, Target, Trophy } from 'lucide-react';
 import { BottomNav } from '@/components/BottomNav';
 import { GradientBackground } from '@/components/ui/GradientBackground';
 import { PremiumCard } from '@/components/ui/PremiumCard';
 import { StarRating } from '@/components/StarRating';
 import { useApp } from '@/contexts/AppContext';
 import { getRecipeById } from '@/lib/recipes';
+import chefIcon from '@/assets/chef-icon.png';
 
 export const Progress: React.FC = () => {
   const { progress, monthlySavings } = useApp();
@@ -35,8 +36,8 @@ export const Progress: React.FC = () => {
             </PremiumCard>
             
             <PremiumCard className="p-5 bg-primary/5 border-primary/20 animate-scale-in" style={{ animationDelay: '0.1s' }}>
-              <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center mb-3">
-                <ChefHat className="w-5 h-5 text-primary" />
+              <div className="w-10 h-10 rounded-xl overflow-hidden mb-3">
+                <img src={chefIcon} alt="BudgetBites" className="w-full h-full object-cover" />
               </div>
               <p className="text-sm text-muted-foreground mb-1">ארוחות שבישלתי</p>
               <p className="text-3xl font-bold">{progress.totalMealsCooked}</p>
@@ -139,8 +140,8 @@ export const Progress: React.FC = () => {
           {/* Empty State */}
           {progress.totalMealsCooked === 0 && (
             <PremiumCard variant="glass" className="p-8 text-center animate-fade-in">
-              <div className="w-20 h-20 bg-secondary rounded-3xl flex items-center justify-center text-5xl mx-auto mb-4">
-                📊
+              <div className="w-20 h-20 rounded-3xl mx-auto mb-4 overflow-hidden shadow-soft">
+                <img src={chefIcon} alt="BudgetBites" className="w-full h-full object-cover" />
               </div>
               <h3 className="font-semibold text-lg mb-2">עדיין אין נתונים</h3>
               <p className="text-muted-foreground text-sm">

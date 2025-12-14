@@ -1,10 +1,11 @@
 import React from 'react';
-import { ShoppingCart, UtensilsCrossed, ChefHat, TrendingUp, Bell } from 'lucide-react';
+import { ShoppingCart, UtensilsCrossed, TrendingUp, Bell, Wallet } from 'lucide-react';
+import chefIcon from '@/assets/chef-icon.png';
 
 const icons = [
   { Icon: ShoppingCart, angle: 0 },
   { Icon: UtensilsCrossed, angle: 72 },
-  { Icon: ChefHat, angle: 144 },
+  { Icon: Wallet, angle: 144 },
   { Icon: TrendingUp, angle: 216 },
   { Icon: Bell, angle: 288 },
 ];
@@ -54,15 +55,11 @@ export const IconOrbit: React.FC = () => {
         );
       })}
       
-      {/* Center icon */}
+      {/* Center icon - Chef icon */}
       <div 
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 rounded-2xl flex items-center justify-center"
-        style={{
-          background: 'linear-gradient(135deg, #4A90D9 0%, #357ABD 100%)',
-          boxShadow: '0 8px 24px -6px rgba(74, 144, 217, 0.4)',
-        }}
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 rounded-2xl overflow-hidden shadow-glow"
       >
-        <ChefHat className="w-8 h-8 text-white" />
+        <img src={chefIcon} alt="BudgetBites" className="w-full h-full object-cover" />
       </div>
     </div>
   );

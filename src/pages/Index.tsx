@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useApp } from '@/contexts/AppContext';
+import chefIcon from '@/assets/chef-icon.png';
 
 const Index: React.FC = () => {
   const navigate = useNavigate();
@@ -28,7 +29,9 @@ const Index: React.FC = () => {
   return (
     <div className="min-h-screen bg-background flex items-center justify-center">
       <div className="text-center animate-pulse-soft">
-        <div className="text-5xl mb-4">🍳</div>
+        <div className="w-16 h-16 mx-auto mb-4 rounded-2xl overflow-hidden shadow-glow">
+          <img src={chefIcon} alt="BudgetBites" className="w-full h-full object-cover" />
+        </div>
         <p className="text-muted-foreground">טוען...</p>
       </div>
     </div>

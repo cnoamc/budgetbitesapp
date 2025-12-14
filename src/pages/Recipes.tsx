@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, ChefHat, Heart } from 'lucide-react';
+import { Search, Heart } from 'lucide-react';
 import { RecipeCard } from '@/components/RecipeCard';
 import { BottomNav } from '@/components/BottomNav';
 import { GradientBackground } from '@/components/ui/GradientBackground';
@@ -8,6 +8,7 @@ import { recipes, categoryLabels, categoryEmojis } from '@/lib/recipes';
 import { cn } from '@/lib/utils';
 import { useFavorites } from '@/hooks/useFavorites';
 import type { RecipeCategory } from '@/lib/types';
+import chefIcon from '@/assets/chef-icon.png';
 
 const categories: Array<RecipeCategory | 'all' | 'favorites'> = ['all', 'favorites', 'beginner', 'fast', 'cheap', 'protein', 'vegetarian', 'easy'];
 
@@ -33,8 +34,8 @@ export const Recipes: React.FC = () => {
         <div className="p-6 pt-8 pb-4">
           <div className="flex items-center justify-between mb-6">
             <h1 className="text-2xl font-bold">מתכונים</h1>
-            <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center">
-              <ChefHat className="w-5 h-5 text-primary" />
+            <div className="w-10 h-10 rounded-xl overflow-hidden">
+              <img src={chefIcon} alt="BudgetBites" className="w-full h-full object-cover" />
             </div>
           </div>
 
