@@ -12,7 +12,7 @@ import { useApp } from '@/contexts/AppContext';
 import { useInactivityTracker } from '@/hooks/useInactivityTracker';
 import { recipes } from '@/lib/recipes';
 import { getSmartSavingsText } from '@/lib/notifications';
-import appIcon from '@/assets/app-icon.png';
+import chefIcon from '@/assets/chef-icon.png';
 
 export const Home: React.FC = () => {
   const navigate = useNavigate();
@@ -42,7 +42,7 @@ export const Home: React.FC = () => {
                 <h1 className="text-2xl font-bold">מה נבשל היום?</h1>
               </div>
               <div className="w-14 h-14 rounded-2xl overflow-hidden shadow-glow">
-                <img src={appIcon} alt="BudgetBites" className="w-full h-full object-cover" />
+                <img src={chefIcon} alt="BudgetBites" className="w-full h-full object-cover" />
               </div>
             </div>
 

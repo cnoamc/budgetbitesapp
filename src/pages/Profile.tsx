@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Settings, RefreshCw, User, MapPin, ChefHat, LogOut, Pencil, Camera, X, Bell } from 'lucide-react';
+import { Settings, RefreshCw, User, MapPin, LogOut, Pencil, Camera, X, Bell } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import chefIcon from '@/assets/chef-icon.png';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { BottomNav } from '@/components/BottomNav';
@@ -164,7 +165,7 @@ export const Profile: React.FC = () => {
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <User className="w-12 h-12 text-primary-foreground" />
+                <img src={chefIcon} alt="Profile" className="w-full h-full object-cover" />
               )}
               <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity rounded-full">
                 <Camera className="w-6 h-6 text-white" />
@@ -273,7 +274,9 @@ export const Profile: React.FC = () => {
             
             <div className="flex items-center justify-between py-2 border-b border-border/50">
               <div className="flex items-center gap-3">
-                <ChefHat className="w-5 h-5 text-muted-foreground" />
+                <div className="w-5 h-5 rounded overflow-hidden">
+                  <img src={chefIcon} alt="Skill" className="w-full h-full object-cover" />
+                </div>
                 <span>רמת מיומנות התחלתית</span>
               </div>
               <span className="text-muted-foreground">{profile.cookingSkill}/5</span>

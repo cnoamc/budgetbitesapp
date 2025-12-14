@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ChefHat, Pizza, Salad, UtensilsCrossed, Soup, ArrowLeft } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ProgressBar } from '@/components/ProgressBar';
 import { useApp } from '@/contexts/AppContext';
 import { cn } from '@/lib/utils';
+import chefIcon from '@/assets/chef-icon.png';
 
 const TOTAL_STEPS = 5;
 
@@ -67,8 +68,8 @@ export const Onboarding: React.FC = () => {
       <div className="max-w-lg mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
-          <div className="w-16 h-16 gradient-primary rounded-2xl mx-auto flex items-center justify-center mb-4 shadow-glow animate-float">
-            <ChefHat className="w-8 h-8 text-primary-foreground" />
+          <div className="w-16 h-16 rounded-2xl mx-auto overflow-hidden mb-4 shadow-glow animate-float">
+            <img src={chefIcon} alt="BudgetBites" className="w-full h-full object-cover" />
           </div>
           <h1 className="text-2xl font-bold mb-2">BudgetBites</h1>
           <p className="text-muted-foreground">בואו נלמד אותך לחסוך כסף ולבשל!</p>
