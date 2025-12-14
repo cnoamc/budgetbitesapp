@@ -1,5 +1,5 @@
 import React from 'react';
-import { Clock, ChefHat, TrendingUp } from 'lucide-react';
+import { Clock, ChefHat, TrendingUp, Heart } from 'lucide-react';
 import { categoryLabels } from '@/lib/recipes';
 import type { Recipe } from '@/lib/types';
 import { cn } from '@/lib/utils';
@@ -9,18 +9,52 @@ interface RecipeCardProps {
   recipe: Recipe;
   onClick: () => void;
   className?: string;
+  isFavorite?: boolean;
+  onToggleFavorite?: (e: React.MouseEvent) => void;
 }
 
-export const RecipeCard: React.FC<RecipeCardProps> = ({ recipe, onClick, className }) => {
+export const RecipeCard: React.FC<RecipeCardProps> = ({ 
+  recipe, 
+  onClick, 
+  className,
+  isFavorite = false,
+  onToggleFavorite,
+}) => {
   const savings = recipe.deliveryCost - recipe.homeCost;
   const totalTime = recipe.prepTime + recipe.cookTime;
+
+  const handleFavoriteClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onToggleFavorite?.(e);
+  };
 
   return (
     <PremiumCard
       onClick={onClick}
       hoverable
-      className={cn("p-4 text-right", className)}
+      className={cn("p-4 text-right relative", className)}
     >
+      {/* Favorite button */}
+      {onToggleFavorite && (
+        <button
+          onClick={handleFavoriteClick}
+          className={cn(
+            "absolute top-3 left-3 w-9 h-9 rounded-full flex items-center justify-center transition-all duration-300 btn-press z-10",
+            isFavorite 
+              ? "bg-red-500/10 text-red-500" 
+              : "bg-secondary/80 text-muted-foreground hover:text-red-400"
+          )}
+          aria-label={isFavorite ? "הסר ממועדפים" : "הוסף למועדפים"}
+        >
+          <Heart 
+            className={cn(
+              "w-5 h-5 transition-all",
+              isFavorite && "fill-current scale-110"
+            )} 
+          />
+        </button>
+      )}
+
       <div className="flex gap-4">
         {/* Emoji with gradient background */}
         <div className="w-20 h-20 bg-gradient-to-br from-secondary to-muted rounded-2xl flex items-center justify-center text-4xl shrink-0 shadow-soft">
