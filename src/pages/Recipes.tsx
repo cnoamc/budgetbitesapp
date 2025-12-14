@@ -1,22 +1,27 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, ChefHat } from 'lucide-react';
+import { Search, ChefHat, Heart } from 'lucide-react';
 import { RecipeCard } from '@/components/RecipeCard';
 import { BottomNav } from '@/components/BottomNav';
 import { GradientBackground } from '@/components/ui/GradientBackground';
 import { recipes, categoryLabels, categoryEmojis } from '@/lib/recipes';
 import { cn } from '@/lib/utils';
+import { useFavorites } from '@/hooks/useFavorites';
 import type { RecipeCategory } from '@/lib/types';
 
-const categories: Array<RecipeCategory | 'all'> = ['all', 'beginner', 'fast', 'cheap', 'protein', 'vegetarian', 'easy'];
+const categories: Array<RecipeCategory | 'all' | 'favorites'> = ['all', 'favorites', 'beginner', 'fast', 'cheap', 'protein', 'vegetarian', 'easy'];
 
 export const Recipes: React.FC = () => {
   const navigate = useNavigate();
-  const [activeCategory, setActiveCategory] = useState<RecipeCategory | 'all'>('all');
+  const [activeCategory, setActiveCategory] = useState<RecipeCategory | 'all' | 'favorites'>('all');
   const [searchQuery, setSearchQuery] = useState('');
+  const { favorites, toggleFavorite, isFavorite } = useFavorites();
 
   const filteredRecipes = recipes.filter(recipe => {
-    const matchesCategory = activeCategory === 'all' || recipe.category === activeCategory;
+    const matchesCategory = 
+      activeCategory === 'all' || 
+      activeCategory === 'favorites' ? favorites.includes(recipe.id) : 
+      recipe.category === activeCategory;
     const matchesSearch = recipe.name.includes(searchQuery);
     return matchesCategory && matchesSearch;
   });
@@ -52,13 +57,25 @@ export const Recipes: React.FC = () => {
                 key={category}
                 onClick={() => setActiveCategory(category)}
                 className={cn(
-                  "px-5 py-2.5 rounded-full whitespace-nowrap transition-all duration-300 text-sm font-medium btn-press",
+                  "px-5 py-2.5 rounded-full whitespace-nowrap transition-all duration-300 text-sm font-medium btn-press flex items-center gap-1.5",
                   activeCategory === category
                     ? "gradient-primary text-primary-foreground shadow-soft"
                     : "bg-card text-muted-foreground hover:bg-secondary border border-border/50"
                 )}
               >
-                {category === 'all' ? '🍽️ הכל' : `${categoryEmojis[category]} ${categoryLabels[category]}`}
+                {category === 'all' && '🍽️ הכל'}
+                {category === 'favorites' && (
+                  <>
+                    <Heart className={cn("w-4 h-4", favorites.length > 0 && "fill-current text-red-500")} />
+                    מועדפים
+                    {favorites.length > 0 && (
+                      <span className="bg-red-500/20 text-red-600 text-xs px-1.5 py-0.5 rounded-full">
+                        {favorites.length}
+                      </span>
+                    )}
+                  </>
+                )}
+                {category !== 'all' && category !== 'favorites' && `${categoryEmojis[category]} ${categoryLabels[category]}`}
               </button>
             ))}
           </div>
@@ -75,6 +92,8 @@ export const Recipes: React.FC = () => {
               <RecipeCard
                 recipe={recipe}
                 onClick={() => navigate(`/recipe/${recipe.id}`)}
+                isFavorite={isFavorite(recipe.id)}
+                onToggleFavorite={() => toggleFavorite(recipe.id)}
               />
             </div>
           ))}
@@ -82,10 +101,16 @@ export const Recipes: React.FC = () => {
           {filteredRecipes.length === 0 && (
             <div className="text-center py-16">
               <div className="w-20 h-20 bg-secondary rounded-3xl flex items-center justify-center text-4xl mx-auto mb-4">
-                🔍
+                {activeCategory === 'favorites' ? '❤️' : '🔍'}
               </div>
-              <p className="text-lg font-medium mb-1">לא נמצאו מתכונים</p>
-              <p className="text-muted-foreground text-sm">נסה לחפש משהו אחר</p>
+              <p className="text-lg font-medium mb-1">
+                {activeCategory === 'favorites' ? 'אין מועדפים עדיין' : 'לא נמצאו מתכונים'}
+              </p>
+              <p className="text-muted-foreground text-sm">
+                {activeCategory === 'favorites' 
+                  ? 'לחץ על ❤️ כדי לשמור מתכונים' 
+                  : 'נסה לחפש משהו אחר'}
+              </p>
             </div>
           )}
         </div>
