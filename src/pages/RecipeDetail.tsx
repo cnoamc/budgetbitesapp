@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowRight, Clock, ChefHat, ShoppingCart, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { SavingsCard } from '@/components/SavingsCard';
+import { SavingsComparisonCard } from '@/components/notifications';
 import { getRecipeById, categoryLabels } from '@/lib/recipes';
 
 export const RecipeDetail: React.FC = () => {
@@ -104,9 +104,12 @@ export const RecipeDetail: React.FC = () => {
               ))}
             </div>
           ) : (
-            <SavingsCard
+            <SavingsComparisonCard
+              recipeName={recipe.name}
+              emoji={recipe.emoji}
               homeCost={recipe.homeCost}
               deliveryCost={recipe.deliveryCost}
+              onCook={() => navigate(`/cook/${recipe.id}`)}
             />
           )}
         </div>

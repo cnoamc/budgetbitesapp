@@ -169,6 +169,10 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     };
     
     setProgress(newProgress);
+    
+    // Record cooking activity for inactivity tracking
+    localStorage.setItem('bb_last_cook_date', new Date().toISOString());
+    localStorage.removeItem('bb_inactivity_dismissed');
 
     if (!user) return;
 

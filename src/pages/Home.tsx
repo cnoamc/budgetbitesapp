@@ -6,7 +6,9 @@ import { RecipeCard } from '@/components/RecipeCard';
 import { BottomNav } from '@/components/BottomNav';
 import { GradientBackground } from '@/components/ui/GradientBackground';
 import { PremiumCard } from '@/components/ui/PremiumCard';
+import { InactivityAlert } from '@/components/notifications';
 import { useApp } from '@/contexts/AppContext';
+import { useInactivityTracker } from '@/hooks/useInactivityTracker';
 import { recipes } from '@/lib/recipes';
 import { getSmartSavingsText } from '@/lib/notifications';
 import appIcon from '@/assets/app-icon.png';
@@ -19,6 +21,9 @@ export const Home: React.FC = () => {
   const displayMonthlySavings = hasCooked ? monthlySavings : potentialMonthlySavings;
   const displayYearlySavings = hasCooked ? monthlySavings * 12 : yearlySavings;
   const smartContextText = getSmartSavingsText(displayYearlySavings);
+  
+  // Inactivity tracking
+  const { daysInactive, potentialSavingsLost, shouldShowAlert, dismissAlert } = useInactivityTracker(hasCooked);
   
   // Memoize recipe selection to prevent re-renders
   const todayRecipe = useMemo(() => recipes[Math.floor(Math.random() * recipes.length)], []);
@@ -72,6 +77,17 @@ export const Home: React.FC = () => {
                 </div>
               )}
             </PremiumCard>
+            
+            {/* Inactivity Alert */}
+            {shouldShowAlert && (
+              <InactivityAlert
+                daysInactive={daysInactive}
+                potentialSavingsLost={potentialSavingsLost}
+                onDismiss={dismissAlert}
+                onAction={() => navigate('/recipes')}
+                className="animate-slide-up"
+              />
+            )}
           </div>
         </div>
 
