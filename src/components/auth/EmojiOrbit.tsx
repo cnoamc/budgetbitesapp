@@ -1,36 +1,40 @@
 import React from 'react';
 
-const emojis = ['🍔', '🍝', '🛒', '🔔', '📈'];
+const emojis = ['🍳', '🍔', '🍝', '🛒', '📈', '🔔'];
 
 export const EmojiOrbit: React.FC = () => {
   return (
-    <div className="relative w-64 h-64 mx-auto">
+    <div className="relative w-72 h-72 mx-auto">
       {/* Center glow */}
       <div 
-        className="absolute inset-0 m-auto w-24 h-24 rounded-full blur-2xl opacity-30"
-        style={{ background: 'linear-gradient(135deg, #FFB088 0%, #88CCFF 100%)' }}
+        className="absolute inset-0 m-auto w-28 h-28 rounded-full blur-3xl opacity-40"
+        style={{ background: 'linear-gradient(135deg, #FFB088 0%, #88CCFF 50%, #88DDAA 100%)' }}
       />
       
-      {/* Emoji chips in orbit */}
+      {/* Emoji chips in orbit - NO white backgrounds */}
       {emojis.map((emoji, index) => {
-        const angle = (index * 72 - 90) * (Math.PI / 180); // 72 degrees apart, start from top
-        const radius = 100;
+        const angle = (index * 60 - 90) * (Math.PI / 180); // 60 degrees apart (6 items)
+        const radius = 110;
         const x = Math.cos(angle) * radius;
         const y = Math.sin(angle) * radius;
         
         return (
           <div
             key={index}
-            className="absolute w-14 h-14 rounded-full flex items-center justify-center text-2xl"
+            className="absolute flex items-center justify-center text-4xl"
             style={{
-              left: `calc(50% + ${x}px - 28px)`,
-              top: `calc(50% + ${y}px - 28px)`,
-              background: 'rgba(255, 255, 255, 0.85)',
-              backdropFilter: 'blur(12px)',
-              WebkitBackdropFilter: 'blur(12px)',
-              boxShadow: '0 8px 32px -8px rgba(0, 0, 0, 0.12), 0 4px 16px -4px rgba(0, 0, 0, 0.08)',
-              animation: `float ${3 + index * 0.5}s ease-in-out infinite`,
-              animationDelay: `${index * 0.2}s`,
+              left: `calc(50% + ${x}px - 24px)`,
+              top: `calc(50% + ${y}px - 24px)`,
+              width: '48px',
+              height: '48px',
+              // Subtle glass chip - very low opacity, NOT white
+              background: 'rgba(255, 255, 255, 0.12)',
+              backdropFilter: 'blur(8px)',
+              WebkitBackdropFilter: 'blur(8px)',
+              borderRadius: '16px',
+              boxShadow: '0 4px 24px -4px rgba(0, 0, 0, 0.05)',
+              animation: `float ${3 + index * 0.4}s ease-in-out infinite`,
+              animationDelay: `${index * 0.15}s`,
             }}
           >
             {emoji}
@@ -40,8 +44,8 @@ export const EmojiOrbit: React.FC = () => {
       
       <style>{`
         @keyframes float {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-8px); }
+          0%, 100% { transform: translateY(0px) scale(1); }
+          50% { transform: translateY(-10px) scale(1.05); }
         }
       `}</style>
     </div>
