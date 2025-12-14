@@ -15,38 +15,47 @@ export const BottomNav: React.FC = () => {
   const location = useLocation();
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-card border-t border-border/50 shadow-elevated z-50">
-      <div className="flex justify-around items-center h-16 max-w-lg mx-auto">
-        {navItems.map((item) => {
-          const isActive = location.pathname === item.path;
-          return (
-            <button
-              key={item.path}
-              onClick={() => navigate(item.path)}
-              className={cn(
-                "flex flex-col items-center gap-1 p-2 rounded-xl transition-all duration-200 min-w-[60px]",
-                isActive 
-                  ? "text-primary" 
-                  : "text-muted-foreground hover:text-foreground"
-              )}
-            >
-              <item.icon className={cn(
-                "w-5 h-5 transition-all",
-                isActive && "scale-110"
-              )} />
-              <span className={cn(
-                "text-xs font-medium",
-                isActive && "font-semibold"
-              )}>
-                {item.label}
-              </span>
-              {isActive && (
-                <div className="absolute bottom-1 w-8 h-1 gradient-primary rounded-full" />
-              )}
-            </button>
-          );
-        })}
-      </div>
-    </nav>
+    <div className="fixed bottom-0 left-0 right-0 p-4 z-50">
+      <nav className="max-w-md mx-auto">
+        <div className="glass rounded-2xl shadow-elevated border border-white/30">
+          <div className="flex justify-around items-center h-16 px-2">
+            {navItems.map((item) => {
+              const isActive = location.pathname === item.path;
+              return (
+                <button
+                  key={item.path}
+                  onClick={() => navigate(item.path)}
+                  className={cn(
+                    "relative flex flex-col items-center gap-1 px-4 py-2 rounded-xl transition-all duration-300 min-w-[64px]",
+                    isActive 
+                      ? "text-primary" 
+                      : "text-muted-foreground hover:text-foreground"
+                  )}
+                >
+                  <div className={cn(
+                    "relative transition-all duration-300",
+                    isActive && "scale-110"
+                  )}>
+                    <item.icon className="w-5 h-5" />
+                    {isActive && (
+                      <div className="absolute -inset-2 bg-primary/10 rounded-xl -z-10" />
+                    )}
+                  </div>
+                  <span className={cn(
+                    "text-[10px] font-medium transition-all",
+                    isActive && "font-semibold"
+                  )}>
+                    {item.label}
+                  </span>
+                  {isActive && (
+                    <div className="absolute -bottom-1 w-1 h-1 rounded-full bg-primary" />
+                  )}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      </nav>
+    </div>
   );
 };
