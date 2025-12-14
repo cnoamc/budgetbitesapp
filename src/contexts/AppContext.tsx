@@ -61,9 +61,9 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   };
 
   const calculatePotentialSavings = (): number => {
-    // Average savings per meal * weekly orders * 4 weeks
-    const avgSavingsPerMeal = 45; // Average savings
-    return profile.weeklyOrders * avgSavingsPerMeal * 4;
+    // Based on user's monthly spending and home cooking factor (55% savings)
+    const homeCookingFactor = 0.55;
+    return Math.round(profile.monthlySpending * homeCookingFactor);
   };
 
   return (
