@@ -177,7 +177,7 @@ const SignIn: React.FC = () => {
       <div className="relative z-10 flex-1 flex flex-col px-6 pt-10 pb-8 overflow-y-auto">
         {/* Back button */}
         <button 
-          onClick={() => navigate('/auth')} 
+          onClick={() => navigate('/')} 
           className="self-start mb-4 p-2 -mr-2 rounded-full hover:bg-card/50 transition-colors"
         >
           <ArrowRight className="w-6 h-6 text-foreground/70" />
