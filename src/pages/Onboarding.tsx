@@ -37,7 +37,7 @@ export const Onboarding: React.FC = () => {
       localStorage.setItem('bb_onboarding_data', JSON.stringify(formData));
       updateProfile(formData);
       completeOnboarding();
-      navigate('/signin');
+      navigate('/loading');
     }
   };
 

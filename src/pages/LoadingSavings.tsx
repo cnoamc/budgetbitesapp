@@ -1,0 +1,208 @@
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Unlock, TrendingUp } from 'lucide-react';
+import chefIcon from '@/assets/chef-icon.png';
+
+const getSavingsContext = (yearlySavings: number): string => {
+  if (yearlySavings < 1500) return 'מספיק לארוחה חגיגית או בילוי קטן 🎉';
+  if (yearlySavings < 4000) return 'יכול לממן חופשה קצרה בארץ 🏖️';
+  if (yearlySavings < 8000) return 'חופשה משפחתית רצינית ✈️';
+  return 'זה כבר חיסכון משמעותי לשנה 💸🔥';
+};
+
+const LoadingSavings: React.FC = () => {
+  const navigate = useNavigate();
+  const [phase, setPhase] = useState<'loading' | 'reveal' | 'done'>('loading');
+  const [progressAnimated, setProgressAnimated] = useState(false);
+  const [countedMonthly, setCountedMonthly] = useState(0);
+  const [countedYearly, setCountedYearly] = useState(0);
+
+  // Get onboarding data
+  const getOnboardingData = () => {
+    const stored = localStorage.getItem('bb_onboarding_data');
+    if (stored) {
+      try {
+        return JSON.parse(stored);
+      } catch {
+        return null;
+      }
+    }
+    return null;
+  };
+
+  const onboardingData = getOnboardingData();
+  
+  const AVG_DELIVERY_COST = 55;
+  const AVG_HOME_COST = 10;
+  const SAVINGS_PER_MEAL = AVG_DELIVERY_COST - AVG_HOME_COST;
+  
+  const weeklyOrders = onboardingData?.weeklyOrders || 4;
+  const monthlySpending = onboardingData?.monthlySpending || 1000;
+  const monthlyOrders = weeklyOrders * 4;
+  
+  const monthlySavings = monthlyOrders * SAVINGS_PER_MEAL;
+  const yearlySavings = monthlySavings * 12;
+  const savingsPercentage = monthlySpending > 0 ? Math.round((monthlySavings / monthlySpending) * 100) : 0;
+  const savingsProgress = Math.min((yearlySavings / 20000) * 100, 100);
+
+  useEffect(() => {
+    // Phase 1: Loading animation (1.5s)
+    const loadingTimer = setTimeout(() => {
+      setPhase('reveal');
+    }, 1500);
+
+    return () => clearTimeout(loadingTimer);
+  }, []);
+
+  useEffect(() => {
+    if (phase === 'reveal') {
+      // Start progress bar animation
+      setTimeout(() => setProgressAnimated(true), 200);
+      
+      // Count up animation for numbers
+      const duration = 1200;
+      const steps = 30;
+      const monthlyIncrement = monthlySavings / steps;
+      const yearlyIncrement = yearlySavings / steps;
+      
+      let step = 0;
+      const interval = setInterval(() => {
+        step++;
+        setCountedMonthly(Math.min(Math.round(monthlyIncrement * step), monthlySavings));
+        setCountedYearly(Math.min(Math.round(yearlyIncrement * step), yearlySavings));
+        
+        if (step >= steps) {
+          clearInterval(interval);
+          // Navigate to signin after showing the numbers
+          setTimeout(() => {
+            setPhase('done');
+            navigate('/signin');
+          }, 2000);
+        }
+      }, duration / steps);
+
+      return () => clearInterval(interval);
+    }
+  }, [phase, monthlySavings, yearlySavings, navigate]);
+
+  return (
+    <div className="h-[100dvh] relative overflow-hidden flex flex-col items-center justify-center" dir="rtl">
+      {/* Background */}
+      <div 
+        className="absolute inset-0" 
+        style={{ background: 'linear-gradient(165deg, #F7F8FF 0%, #FFF2E9 45%, #ECFFF4 100%)' }} 
+      />
+      
+      {/* Blurred blobs */}
+      <div 
+        className="absolute w-72 h-72 rounded-full blur-3xl opacity-25" 
+        style={{ background: '#FFB088', top: '-10%', right: '-15%' }} 
+      />
+      <div 
+        className="absolute w-56 h-56 rounded-full blur-3xl opacity-20" 
+        style={{ background: '#88DDAA', bottom: '20%', left: '-10%' }} 
+      />
+
+      <div className="relative z-10 flex flex-col items-center px-6 w-full max-w-sm">
+        {/* Chef icon with pulse animation */}
+        <div 
+          className={`w-20 h-20 rounded-3xl overflow-hidden shadow-2xl mb-8 transition-all duration-700 ${
+            phase === 'loading' ? 'animate-pulse scale-100' : 'scale-110'
+          }`}
+          style={{ 
+            boxShadow: '0 25px 80px -15px rgba(255, 107, 149, 0.35), 0 10px 30px -10px rgba(0,0,0,0.1)'
+          }}
+        >
+          <img src={chefIcon} alt="BudgetBites" className="w-full h-full object-cover" />
+        </div>
+
+        {phase === 'loading' && (
+          <div className="text-center animate-fade-in">
+            <h2 className="text-xl font-bold text-foreground mb-2">מחשבים את החיסכון שלך...</h2>
+            <div className="flex justify-center gap-1 mt-4">
+              {[0, 1, 2].map((i) => (
+                <div
+                  key={i}
+                  className="w-3 h-3 rounded-full bg-primary animate-bounce"
+                  style={{ animationDelay: `${i * 0.15}s` }}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+
+        {phase === 'reveal' && (
+          <div 
+            className="w-full p-6 rounded-3xl animate-scale-in"
+            style={{
+              background: 'rgba(255, 255, 255, 0.8)',
+              backdropFilter: 'blur(16px)',
+              boxShadow: '0 8px 32px -8px rgba(0, 0, 0, 0.12)'
+            }}
+          >
+            {/* Header */}
+            <div className="flex items-center justify-center gap-2 mb-5">
+              <Unlock className="w-5 h-5 text-primary" />
+              <p className="text-base font-semibold text-foreground">החיסכון שמחכה לך</p>
+            </div>
+
+            {/* Progress bar */}
+            <div className="relative h-3 bg-muted/50 rounded-full overflow-hidden mb-5">
+              <div 
+                className="absolute inset-y-0 right-0 rounded-full transition-all duration-1000 ease-out"
+                style={{ 
+                  width: progressAnimated ? `${savingsProgress}%` : '0%',
+                  background: 'linear-gradient(90deg, hsl(var(--primary)) 0%, #27AE60 100%)'
+                }}
+              />
+            </div>
+
+            {/* Savings amounts */}
+            <div className="flex justify-between items-start mb-4">
+              <div className="text-center flex-1">
+                <div className="flex items-center justify-center gap-1 mb-1">
+                  <TrendingUp className="w-3.5 h-3.5 text-primary" />
+                  <p className="text-xs text-muted-foreground">חודשי</p>
+                </div>
+                <p className="text-3xl font-bold text-primary">₪{countedMonthly.toLocaleString()}</p>
+              </div>
+              
+              <div className="w-px h-14 bg-border/50 mx-3" />
+              
+              <div className="text-center flex-1">
+                <div className="flex items-center justify-center gap-1 mb-1">
+                  <TrendingUp className="w-3.5 h-3.5 text-green-600" />
+                  <p className="text-xs text-muted-foreground">שנתי</p>
+                </div>
+                <p className="text-3xl font-bold text-green-600">₪{countedYearly.toLocaleString()}</p>
+              </div>
+            </div>
+
+            {/* Percentage badge */}
+            {savingsPercentage > 0 && (
+              <div className="flex justify-center mb-3">
+                <div 
+                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full"
+                  style={{ background: 'linear-gradient(135deg, #FF6B95 0%, #FF9A56 100%)' }}
+                >
+                  <span className="text-white text-sm font-bold">{savingsPercentage}%</span>
+                  <span className="text-white/90 text-xs">חיסכון מההוצאה הנוכחית</span>
+                </div>
+              </div>
+            )}
+
+            {/* Context message */}
+            <div 
+              className="text-center py-2.5 px-4 rounded-xl"
+              style={{ background: 'rgba(39, 174, 96, 0.1)' }}
+            >
+              <p className="text-sm text-foreground/80">{getSavingsContext(yearlySavings)}</p>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default LoadingSavings;

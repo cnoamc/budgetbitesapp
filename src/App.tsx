@@ -12,6 +12,7 @@ import { NotificationBanner } from "@/components/NotificationBanner";
 import { PageTransition } from "@/components/PageTransition";
 import Welcome from "./pages/Welcome";
 import SignIn from "./pages/SignIn";
+import LoadingSavings from "./pages/LoadingSavings";
 import Onboarding from "./pages/Onboarding";
 import Savings from "./pages/Savings";
 import Home from "./pages/Home";
@@ -32,6 +33,7 @@ const AnimatedRoutes = () => {
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
         <Route path="/" element={<PageTransition><Welcome /></PageTransition>} />
+        <Route path="/loading" element={<PageTransition><LoadingSavings /></PageTransition>} />
         <Route path="/signin" element={<PageTransition><SignIn /></PageTransition>} />
         <Route path="/onboarding" element={<PageTransition><Onboarding /></PageTransition>} />
         <Route path="/savings" element={<PageTransition><Savings /></PageTransition>} />

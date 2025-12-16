@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Mail, Lock, Eye, EyeOff, ArrowRight, TrendingUp, Unlock } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, ArrowRight, Phone, Apple } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useAuth } from '@/contexts/AuthContext';
@@ -13,19 +13,9 @@ import chefIcon from '@/assets/chef-icon.png';
 const emailSchema = z.string().email('כתובת אימייל לא תקינה');
 const passwordSchema = z.string().min(6, 'הסיסמה חייבת להכיל לפחות 6 תווים');
 
-type AuthView = 'signup' | 'login';
+type AuthView = 'options' | 'email';
 
-// Get contextual message based on yearly savings
-const getSavingsContext = (yearlySavings: number): string => {
-  if (yearlySavings < 1500) return 'מספיק לארוחה חגיגית או בילוי קטן 🎉';
-  if (yearlySavings < 4000) return 'יכול לממן חופשה קצרה בארץ 🏖️';
-  if (yearlySavings < 8000) return 'חופשה משפחתית רצינית ✈️';
-  return 'זה כבר חיסכון משמעותי לשנה 💸🔥';
-};
-
-// Trigger confetti celebration
 const triggerConfetti = () => {
-  // First burst
   confetti({
     particleCount: 100,
     spread: 70,
@@ -33,7 +23,6 @@ const triggerConfetti = () => {
     colors: ['#FF6B95', '#FF9A56', '#FFB347', '#27AE60', '#2F80ED']
   });
   
-  // Second burst with delay
   setTimeout(() => {
     confetti({
       particleCount: 50,
@@ -58,17 +47,16 @@ const triggerConfetti = () => {
 const SignIn: React.FC = () => {
   const navigate = useNavigate();
   const { user, signIn, signUp, loading } = useAuth();
-  const { profile, updateProfile } = useApp();
+  const { updateProfile } = useApp();
   
-  const [view, setView] = useState<AuthView>('signup');
+  const [view, setView] = useState<AuthView>('options');
+  const [isLogin, setIsLogin] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
-  const [progressAnimated, setProgressAnimated] = useState(false);
 
-  // Get onboarding data from localStorage (before signup) or from profile (after)
   const getOnboardingData = () => {
     const stored = localStorage.getItem('bb_onboarding_data');
     if (stored) {
@@ -82,41 +70,12 @@ const SignIn: React.FC = () => {
   };
 
   const onboardingData = getOnboardingData();
-  
-  // Calculate savings based on actual data
-  // Average costs from our recipes: delivery ~₪55, home ~₪10
-  const AVG_DELIVERY_COST = 55;
-  const AVG_HOME_COST = 10;
-  const SAVINGS_PER_MEAL = AVG_DELIVERY_COST - AVG_HOME_COST; // ₪45 per meal
-  
-  // Use onboarding data if available, otherwise fall back to profile
-  const weeklyOrders = onboardingData?.weeklyOrders || profile?.weeklyOrders || 0;
-  const monthlySpending = onboardingData?.monthlySpending || profile?.monthlySpending || 0;
-  const monthlyOrders = weeklyOrders * 4;
-  
-  // Calculate monthly savings: (orders per month) × (savings per meal)
-  const monthlySavings = monthlyOrders * SAVINGS_PER_MEAL;
-  const yearlySavings = monthlySavings * 12;
-  
-  // Calculate savings percentage compared to current spending
-  const savingsPercentage = monthlySpending > 0 ? Math.round((monthlySavings / monthlySpending) * 100) : 0;
-  
-  // Progress percentage (capped at 100%)
-  const savingsProgress = Math.min((yearlySavings / 20000) * 100, 100);
 
   useEffect(() => {
     if (user && !loading) {
       navigate('/home');
     }
   }, [user, loading, navigate]);
-
-  // Trigger progress animation after mount
-  useEffect(() => {
-    if (monthlySavings > 0) {
-      const timer = setTimeout(() => setProgressAnimated(true), 300);
-      return () => clearTimeout(timer);
-    }
-  }, [monthlySavings]);
 
   const validateForm = (): boolean => {
     const newErrors: { email?: string; password?: string } = {};
@@ -135,13 +94,13 @@ const SignIn: React.FC = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleEmailSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validateForm()) return;
     
     setIsLoading(true);
     try {
-      if (view === 'signup') {
+      if (!isLogin) {
         const { error } = await signUp(email, password);
         if (error) {
           if (error.message.includes('already registered')) {
@@ -150,7 +109,6 @@ const SignIn: React.FC = () => {
             toast.error(error.message);
           }
         } else {
-          // Success! Sync onboarding data to profile
           if (onboardingData) {
             await updateProfile({
               monthlySpending: onboardingData.monthlySpending,
@@ -159,10 +117,8 @@ const SignIn: React.FC = () => {
               cookingSkill: onboardingData.cookingSkill,
               onboardingComplete: true,
             });
-            // Clear localStorage after sync
             localStorage.removeItem('bb_onboarding_data');
           }
-          // Trigger confetti celebration
           triggerConfetti();
           toast.success('נרשמת בהצלחה! 🎉');
         }
@@ -181,13 +137,17 @@ const SignIn: React.FC = () => {
     }
   };
 
+  const handleSocialLogin = (provider: string) => {
+    toast.info(`התחברות עם ${provider} תהיה זמינה בקרוב`);
+  };
+
   if (loading) {
     return (
       <div 
-        className="min-h-screen flex items-center justify-center" 
+        className="h-[100dvh] flex items-center justify-center" 
         style={{ background: 'linear-gradient(165deg, #F7F8FF 0%, #FFF2E9 45%, #ECFFF4 100%)' }}
       >
-        <div className="w-16 h-16 rounded-2xl overflow-hidden shadow-glow animate-icon-delight animate-glow-pulse">
+        <div className="w-16 h-16 rounded-2xl overflow-hidden shadow-glow animate-pulse">
           <img src={chefIcon} alt="BudgetBites" className="w-full h-full object-cover" />
         </div>
       </div>
@@ -195,7 +155,7 @@ const SignIn: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen relative overflow-hidden flex flex-col" dir="rtl">
+    <div className="h-[100dvh] relative overflow-hidden flex flex-col" dir="rtl">
       {/* Background */}
       <div 
         className="absolute inset-0" 
@@ -213,182 +173,176 @@ const SignIn: React.FC = () => {
       />
 
       {/* Content */}
-      <div className="relative z-10 flex-1 flex flex-col px-6 pt-10 pb-8 overflow-y-auto">
+      <div className="relative z-10 flex-1 flex flex-col px-6 pt-8 pb-6">
         {/* Back button */}
         <button 
-          onClick={() => navigate('/')} 
+          onClick={() => view === 'email' ? setView('options') : navigate('/')} 
           className="self-start mb-4 p-2 -mr-2 rounded-full hover:bg-card/50 transition-colors"
         >
           <ArrowRight className="w-6 h-6 text-foreground/70" />
         </button>
 
         {/* Header */}
-        <div className="text-center mb-4 animate-fade-in">
-          <div className="w-16 h-16 mx-auto mb-3 rounded-2xl overflow-hidden shadow-glow animate-icon-delight-delayed">
+        <div className="text-center mb-6 animate-fade-in">
+          <div className="w-16 h-16 mx-auto mb-3 rounded-2xl overflow-hidden shadow-glow">
             <img src={chefIcon} alt="BudgetBites" className="w-full h-full object-cover" />
           </div>
           <h1 className="text-2xl font-bold text-foreground mb-1">
-            {view === 'signup' ? 'יצירת חשבון' : 'התחברות'}
+            {view === 'options' ? 'בואו נתחיל!' : (isLogin ? 'התחברות' : 'יצירת חשבון')}
           </h1>
           <p className="text-muted-foreground text-sm">
-            {view === 'signup' ? 'מתחילים לבשל ולחסוך' : 'ברוכים השבים!'}
+            {view === 'options' ? 'בחר איך להתחבר' : 'הכנס את הפרטים שלך'}
           </p>
         </div>
 
-        {/* Savings Progress Indicator - show only on signup */}
-        {view === 'signup' && monthlySavings > 0 && (
-          <div 
-            className="max-w-sm mx-auto w-full mb-5 p-5 rounded-3xl animate-fade-in"
-            style={{
-              background: 'rgba(255, 255, 255, 0.7)',
-              backdropFilter: 'blur(16px)',
-              boxShadow: '0 8px 32px -8px rgba(0, 0, 0, 0.1)'
-            }}
-          >
-            {/* Header with unlock icon */}
-            <div className="flex items-center justify-center gap-2 mb-4">
-              <Unlock className="w-4 h-4 text-primary" />
-              <p className="text-sm font-medium text-foreground">החיסכון שמחכה לך</p>
-            </div>
+        {/* Main content area */}
+        <div className="flex-1 flex flex-col justify-center max-w-sm mx-auto w-full">
+          {view === 'options' ? (
+            <div className="space-y-3 animate-fade-in">
+              {/* Phone option */}
+              <Button
+                onClick={() => handleSocialLogin('טלפון')}
+                variant="outline"
+                className="w-full h-14 rounded-2xl text-base font-medium bg-white/70 backdrop-blur-sm border-border/50 hover:bg-white/90 transition-all"
+              >
+                <Phone className="w-5 h-5 ml-3" />
+                המשך עם מספר טלפון
+              </Button>
 
-            {/* Progress bar */}
-            <div className="relative h-3 bg-muted/50 rounded-full overflow-hidden mb-4">
+              {/* Google option */}
+              <Button
+                onClick={() => handleSocialLogin('Google')}
+                variant="outline"
+                className="w-full h-14 rounded-2xl text-base font-medium bg-white/70 backdrop-blur-sm border-border/50 hover:bg-white/90 transition-all"
+              >
+                <svg className="w-5 h-5 ml-3" viewBox="0 0 24 24">
+                  <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                  <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                  <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                  <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                </svg>
+                המשך עם Google
+              </Button>
+
+              {/* Apple option */}
+              <Button
+                onClick={() => handleSocialLogin('Apple')}
+                variant="outline"
+                className="w-full h-14 rounded-2xl text-base font-medium bg-white/70 backdrop-blur-sm border-border/50 hover:bg-white/90 transition-all"
+              >
+                <Apple className="w-5 h-5 ml-3" />
+                המשך עם Apple
+              </Button>
+
+              {/* Divider */}
+              <div className="flex items-center gap-3 py-2">
+                <div className="flex-1 h-px bg-border/50" />
+                <span className="text-xs text-muted-foreground">או</span>
+                <div className="flex-1 h-px bg-border/50" />
+              </div>
+
+              {/* Email option */}
+              <Button
+                onClick={() => setView('email')}
+                className="w-full h-14 rounded-2xl text-base font-medium bg-foreground text-background hover:bg-foreground/90 transition-all"
+              >
+                <Mail className="w-5 h-5 ml-3" />
+                המשך עם אימייל
+              </Button>
+            </div>
+          ) : (
+            <form onSubmit={handleEmailSubmit} className="space-y-4 animate-fade-in">
               <div 
-                className="absolute inset-y-0 right-0 rounded-full transition-all duration-1000 ease-out"
-                style={{ 
-                  width: progressAnimated ? `${savingsProgress}%` : '0%',
-                  background: 'linear-gradient(90deg, hsl(var(--primary)) 0%, #27AE60 100%)'
+                className="p-5 rounded-3xl space-y-4" 
+                style={{
+                  background: 'rgba(255, 255, 255, 0.75)',
+                  backdropFilter: 'blur(20px)',
+                  boxShadow: '0 8px 40px -12px rgba(0, 0, 0, 0.1)'
                 }}
-              />
-              {/* Shimmer effect */}
-              <div 
-                className="absolute inset-0 bg-gradient-to-l from-transparent via-white/30 to-transparent animate-pulse"
-                style={{ animationDuration: '2s' }}
-              />
-            </div>
-
-            {/* Savings amounts */}
-            <div className="flex justify-between items-start mb-3">
-              <div className="text-center flex-1">
-                <div className="flex items-center justify-center gap-1 mb-1">
-                  <TrendingUp className="w-3.5 h-3.5 text-primary" />
-                  <p className="text-xs text-muted-foreground">חודשי</p>
+              >
+                <div className="space-y-1">
+                  <div className="relative">
+                    <Mail className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                    <Input
+                      type="email"
+                      placeholder="אימייל"
+                      value={email}
+                      onChange={(e) => {
+                        setEmail(e.target.value);
+                        setErrors(prev => ({ ...prev, email: undefined }));
+                      }}
+                      className="h-14 pr-12 rounded-2xl border-0 bg-card/60 text-base px-5"
+                      dir="ltr"
+                    />
+                  </div>
+                  {errors.email && <p className="text-sm text-destructive pr-1">{errors.email}</p>}
                 </div>
-                <p className="text-2xl font-bold text-primary">₪{monthlySavings.toLocaleString()}</p>
-              </div>
-              
-              <div className="w-px h-12 bg-border/50 mx-3" />
-              
-              <div className="text-center flex-1">
-                <div className="flex items-center justify-center gap-1 mb-1">
-                  <TrendingUp className="w-3.5 h-3.5 text-green-600" />
-                  <p className="text-xs text-muted-foreground">שנתי</p>
-                </div>
-                <p className="text-2xl font-bold text-green-600">₪{yearlySavings.toLocaleString()}</p>
-              </div>
-            </div>
 
-            {/* Savings percentage badge */}
-            {savingsPercentage > 0 && (
-              <div className="flex justify-center mb-3">
-                <div 
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full"
-                  style={{ background: 'linear-gradient(135deg, #FF6B95 0%, #FF9A56 100%)' }}
+                <div className="space-y-1">
+                  <div className="relative">
+                    <Lock className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                    <Input
+                      type={showPassword ? 'text' : 'password'}
+                      placeholder="סיסמה"
+                      value={password}
+                      onChange={(e) => {
+                        setPassword(e.target.value);
+                        setErrors(prev => ({ ...prev, password: undefined }));
+                      }}
+                      className="h-14 pr-12 pl-12 rounded-2xl border-0 bg-card/60 text-base px-5"
+                      dir="ltr"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                    >
+                      {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                    </button>
+                  </div>
+                  {errors.password && <p className="text-sm text-destructive pr-1">{errors.password}</p>}
+                </div>
+                
+                <Button
+                  type="submit"
+                  disabled={isLoading}
+                  className="w-full h-14 rounded-2xl text-base font-medium bg-foreground text-background hover:bg-foreground/90 transition-all active:scale-[0.98]"
                 >
-                  <span className="text-white text-sm font-bold">{savingsPercentage}%</span>
-                  <span className="text-white/90 text-xs">חיסכון מההוצאה הנוכחית</span>
-                </div>
+                  {isLoading ? (
+                    <div className="w-5 h-5 border-2 border-background border-t-transparent rounded-full animate-spin" />
+                  ) : (
+                    isLogin ? 'התחברות' : 'הרשמה'
+                  )}
+                </Button>
               </div>
-            )}
 
-            {/* Contextual message */}
-            <div 
-              className="text-center py-2 px-3 rounded-xl"
-              style={{ background: 'rgba(39, 174, 96, 0.08)' }}
-            >
-              <p className="text-xs text-foreground/80">{getSavingsContext(yearlySavings)}</p>
-            </div>
-          </div>
-        )}
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="space-y-4 max-w-sm mx-auto w-full animate-slide-up">
-          <div 
-            className="p-6 rounded-3xl space-y-4" 
-            style={{
-              background: 'rgba(255, 255, 255, 0.75)',
-              backdropFilter: 'blur(20px)',
-              boxShadow: '0 8px 40px -12px rgba(0, 0, 0, 0.1)'
-            }}
-          >
-            <div className="space-y-1">
-              <div className="relative">
-                <Mail className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-                <Input
-                  type="email"
-                  placeholder="אימייל"
-                  value={email}
-                  onChange={(e) => {
-                    setEmail(e.target.value);
-                    setErrors(prev => ({ ...prev, email: undefined }));
-                  }}
-                  className="h-14 pr-12 rounded-2xl border-0 bg-card/60 text-base px-5"
-                  dir="ltr"
-                />
-              </div>
-              {errors.email && <p className="text-sm text-destructive pr-1">{errors.email}</p>}
-            </div>
-
-            <div className="space-y-1">
-              <div className="relative">
-                <Lock className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-                <Input
-                  type={showPassword ? 'text' : 'password'}
-                  placeholder="סיסמה"
-                  value={password}
-                  onChange={(e) => {
-                    setPassword(e.target.value);
-                    setErrors(prev => ({ ...prev, password: undefined }));
-                  }}
-                  className="h-14 pr-12 pl-12 rounded-2xl border-0 bg-card/60 text-base px-5"
-                  dir="ltr"
-                />
+              <div className="text-center pt-2">
                 <button
                   type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                  onClick={() => setIsLogin(!isLogin)}
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                 >
-                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                  {isLogin ? 'אין לך חשבון? הירשם' : 'כבר יש לך חשבון? התחבר'}
                 </button>
               </div>
-              {errors.password && <p className="text-sm text-destructive pr-1">{errors.password}</p>}
-            </div>
-            
-            <Button
-              type="submit"
-              disabled={isLoading}
-              className="w-full h-14 rounded-2xl text-base font-medium bg-foreground text-background hover:bg-foreground/90 transition-all active:scale-[0.98]"
-            >
-              {isLoading ? (
-                <div className="w-5 h-5 border-2 border-background border-t-transparent rounded-full animate-spin" />
-              ) : (
-                view === 'signup' ? 'הרשמה' : 'התחברות'
-              )}
-            </Button>
-          </div>
+            </form>
+          )}
+        </div>
 
+        {/* Bottom login link for options view */}
+        {view === 'options' && (
           <div className="text-center pt-4">
             <button
-              type="button"
               onClick={() => {
-                setView(view === 'signup' ? 'login' : 'signup');
-                setErrors({});
+                setIsLogin(true);
+                setView('email');
               }}
               className="text-sm text-muted-foreground hover:text-foreground transition-colors"
             >
-              {view === 'signup' ? 'כבר יש לך חשבון? התחבר' : 'אין לך חשבון? הירשם'}
+              כבר יש לך חשבון? <span className="font-semibold text-foreground">התחבר</span>
             </button>
           </div>
-        </form>
+        )}
       </div>
     </div>
   );
