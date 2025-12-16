@@ -2,12 +2,14 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { AnimatePresence } from "framer-motion";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { AppProvider } from "@/contexts/AppContext";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { NotificationProvider } from "@/contexts/NotificationContext";
 import { NotificationBanner } from "@/components/NotificationBanner";
+import { PageTransition } from "@/components/PageTransition";
 import Welcome from "./pages/Welcome";
 import SignIn from "./pages/SignIn";
 import Onboarding from "./pages/Onboarding";
@@ -23,6 +25,29 @@ import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
+const AnimatedRoutes = () => {
+  const location = useLocation();
+  
+  return (
+    <AnimatePresence mode="wait">
+      <Routes location={location} key={location.pathname}>
+        <Route path="/" element={<PageTransition><Welcome /></PageTransition>} />
+        <Route path="/signin" element={<PageTransition><SignIn /></PageTransition>} />
+        <Route path="/onboarding" element={<PageTransition><Onboarding /></PageTransition>} />
+        <Route path="/savings" element={<PageTransition><Savings /></PageTransition>} />
+        <Route path="/home" element={<PageTransition><Home /></PageTransition>} />
+        <Route path="/recipes" element={<PageTransition><Recipes /></PageTransition>} />
+        <Route path="/recipe/:id" element={<PageTransition><RecipeDetail /></PageTransition>} />
+        <Route path="/cook/:id" element={<PageTransition><CookingAssistant /></PageTransition>} />
+        <Route path="/rate/:id" element={<PageTransition><RateMeal /></PageTransition>} />
+        <Route path="/progress" element={<PageTransition><Progress /></PageTransition>} />
+        <Route path="/profile" element={<PageTransition><Profile /></PageTransition>} />
+        <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
+      </Routes>
+    </AnimatePresence>
+  );
+};
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <ThemeProvider>
@@ -34,20 +59,7 @@ const App = () => (
               <Sonner />
               <NotificationBanner />
               <BrowserRouter>
-                <Routes>
-                  <Route path="/" element={<Welcome />} />
-                  <Route path="/signin" element={<SignIn />} />
-                  <Route path="/onboarding" element={<Onboarding />} />
-                  <Route path="/savings" element={<Savings />} />
-                  <Route path="/home" element={<Home />} />
-                  <Route path="/recipes" element={<Recipes />} />
-                  <Route path="/recipe/:id" element={<RecipeDetail />} />
-                  <Route path="/cook/:id" element={<CookingAssistant />} />
-                  <Route path="/rate/:id" element={<RateMeal />} />
-                  <Route path="/progress" element={<Progress />} />
-                  <Route path="/profile" element={<Profile />} />
-                  <Route path="*" element={<NotFound />} />
-                </Routes>
+                <AnimatedRoutes />
               </BrowserRouter>
             </TooltipProvider>
           </NotificationProvider>
