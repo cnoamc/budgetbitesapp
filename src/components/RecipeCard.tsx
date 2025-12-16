@@ -1,6 +1,7 @@
 import React from 'react';
 import { Clock, ChefHat, TrendingUp, Heart } from 'lucide-react';
 import { categoryLabels } from '@/lib/recipes';
+import { getRecipeImage } from '@/lib/recipeImages';
 import type { Recipe } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { PremiumCard } from '@/components/ui/PremiumCard';
@@ -22,6 +23,7 @@ export const RecipeCard: React.FC<RecipeCardProps> = ({
 }) => {
   const savings = recipe.deliveryCost - recipe.homeCost;
   const totalTime = recipe.prepTime + recipe.cookTime;
+  const recipeImage = getRecipeImage(recipe.id);
 
   const handleFavoriteClick = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -56,9 +58,19 @@ export const RecipeCard: React.FC<RecipeCardProps> = ({
       )}
 
       <div className="flex gap-4">
-        {/* Emoji with gradient background */}
-        <div className="w-20 h-20 bg-gradient-to-br from-secondary to-muted rounded-2xl flex items-center justify-center text-4xl shrink-0 shadow-soft">
-          {recipe.emoji}
+        {/* Recipe image or emoji fallback */}
+        <div className="w-20 h-20 rounded-2xl shrink-0 shadow-soft overflow-hidden">
+          {recipeImage ? (
+            <img 
+              src={recipeImage} 
+              alt={recipe.name}
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <div className="w-full h-full bg-gradient-to-br from-secondary to-muted flex items-center justify-center text-4xl">
+              {recipe.emoji}
+            </div>
+          )}
         </div>
         
         <div className="flex-1 min-w-0">
