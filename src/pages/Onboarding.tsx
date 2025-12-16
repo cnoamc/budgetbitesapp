@@ -36,7 +36,7 @@ export const Onboarding: React.FC = () => {
     } else {
       updateProfile(formData);
       completeOnboarding();
-      navigate('/savings');
+      navigate('/signin');
     }
   };
 
