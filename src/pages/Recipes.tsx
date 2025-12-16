@@ -19,10 +19,16 @@ export const Recipes: React.FC = () => {
   const { favorites, toggleFavorite, isFavorite } = useFavorites();
 
   const filteredRecipes = recipes.filter(recipe => {
-    const matchesCategory = 
-      activeCategory === 'all' || 
-      activeCategory === 'favorites' ? favorites.includes(recipe.id) : 
-      recipe.category === activeCategory;
+    let matchesCategory = false;
+    
+    if (activeCategory === 'all') {
+      matchesCategory = true; // Show ALL recipes
+    } else if (activeCategory === 'favorites') {
+      matchesCategory = favorites.includes(recipe.id);
+    } else {
+      matchesCategory = recipe.category === activeCategory;
+    }
+    
     const matchesSearch = recipe.name.includes(searchQuery);
     return matchesCategory && matchesSearch;
   });
