@@ -4,22 +4,11 @@ import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 import chefIcon from '@/assets/chef-icon.png';
 
-// Floating emoji items
-const floatingEmojis = [
-  { emoji: '🍔', x: '12%', y: '52%', delay: 0, size: 44 },
-  { emoji: '🍝', x: '8%', y: '62%', delay: 0.5, size: 40 },
-  { emoji: '🛒', x: '15%', y: '72%', delay: 1, size: 38 },
-  { emoji: '🍕', x: '5%', y: '58%', delay: 1.5, size: 36 },
-  { emoji: '💰', x: '85%', y: '50%', delay: 0.3, size: 42 },
-  { emoji: '📊', x: '88%', y: '60%', delay: 0.8, size: 38 },
-  { emoji: '🎯', x: '82%', y: '70%', delay: 1.3, size: 40 },
-  { emoji: '✨', x: '90%', y: '55%', delay: 1.8, size: 34 },
-];
-
 const Welcome: React.FC = () => {
   const navigate = useNavigate();
   const { user, loading } = useAuth();
   const [mounted, setMounted] = useState(false);
+  const [zooming, setZooming] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -31,6 +20,13 @@ const Welcome: React.FC = () => {
       navigate('/home', { replace: true });
     }
   }, [user, loading, navigate]);
+
+  const handleStart = () => {
+    setZooming(true);
+    setTimeout(() => {
+      navigate('/onboarding');
+    }, 400);
+  };
 
   if (loading) {
     return (
@@ -67,80 +63,23 @@ const Welcome: React.FC = () => {
       {/* Content */}
       <div className="relative z-10 flex-1 flex flex-col">
         
-        {/* Chef icon section with orbit rings */}
+        {/* Chef icon section - static, no orbits */}
         <div className="flex-1 flex items-center justify-center pt-8">
-          <div className="relative">
-            {/* Decorative orbit rings */}
-            <div 
-              className={`absolute rounded-full border border-foreground/[0.06] transition-all duration-1000 ${mounted ? 'opacity-100 scale-100' : 'opacity-0 scale-50'}`}
-              style={{ 
-                width: 200, height: 200, 
-                top: '50%', left: '50%', 
-                transform: 'translate(-50%, -50%)',
-                transitionDelay: '200ms'
-              }}
-            />
-            <div 
-              className={`absolute rounded-full border border-foreground/[0.05] transition-all duration-1000 ${mounted ? 'opacity-100 scale-100' : 'opacity-0 scale-50'}`}
-              style={{ 
-                width: 280, height: 280, 
-                top: '50%', left: '50%', 
-                transform: 'translate(-50%, -50%)',
-                transitionDelay: '400ms'
-              }}
-            />
-            <div 
-              className={`absolute rounded-full border border-foreground/[0.04] transition-all duration-1000 ${mounted ? 'opacity-100 scale-100' : 'opacity-0 scale-50'}`}
-              style={{ 
-                width: 360, height: 360, 
-                top: '50%', left: '50%', 
-                transform: 'translate(-50%, -50%)',
-                transitionDelay: '600ms'
-              }}
-            />
-
-            {/* Chef icon */}
-            <div 
-              className={`relative w-28 h-28 rounded-[32px] overflow-hidden shadow-2xl transition-all duration-700 ${mounted ? 'scale-100 opacity-100' : 'scale-50 opacity-0'}`}
-              style={{ 
-                boxShadow: '0 25px 80px -15px rgba(255, 107, 149, 0.35), 0 10px 30px -10px rgba(0,0,0,0.1)'
-              }}
-            >
-              <img 
-                src={chefIcon} 
-                alt="BudgetBites" 
-                className="w-full h-full object-cover"
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* Floating emojis */}
-        {floatingEmojis.map((item, index) => (
-          <div
-            key={index}
-            className={`fixed transition-all duration-700 ${mounted ? 'opacity-100 scale-100' : 'opacity-0 scale-0'}`}
-            style={{
-              left: item.x,
-              top: item.y,
-              transitionDelay: `${item.delay * 1000 + 400}ms`,
-              animation: mounted ? `float 4s ease-in-out infinite` : 'none',
-              animationDelay: `${item.delay}s`
+          <div 
+            className={`relative w-28 h-28 rounded-[32px] overflow-hidden shadow-2xl transition-all duration-500 ease-out ${
+              mounted ? 'scale-100 opacity-100' : 'scale-50 opacity-0'
+            } ${zooming ? 'scale-150 opacity-0' : ''}`}
+            style={{ 
+              boxShadow: '0 25px 80px -15px rgba(255, 107, 149, 0.35), 0 10px 30px -10px rgba(0,0,0,0.1)'
             }}
           >
-            <div 
-              className="rounded-full flex items-center justify-center backdrop-blur-md"
-              style={{ 
-                width: item.size + 8,
-                height: item.size + 8,
-                background: 'rgba(255,255,255,0.6)',
-                boxShadow: '0 4px 20px -4px rgba(0,0,0,0.08)'
-              }}
-            >
-              <span style={{ fontSize: item.size * 0.55 }}>{item.emoji}</span>
-            </div>
+            <img 
+              src={chefIcon} 
+              alt="BudgetBites" 
+              className="w-full h-full object-cover"
+            />
           </div>
-        ))}
+        </div>
 
         {/* Bottom section with text and CTA */}
         <div className={`px-6 pb-10 pt-4 transition-all duration-700 ${mounted ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'}`} style={{ transitionDelay: '300ms' }}>
@@ -165,9 +104,9 @@ const Welcome: React.FC = () => {
             חיסכון גדול.
           </h1>
 
-          {/* CTA Button - goes to onboarding */}
+          {/* CTA Button - triggers zoom then navigates */}
           <Button
-            onClick={() => navigate('/onboarding')}
+            onClick={handleStart}
             className="w-full h-[60px] rounded-2xl text-[17px] font-semibold transition-all active:scale-[0.98]"
             style={{
               background: '#1D1D1F',
