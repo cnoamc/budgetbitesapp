@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Unlock, TrendingUp } from 'lucide-react';
+import { Unlock, TrendingUp, ArrowLeft } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import chefIcon from '@/assets/chef-icon.png';
 
 const getSavingsContext = (yearlySavings: number): string => {
@@ -12,10 +13,11 @@ const getSavingsContext = (yearlySavings: number): string => {
 
 const LoadingSavings: React.FC = () => {
   const navigate = useNavigate();
-  const [phase, setPhase] = useState<'loading' | 'reveal' | 'done'>('loading');
+  const [phase, setPhase] = useState<'loading' | 'reveal'>('loading');
   const [progressAnimated, setProgressAnimated] = useState(false);
   const [countedMonthly, setCountedMonthly] = useState(0);
   const [countedYearly, setCountedYearly] = useState(0);
+  const [showButton, setShowButton] = useState(false);
 
   // Get onboarding data
   const getOnboardingData = () => {
@@ -73,20 +75,17 @@ const LoadingSavings: React.FC = () => {
         
         if (step >= steps) {
           clearInterval(interval);
-          // Navigate to signin after showing the numbers
-          setTimeout(() => {
-            setPhase('done');
-            navigate('/signin');
-          }, 2000);
+          // Show the CTA button after counting finishes
+          setTimeout(() => setShowButton(true), 500);
         }
       }, duration / steps);
 
       return () => clearInterval(interval);
     }
-  }, [phase, monthlySavings, yearlySavings, navigate]);
+  }, [phase, monthlySavings, yearlySavings]);
 
   return (
-    <div className="h-[100dvh] relative overflow-hidden flex flex-col items-center justify-center" dir="rtl">
+    <div className="h-[100dvh] relative overflow-hidden flex flex-col" dir="rtl">
       {/* Background */}
       <div 
         className="absolute inset-0" 
@@ -103,103 +102,125 @@ const LoadingSavings: React.FC = () => {
         style={{ background: '#88DDAA', bottom: '20%', left: '-10%' }} 
       />
 
-      <div className="relative z-10 flex flex-col items-center px-6 w-full max-w-sm">
-        {/* Chef icon with pulse animation */}
-        <div 
-          className={`w-20 h-20 rounded-3xl overflow-hidden shadow-2xl mb-8 transition-all duration-700 ${
-            phase === 'loading' ? 'animate-pulse scale-100' : 'scale-110'
-          }`}
-          style={{ 
-            boxShadow: '0 25px 80px -15px rgba(255, 107, 149, 0.35), 0 10px 30px -10px rgba(0,0,0,0.1)'
-          }}
-        >
-          <img src={chefIcon} alt="BudgetBites" className="w-full h-full object-cover" />
-        </div>
-
-        {phase === 'loading' && (
-          <div className="text-center animate-fade-in">
-            <h2 className="text-xl font-bold text-foreground mb-2">מחשבים את החיסכון שלך...</h2>
-            <div className="flex justify-center gap-1 mt-4">
-              {[0, 1, 2].map((i) => (
-                <div
-                  key={i}
-                  className="w-3 h-3 rounded-full bg-primary animate-bounce"
-                  style={{ animationDelay: `${i * 0.15}s` }}
-                />
-              ))}
-            </div>
-          </div>
-        )}
-
-        {phase === 'reveal' && (
-          <div 
-            className="w-full p-6 rounded-3xl animate-scale-in"
-            style={{
-              background: 'rgba(255, 255, 255, 0.8)',
-              backdropFilter: 'blur(16px)',
-              boxShadow: '0 8px 32px -8px rgba(0, 0, 0, 0.12)'
-            }}
-          >
-            {/* Header */}
-            <div className="flex items-center justify-center gap-2 mb-5">
-              <Unlock className="w-5 h-5 text-primary" />
-              <p className="text-base font-semibold text-foreground">החיסכון שמחכה לך</p>
-            </div>
-
-            {/* Progress bar */}
-            <div className="relative h-3 bg-muted/50 rounded-full overflow-hidden mb-5">
-              <div 
-                className="absolute inset-y-0 right-0 rounded-full transition-all duration-1000 ease-out"
-                style={{ 
-                  width: progressAnimated ? `${savingsProgress}%` : '0%',
-                  background: 'linear-gradient(90deg, hsl(var(--primary)) 0%, #27AE60 100%)'
-                }}
-              />
-            </div>
-
-            {/* Savings amounts */}
-            <div className="flex justify-between items-start mb-4">
-              <div className="text-center flex-1">
-                <div className="flex items-center justify-center gap-1 mb-1">
-                  <TrendingUp className="w-3.5 h-3.5 text-primary" />
-                  <p className="text-xs text-muted-foreground">חודשי</p>
-                </div>
-                <p className="text-3xl font-bold text-primary">₪{countedMonthly.toLocaleString()}</p>
-              </div>
-              
-              <div className="w-px h-14 bg-border/50 mx-3" />
-              
-              <div className="text-center flex-1">
-                <div className="flex items-center justify-center gap-1 mb-1">
-                  <TrendingUp className="w-3.5 h-3.5 text-green-600" />
-                  <p className="text-xs text-muted-foreground">שנתי</p>
-                </div>
-                <p className="text-3xl font-bold text-green-600">₪{countedYearly.toLocaleString()}</p>
-              </div>
-            </div>
-
-            {/* Percentage badge */}
-            {savingsPercentage > 0 && (
-              <div className="flex justify-center mb-3">
-                <div 
-                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full"
-                  style={{ background: 'linear-gradient(135deg, #FF6B95 0%, #FF9A56 100%)' }}
-                >
-                  <span className="text-white text-sm font-bold">{savingsPercentage}%</span>
-                  <span className="text-white/90 text-xs">חיסכון מההוצאה הנוכחית</span>
-                </div>
-              </div>
-            )}
-
-            {/* Context message */}
+      <div className="relative z-10 flex-1 flex flex-col items-center justify-center px-6 w-full">
+        <div className="w-full max-w-sm">
+          {/* Chef icon with pulse animation */}
+          <div className="flex justify-center mb-8">
             <div 
-              className="text-center py-2.5 px-4 rounded-xl"
-              style={{ background: 'rgba(39, 174, 96, 0.1)' }}
+              className={`w-20 h-20 rounded-3xl overflow-hidden shadow-2xl transition-all duration-700 ${
+                phase === 'loading' ? 'animate-pulse scale-100' : 'scale-110'
+              }`}
+              style={{ 
+                boxShadow: '0 25px 80px -15px rgba(255, 107, 149, 0.35), 0 10px 30px -10px rgba(0,0,0,0.1)'
+              }}
             >
-              <p className="text-sm text-foreground/80">{getSavingsContext(yearlySavings)}</p>
+              <img src={chefIcon} alt="BudgetBites" className="w-full h-full object-cover" />
             </div>
           </div>
-        )}
+
+          {phase === 'loading' && (
+            <div className="text-center animate-fade-in">
+              <h2 className="text-xl font-bold text-foreground mb-2">מחשבים את החיסכון שלך...</h2>
+              <div className="flex justify-center gap-1 mt-4">
+                {[0, 1, 2].map((i) => (
+                  <div
+                    key={i}
+                    className="w-3 h-3 rounded-full bg-primary animate-bounce"
+                    style={{ animationDelay: `${i * 0.15}s` }}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+
+          {phase === 'reveal' && (
+            <div 
+              className="w-full p-6 rounded-3xl animate-scale-in"
+              style={{
+                background: 'rgba(255, 255, 255, 0.8)',
+                backdropFilter: 'blur(16px)',
+                boxShadow: '0 8px 32px -8px rgba(0, 0, 0, 0.12)'
+              }}
+            >
+              {/* Header */}
+              <div className="flex items-center justify-center gap-2 mb-5">
+                <Unlock className="w-5 h-5 text-primary" />
+                <p className="text-base font-semibold text-foreground">החיסכון שמחכה לך</p>
+              </div>
+
+              {/* Progress bar */}
+              <div className="relative h-3 bg-muted/50 rounded-full overflow-hidden mb-5">
+                <div 
+                  className="absolute inset-y-0 right-0 rounded-full transition-all duration-1000 ease-out"
+                  style={{ 
+                    width: progressAnimated ? `${savingsProgress}%` : '0%',
+                    background: 'linear-gradient(90deg, hsl(var(--primary)) 0%, #27AE60 100%)'
+                  }}
+                />
+              </div>
+
+              {/* Savings amounts */}
+              <div className="flex justify-between items-start mb-4">
+                <div className="text-center flex-1">
+                  <div className="flex items-center justify-center gap-1 mb-1">
+                    <TrendingUp className="w-3.5 h-3.5 text-primary" />
+                    <p className="text-xs text-muted-foreground">חודשי</p>
+                  </div>
+                  <p className="text-3xl font-bold text-primary">₪{countedMonthly.toLocaleString()}</p>
+                </div>
+                
+                <div className="w-px h-14 bg-border/50 mx-3" />
+                
+                <div className="text-center flex-1">
+                  <div className="flex items-center justify-center gap-1 mb-1">
+                    <TrendingUp className="w-3.5 h-3.5 text-green-600" />
+                    <p className="text-xs text-muted-foreground">שנתי</p>
+                  </div>
+                  <p className="text-3xl font-bold text-green-600">₪{countedYearly.toLocaleString()}</p>
+                </div>
+              </div>
+
+              {/* Percentage badge */}
+              {savingsPercentage > 0 && (
+                <div className="flex justify-center mb-3">
+                  <div 
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full"
+                    style={{ background: 'linear-gradient(135deg, #FF6B95 0%, #FF9A56 100%)' }}
+                  >
+                    <span className="text-white text-sm font-bold">{savingsPercentage}%</span>
+                    <span className="text-white/90 text-xs">חיסכון מההוצאה הנוכחית</span>
+                  </div>
+                </div>
+              )}
+
+              {/* Context message */}
+              <div 
+                className="text-center py-2.5 px-4 rounded-xl"
+                style={{ background: 'rgba(39, 174, 96, 0.1)' }}
+              >
+                <p className="text-sm text-foreground/80">{getSavingsContext(yearlySavings)}</p>
+              </div>
+            </div>
+          )}
+
+          {/* CTA Button - shows after counting animation */}
+          {showButton && (
+            <div className="mt-6 animate-fade-in">
+              <Button
+                onClick={() => navigate('/signin')}
+                className="w-full h-14 rounded-2xl text-base font-semibold transition-all active:scale-[0.98]"
+                style={{
+                  background: '#1D1D1F',
+                  color: 'white',
+                  boxShadow: '0 8px 30px -6px rgba(0, 0, 0, 0.3)'
+                }}
+              >
+                לחסוך עוד היום
+                <ArrowLeft className="w-5 h-5 mr-2" />
+              </Button>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
