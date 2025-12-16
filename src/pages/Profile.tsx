@@ -44,7 +44,7 @@ export const Profile: React.FC = () => {
     try {
       await signOut();
       toast.success('התנתקת בהצלחה');
-      navigate('/auth');
+      navigate('/signin');
     } catch (error) {
       toast.error('שגיאה בהתנתקות');
     }
