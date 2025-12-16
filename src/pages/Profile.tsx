@@ -19,6 +19,16 @@ import {
   DialogFooter,
   DialogDescription,
 } from '@/components/ui/dialog';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 
 export const Profile: React.FC = () => {
   const navigate = useNavigate();
@@ -30,6 +40,7 @@ export const Profile: React.FC = () => {
   const [bbProfile, setBBProfile] = useState<BBProfile>(() => getBBProfile());
   const [isEditingName, setIsEditingName] = useState(false);
   const [isNotificationSettingsOpen, setIsNotificationSettingsOpen] = useState(false);
+  const [isSignOutDialogOpen, setIsSignOutDialogOpen] = useState(false);
   const [editedName, setEditedName] = useState(bbProfile.displayName);
 
   const skillLabels = ['מתחיל', 'בסיסי', 'מתקדם', 'מומחה', 'שף!'];
@@ -320,11 +331,32 @@ export const Profile: React.FC = () => {
           <Button
             variant="ghost"
             className="w-full justify-start text-destructive hover:text-destructive hover:bg-destructive/10"
-            onClick={handleSignOut}
+            onClick={() => setIsSignOutDialogOpen(true)}
           >
             <LogOut className="w-5 h-5" />
             התנתק
           </Button>
+
+        {/* Sign Out Confirmation Dialog */}
+        <AlertDialog open={isSignOutDialogOpen} onOpenChange={setIsSignOutDialogOpen}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>התנתקות מהחשבון</AlertDialogTitle>
+              <AlertDialogDescription>
+                האם אתה בטוח שברצונך להתנתק?
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter className="flex gap-2">
+              <AlertDialogCancel>ביטול</AlertDialogCancel>
+              <AlertDialogAction 
+                onClick={handleSignOut}
+                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              >
+                התנתק
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
         </div>
 
         {/* Notification Settings Dialog */}
