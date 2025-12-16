@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Mail, Lock, Eye, EyeOff, ArrowRight } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, ArrowRight, TrendingUp, Unlock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useAuth } from '@/contexts/AuthContext';
@@ -14,6 +14,14 @@ const passwordSchema = z.string().min(6, 'הסיסמה חייבת להכיל ל�
 
 type AuthView = 'signup' | 'login';
 
+// Get contextual message based on yearly savings
+const getSavingsContext = (yearlySavings: number): string => {
+  if (yearlySavings < 1500) return 'מספיק לארוחה חגיגית או בילוי קטן 🎉';
+  if (yearlySavings < 4000) return 'יכול לממן חופשה קצרה בארץ 🏖️';
+  if (yearlySavings < 8000) return 'חופשה משפחתית רצינית ✈️';
+  return 'זה כבר חיסכון משמעותי לשנה 💸🔥';
+};
+
 const SignIn: React.FC = () => {
   const navigate = useNavigate();
   const { user, signIn, signUp, loading } = useAuth();
@@ -25,18 +33,30 @@ const SignIn: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
+  const [progressAnimated, setProgressAnimated] = useState(false);
 
   // Calculate savings from profile data
   const monthlySavings = profile?.monthlySpending 
     ? Math.round(profile.monthlySpending * 0.55) 
     : 0;
   const yearlySavings = monthlySavings * 12;
+  
+  // Progress percentage (capped at 100%)
+  const savingsProgress = Math.min((yearlySavings / 10000) * 100, 100);
 
   useEffect(() => {
     if (user && !loading) {
       navigate('/home');
     }
   }, [user, loading, navigate]);
+
+  // Trigger progress animation after mount
+  useEffect(() => {
+    if (monthlySavings > 0) {
+      const timer = setTimeout(() => setProgressAnimated(true), 300);
+      return () => clearTimeout(timer);
+    }
+  }, [monthlySavings]);
 
   const validateForm = (): boolean => {
     const newErrors: { email?: string; password?: string } = {};
@@ -119,52 +139,90 @@ const SignIn: React.FC = () => {
       />
 
       {/* Content */}
-      <div className="relative z-10 flex-1 flex flex-col px-6 pt-12 pb-8">
+      <div className="relative z-10 flex-1 flex flex-col px-6 pt-10 pb-8 overflow-y-auto">
         {/* Back button */}
         <button 
           onClick={() => navigate('/auth')} 
-          className="self-start mb-8 p-2 -mr-2 rounded-full hover:bg-card/50 transition-colors"
+          className="self-start mb-4 p-2 -mr-2 rounded-full hover:bg-card/50 transition-colors"
         >
           <ArrowRight className="w-6 h-6 text-foreground/70" />
         </button>
 
         {/* Header */}
-        <div className="text-center mb-6 animate-fade-in">
-          <div className="w-20 h-20 mx-auto mb-4 rounded-2xl overflow-hidden shadow-glow animate-icon-delight-delayed">
+        <div className="text-center mb-4 animate-fade-in">
+          <div className="w-16 h-16 mx-auto mb-3 rounded-2xl overflow-hidden shadow-glow animate-icon-delight-delayed">
             <img src={chefIcon} alt="BudgetBites" className="w-full h-full object-cover" />
           </div>
-          <h1 className="text-2xl font-bold text-foreground mb-2">
+          <h1 className="text-2xl font-bold text-foreground mb-1">
             {view === 'signup' ? 'יצירת חשבון' : 'התחברות'}
           </h1>
-          <p className="text-muted-foreground">
+          <p className="text-muted-foreground text-sm">
             {view === 'signup' ? 'מתחילים לבשל ולחסוך' : 'ברוכים השבים!'}
           </p>
         </div>
 
-        {/* Savings preview - show only on signup */}
+        {/* Savings Progress Indicator - show only on signup */}
         {view === 'signup' && monthlySavings > 0 && (
           <div 
-            className="max-w-sm mx-auto w-full mb-6 p-4 rounded-2xl animate-fade-in"
+            className="max-w-sm mx-auto w-full mb-5 p-5 rounded-3xl animate-fade-in"
             style={{
-              background: 'rgba(255, 255, 255, 0.6)',
-              backdropFilter: 'blur(12px)',
-              boxShadow: '0 4px 20px -8px rgba(0, 0, 0, 0.08)'
+              background: 'rgba(255, 255, 255, 0.7)',
+              backdropFilter: 'blur(16px)',
+              boxShadow: '0 8px 32px -8px rgba(0, 0, 0, 0.1)'
             }}
           >
-            <p className="text-sm text-muted-foreground text-center mb-2">לפי התשובות שלך:</p>
-            <div className="flex justify-around">
-              <div className="text-center">
-                <p className="text-xs text-muted-foreground">חיסכון חודשי משוער</p>
-                <p className="text-xl font-bold text-primary">₪{monthlySavings.toLocaleString()}</p>
+            {/* Header with unlock icon */}
+            <div className="flex items-center justify-center gap-2 mb-4">
+              <Unlock className="w-4 h-4 text-primary" />
+              <p className="text-sm font-medium text-foreground">החיסכון שמחכה לך</p>
+            </div>
+
+            {/* Progress bar */}
+            <div className="relative h-3 bg-muted/50 rounded-full overflow-hidden mb-4">
+              <div 
+                className="absolute inset-y-0 right-0 rounded-full transition-all duration-1000 ease-out"
+                style={{ 
+                  width: progressAnimated ? `${savingsProgress}%` : '0%',
+                  background: 'linear-gradient(90deg, hsl(var(--primary)) 0%, #27AE60 100%)'
+                }}
+              />
+              {/* Shimmer effect */}
+              <div 
+                className="absolute inset-0 bg-gradient-to-l from-transparent via-white/30 to-transparent animate-pulse"
+                style={{ animationDuration: '2s' }}
+              />
+            </div>
+
+            {/* Savings amounts */}
+            <div className="flex justify-between items-start mb-3">
+              <div className="text-center flex-1">
+                <div className="flex items-center justify-center gap-1 mb-1">
+                  <TrendingUp className="w-3.5 h-3.5 text-primary" />
+                  <p className="text-xs text-muted-foreground">חודשי</p>
+                </div>
+                <p className="text-2xl font-bold text-primary">₪{monthlySavings.toLocaleString()}</p>
               </div>
-              <div className="text-center">
-                <p className="text-xs text-muted-foreground">חיסכון שנתי משוער</p>
-                <p className="text-xl font-bold text-green-600">₪{yearlySavings.toLocaleString()}</p>
+              
+              <div className="w-px h-12 bg-border/50 mx-3" />
+              
+              <div className="text-center flex-1">
+                <div className="flex items-center justify-center gap-1 mb-1">
+                  <TrendingUp className="w-3.5 h-3.5 text-green-600" />
+                  <p className="text-xs text-muted-foreground">שנתי</p>
+                </div>
+                <p className="text-2xl font-bold text-green-600">₪{yearlySavings.toLocaleString()}</p>
               </div>
+            </div>
+
+            {/* Contextual message */}
+            <div 
+              className="text-center py-2 px-3 rounded-xl"
+              style={{ background: 'rgba(39, 174, 96, 0.08)' }}
+            >
+              <p className="text-xs text-foreground/80">{getSavingsContext(yearlySavings)}</p>
             </div>
           </div>
         )}
-
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-4 max-w-sm mx-auto w-full animate-slide-up">
           <div 
