@@ -9,7 +9,6 @@ import { ThemeProvider } from "@/contexts/ThemeContext";
 import { NotificationProvider } from "@/contexts/NotificationContext";
 import { NotificationBanner } from "@/components/NotificationBanner";
 import Welcome from "./pages/Welcome";
-import Auth from "./pages/Auth";
 import SignIn from "./pages/SignIn";
 import Onboarding from "./pages/Onboarding";
 import Savings from "./pages/Savings";
@@ -37,7 +36,6 @@ const App = () => (
               <BrowserRouter>
                 <Routes>
                   <Route path="/" element={<Welcome />} />
-                  <Route path="/auth" element={<Auth />} />
                   <Route path="/signin" element={<SignIn />} />
                   <Route path="/onboarding" element={<Onboarding />} />
                   <Route path="/savings" element={<Savings />} />
