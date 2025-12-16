@@ -7,6 +7,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useApp } from '@/contexts/AppContext';
 import { toast } from 'sonner';
 import { z } from 'zod';
+import confetti from 'canvas-confetti';
 import chefIcon from '@/assets/chef-icon.png';
 
 const emailSchema = z.string().email('כתובת אימייל לא תקינה');
@@ -20,6 +21,38 @@ const getSavingsContext = (yearlySavings: number): string => {
   if (yearlySavings < 4000) return 'יכול לממן חופשה קצרה בארץ 🏖️';
   if (yearlySavings < 8000) return 'חופשה משפחתית רצינית ✈️';
   return 'זה כבר חיסכון משמעותי לשנה 💸🔥';
+};
+
+// Trigger confetti celebration
+const triggerConfetti = () => {
+  // First burst
+  confetti({
+    particleCount: 100,
+    spread: 70,
+    origin: { y: 0.6 },
+    colors: ['#FF6B95', '#FF9A56', '#FFB347', '#27AE60', '#2F80ED']
+  });
+  
+  // Second burst with delay
+  setTimeout(() => {
+    confetti({
+      particleCount: 50,
+      angle: 60,
+      spread: 55,
+      origin: { x: 0 },
+      colors: ['#FF6B95', '#FF9A56', '#FFB347']
+    });
+  }, 200);
+  
+  setTimeout(() => {
+    confetti({
+      particleCount: 50,
+      angle: 120,
+      spread: 55,
+      origin: { x: 1 },
+      colors: ['#27AE60', '#2F80ED', '#FFB347']
+    });
+  }, 400);
 };
 
 const SignIn: React.FC = () => {
@@ -90,6 +123,8 @@ const SignIn: React.FC = () => {
             toast.error(error.message);
           }
         } else {
+          // Success! Trigger confetti celebration
+          triggerConfetti();
           toast.success('נרשמת בהצלחה! 🎉');
         }
       } else {

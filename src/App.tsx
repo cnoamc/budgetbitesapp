@@ -8,7 +8,7 @@ import { AppProvider } from "@/contexts/AppContext";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { NotificationProvider } from "@/contexts/NotificationContext";
 import { NotificationBanner } from "@/components/NotificationBanner";
-import Index from "./pages/Index";
+import Welcome from "./pages/Welcome";
 import Auth from "./pages/Auth";
 import SignIn from "./pages/SignIn";
 import Onboarding from "./pages/Onboarding";
@@ -36,7 +36,7 @@ const App = () => (
               <NotificationBanner />
               <BrowserRouter>
                 <Routes>
-                  <Route path="/" element={<Index />} />
+                  <Route path="/" element={<Welcome />} />
                   <Route path="/auth" element={<Auth />} />
                   <Route path="/signin" element={<SignIn />} />
                   <Route path="/onboarding" element={<Onboarding />} />
