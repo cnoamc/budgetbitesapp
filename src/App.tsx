@@ -10,6 +10,7 @@ import { NotificationProvider } from "@/contexts/NotificationContext";
 import { NotificationBanner } from "@/components/NotificationBanner";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
+import SignIn from "./pages/SignIn";
 import Onboarding from "./pages/Onboarding";
 import Savings from "./pages/Savings";
 import Home from "./pages/Home";
@@ -37,6 +38,7 @@ const App = () => (
                 <Routes>
                   <Route path="/" element={<Index />} />
                   <Route path="/auth" element={<Auth />} />
+                  <Route path="/signin" element={<SignIn />} />
                   <Route path="/onboarding" element={<Onboarding />} />
                   <Route path="/savings" element={<Savings />} />
                   <Route path="/home" element={<Home />} />
