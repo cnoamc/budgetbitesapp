@@ -12,8 +12,9 @@ import chefIcon from '@/assets/chef-icon.png';
 
 const emailSchema = z.string().email('כתובת אימייל לא תקינה');
 const passwordSchema = z.string().min(6, 'הסיסמה חייבת להכיל לפחות 6 תווים');
+const phoneSchema = z.string().regex(/^\+?[0-9]{10,15}$/, 'מספר טלפון לא תקין');
 
-type AuthView = 'options' | 'email';
+type AuthView = 'options' | 'email' | 'phone' | 'otp';
 
 const triggerConfetti = () => {
   confetti({
@@ -46,16 +47,19 @@ const triggerConfetti = () => {
 
 const SignIn: React.FC = () => {
   const navigate = useNavigate();
-  const { user, signIn, signUp, loading } = useAuth();
+  const { user, signIn, signUp, signInWithGoogle, signInWithPhone, verifyOtp, loading } = useAuth();
   const { updateProfile } = useApp();
   
   const [view, setView] = useState<AuthView>('options');
   const [isLogin, setIsLogin] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [phone, setPhone] = useState('+972');
+  const [otp, setOtp] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
+  const [errors, setErrors] = useState<{ email?: string; password?: string; phone?: string; otp?: string }>({});
+  const [resendTimer, setResendTimer] = useState(0);
 
   const getOnboardingData = () => {
     const stored = localStorage.getItem('bb_onboarding_data');
@@ -77,7 +81,28 @@ const SignIn: React.FC = () => {
     }
   }, [user, loading, navigate]);
 
-  const validateForm = (): boolean => {
+  // Resend timer countdown
+  useEffect(() => {
+    if (resendTimer > 0) {
+      const timer = setTimeout(() => setResendTimer(resendTimer - 1), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [resendTimer]);
+
+  const syncOnboardingData = async () => {
+    if (onboardingData) {
+      await updateProfile({
+        monthlySpending: onboardingData.monthlySpending,
+        weeklyOrders: onboardingData.weeklyOrders,
+        preferredFood: onboardingData.preferredFood,
+        cookingSkill: onboardingData.cookingSkill,
+        onboardingComplete: true,
+      });
+      localStorage.removeItem('bb_onboarding_data');
+    }
+  };
+
+  const validateEmailForm = (): boolean => {
     const newErrors: { email?: string; password?: string } = {};
     
     const emailResult = emailSchema.safeParse(email);
@@ -94,9 +119,19 @@ const SignIn: React.FC = () => {
     return Object.keys(newErrors).length === 0;
   };
 
+  const validatePhone = (): boolean => {
+    const result = phoneSchema.safeParse(phone);
+    if (!result.success) {
+      setErrors({ phone: result.error.errors[0].message });
+      return false;
+    }
+    setErrors({});
+    return true;
+  };
+
   const handleEmailSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!validateForm()) return;
+    if (!validateEmailForm()) return;
     
     setIsLoading(true);
     try {
@@ -109,16 +144,7 @@ const SignIn: React.FC = () => {
             toast.error(error.message);
           }
         } else {
-          if (onboardingData) {
-            await updateProfile({
-              monthlySpending: onboardingData.monthlySpending,
-              weeklyOrders: onboardingData.weeklyOrders,
-              preferredFood: onboardingData.preferredFood,
-              cookingSkill: onboardingData.cookingSkill,
-              onboardingComplete: true,
-            });
-            localStorage.removeItem('bb_onboarding_data');
-          }
+          await syncOnboardingData();
           triggerConfetti();
           toast.success('נרשמת בהצלחה! 🎉');
         }
@@ -137,8 +163,78 @@ const SignIn: React.FC = () => {
     }
   };
 
-  const handleSocialLogin = (provider: string) => {
-    toast.info(`התחברות עם ${provider} תהיה זמינה בקרוב`);
+  const handleGoogleLogin = async () => {
+    setIsLoading(true);
+    try {
+      const { error } = await signInWithGoogle();
+      if (error) {
+        toast.error('שגיאה בהתחברות עם Google');
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handlePhoneSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!validatePhone()) return;
+    
+    setIsLoading(true);
+    try {
+      const { error } = await signInWithPhone(phone);
+      if (error) {
+        toast.error('שגיאה בשליחת SMS. נסה שוב.');
+      } else {
+        toast.success('קוד אימות נשלח לטלפון שלך');
+        setView('otp');
+        setResendTimer(60);
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleOtpSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (otp.length !== 6) {
+      setErrors({ otp: 'הקוד חייב להכיל 6 ספרות' });
+      return;
+    }
+    
+    setIsLoading(true);
+    try {
+      const { error } = await verifyOtp(phone, otp);
+      if (error) {
+        toast.error('קוד שגוי. נסה שוב.');
+      } else {
+        await syncOnboardingData();
+        triggerConfetti();
+        toast.success('התחברת בהצלחה! 🎉');
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleResendOtp = async () => {
+    if (resendTimer > 0) return;
+    
+    setIsLoading(true);
+    try {
+      const { error } = await signInWithPhone(phone);
+      if (error) {
+        toast.error('שגיאה בשליחת SMS. נסה שוב.');
+      } else {
+        toast.success('קוד חדש נשלח');
+        setResendTimer(60);
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleAppleLogin = () => {
+    toast.info('התחברות עם Apple תהיה זמינה בקרוב');
   };
 
   if (loading) {
@@ -153,6 +249,26 @@ const SignIn: React.FC = () => {
       </div>
     );
   }
+
+  const getBackAction = () => {
+    if (view === 'otp') return () => setView('phone');
+    if (view === 'email' || view === 'phone') return () => setView('options');
+    return () => navigate('/');
+  };
+
+  const getTitle = () => {
+    if (view === 'options') return 'בואו נתחיל!';
+    if (view === 'phone') return 'התחברות עם טלפון';
+    if (view === 'otp') return 'הזן קוד אימות';
+    return isLogin ? 'התחברות' : 'יצירת חשבון';
+  };
+
+  const getSubtitle = () => {
+    if (view === 'options') return 'בחר איך להתחבר';
+    if (view === 'phone') return 'נשלח לך קוד אימות ב-SMS';
+    if (view === 'otp') return `שלחנו קוד ל-${phone}`;
+    return 'הכנס את הפרטים שלך';
+  };
 
   return (
     <div className="h-[100dvh] relative overflow-hidden flex flex-col" dir="rtl">
@@ -176,7 +292,7 @@ const SignIn: React.FC = () => {
       <div className="relative z-10 flex-1 flex flex-col px-6 pt-8 pb-6">
         {/* Back button */}
         <button 
-          onClick={() => view === 'email' ? setView('options') : navigate('/')} 
+          onClick={getBackAction()} 
           className="self-start mb-4 p-2 -mr-2 rounded-full hover:bg-card/50 transition-colors"
         >
           <ArrowRight className="w-6 h-6 text-foreground/70" />
@@ -187,21 +303,17 @@ const SignIn: React.FC = () => {
           <div className="w-16 h-16 mx-auto mb-3 rounded-2xl overflow-hidden shadow-glow">
             <img src={chefIcon} alt="BudgetBites" className="w-full h-full object-cover" />
           </div>
-          <h1 className="text-2xl font-bold text-foreground mb-1">
-            {view === 'options' ? 'בואו נתחיל!' : (isLogin ? 'התחברות' : 'יצירת חשבון')}
-          </h1>
-          <p className="text-muted-foreground text-sm">
-            {view === 'options' ? 'בחר איך להתחבר' : 'הכנס את הפרטים שלך'}
-          </p>
+          <h1 className="text-2xl font-bold text-foreground mb-1">{getTitle()}</h1>
+          <p className="text-muted-foreground text-sm">{getSubtitle()}</p>
         </div>
 
         {/* Main content area */}
         <div className="flex-1 flex flex-col justify-center max-w-sm mx-auto w-full">
-          {view === 'options' ? (
+          {view === 'options' && (
             <div className="space-y-3 animate-fade-in">
               {/* Phone option */}
               <Button
-                onClick={() => handleSocialLogin('טלפון')}
+                onClick={() => setView('phone')}
                 variant="outline"
                 className="w-full h-14 rounded-2xl text-base font-medium bg-white/70 backdrop-blur-sm border-border/50 hover:bg-white/90 transition-all"
               >
@@ -211,7 +323,8 @@ const SignIn: React.FC = () => {
 
               {/* Google option */}
               <Button
-                onClick={() => handleSocialLogin('Google')}
+                onClick={handleGoogleLogin}
+                disabled={isLoading}
                 variant="outline"
                 className="w-full h-14 rounded-2xl text-base font-medium bg-white/70 backdrop-blur-sm border-border/50 hover:bg-white/90 transition-all"
               >
@@ -226,7 +339,7 @@ const SignIn: React.FC = () => {
 
               {/* Apple option */}
               <Button
-                onClick={() => handleSocialLogin('Apple')}
+                onClick={handleAppleLogin}
                 variant="outline"
                 className="w-full h-14 rounded-2xl text-base font-medium bg-white/70 backdrop-blur-sm border-border/50 hover:bg-white/90 transition-all"
               >
@@ -250,7 +363,106 @@ const SignIn: React.FC = () => {
                 המשך עם אימייל
               </Button>
             </div>
-          ) : (
+          )}
+
+          {view === 'phone' && (
+            <form onSubmit={handlePhoneSubmit} className="space-y-4 animate-fade-in">
+              <div 
+                className="p-5 rounded-3xl space-y-4" 
+                style={{
+                  background: 'rgba(255, 255, 255, 0.75)',
+                  backdropFilter: 'blur(20px)',
+                  boxShadow: '0 8px 40px -12px rgba(0, 0, 0, 0.1)'
+                }}
+              >
+                <div className="space-y-1">
+                  <div className="relative">
+                    <Phone className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                    <Input
+                      type="tel"
+                      placeholder="+972 50 123 4567"
+                      value={phone}
+                      onChange={(e) => {
+                        setPhone(e.target.value);
+                        setErrors(prev => ({ ...prev, phone: undefined }));
+                      }}
+                      className="h-14 pr-12 rounded-2xl border-0 bg-card/60 text-base px-5"
+                      dir="ltr"
+                    />
+                  </div>
+                  {errors.phone && <p className="text-sm text-destructive pr-1">{errors.phone}</p>}
+                </div>
+                
+                <Button
+                  type="submit"
+                  disabled={isLoading}
+                  className="w-full h-14 rounded-2xl text-base font-medium bg-foreground text-background hover:bg-foreground/90 transition-all active:scale-[0.98]"
+                >
+                  {isLoading ? (
+                    <div className="w-5 h-5 border-2 border-background border-t-transparent rounded-full animate-spin" />
+                  ) : (
+                    'שלח קוד אימות'
+                  )}
+                </Button>
+              </div>
+            </form>
+          )}
+
+          {view === 'otp' && (
+            <form onSubmit={handleOtpSubmit} className="space-y-4 animate-fade-in">
+              <div 
+                className="p-5 rounded-3xl space-y-4" 
+                style={{
+                  background: 'rgba(255, 255, 255, 0.75)',
+                  backdropFilter: 'blur(20px)',
+                  boxShadow: '0 8px 40px -12px rgba(0, 0, 0, 0.1)'
+                }}
+              >
+                <div className="space-y-1">
+                  <Input
+                    type="text"
+                    inputMode="numeric"
+                    placeholder="000000"
+                    value={otp}
+                    maxLength={6}
+                    onChange={(e) => {
+                      const value = e.target.value.replace(/\D/g, '');
+                      setOtp(value);
+                      setErrors(prev => ({ ...prev, otp: undefined }));
+                    }}
+                    className="h-16 rounded-2xl border-0 bg-card/60 text-2xl text-center tracking-[0.5em] font-mono"
+                    dir="ltr"
+                  />
+                  {errors.otp && <p className="text-sm text-destructive text-center">{errors.otp}</p>}
+                </div>
+                
+                <Button
+                  type="submit"
+                  disabled={isLoading || otp.length !== 6}
+                  className="w-full h-14 rounded-2xl text-base font-medium bg-foreground text-background hover:bg-foreground/90 transition-all active:scale-[0.98]"
+                >
+                  {isLoading ? (
+                    <div className="w-5 h-5 border-2 border-background border-t-transparent rounded-full animate-spin" />
+                  ) : (
+                    'אימות'
+                  )}
+                </Button>
+
+                <div className="text-center">
+                  <button
+                    type="button"
+                    onClick={handleResendOtp}
+                    disabled={resendTimer > 0}
+                    className="text-sm text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50"
+                  >
+                    {resendTimer > 0 ? `שלח שוב בעוד ${resendTimer} שניות` : 'שלח קוד חדש'}
+                  </button>
+                </div>
+              </div>
+            </form>
+          )}
+
+          {view === 'email' && (
             <form onSubmit={handleEmailSubmit} className="space-y-4 animate-fade-in">
               <div 
                 className="p-5 rounded-3xl space-y-4" 
