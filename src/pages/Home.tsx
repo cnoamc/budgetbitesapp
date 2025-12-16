@@ -11,17 +11,13 @@ import { TutorialOverlay } from '@/components/TutorialOverlay';
 import { useApp } from '@/contexts/AppContext';
 import { useInactivityTracker } from '@/hooks/useInactivityTracker';
 import { recipes } from '@/lib/recipes';
-import { getSmartSavingsText } from '@/lib/notifications';
 import chefIcon from '@/assets/chef-icon.png';
 
 export const Home: React.FC = () => {
   const navigate = useNavigate();
-  const { progress, monthlySavings, potentialMonthlySavings, yearlySavings } = useApp();
+  const { progress } = useApp();
   
   const hasCooked = progress.totalMealsCooked > 0;
-  const displayMonthlySavings = hasCooked ? monthlySavings : potentialMonthlySavings;
-  const displayYearlySavings = hasCooked ? monthlySavings * 12 : yearlySavings;
-  const smartContextText = getSmartSavingsText(displayYearlySavings);
   
   // Inactivity tracking
   const { daysInactive, potentialSavingsLost, shouldShowAlert, dismissAlert } = useInactivityTracker(hasCooked);
@@ -46,38 +42,6 @@ export const Home: React.FC = () => {
               </div>
             </div>
 
-            {/* Hero Savings Card - Upgraded */}
-            <PremiumCard variant="elevated" className="p-6 mb-6">
-              <div className="flex items-center gap-2 mb-3">
-                <span className="text-2xl">💸</span>
-                <p className="text-sm text-muted-foreground">
-                  {hasCooked ? 'החיסכון שלך' : 'פוטנציאל החיסכון שלך'}
-                </p>
-              </div>
-              
-              {/* Main monthly number */}
-              <div className="flex items-baseline gap-2 mb-2 animate-fade-in">
-                <p className="text-5xl font-bold text-savings">₪{displayMonthlySavings.toLocaleString()}</p>
-                <p className="text-lg text-muted-foreground">/ חודש</p>
-              </div>
-              
-              {/* Yearly savings */}
-              <p className="text-lg text-muted-foreground mb-4 animate-fade-in" style={{ animationDelay: '50ms' }}>
-                ≈ ₪{displayYearlySavings.toLocaleString()} / שנה
-              </p>
-              
-              {/* Smart context text */}
-              <div className="bg-savings-light/50 rounded-xl px-4 py-3 animate-fade-in" style={{ animationDelay: '100ms' }}>
-                <p className="text-sm text-savings font-medium">{smartContextText}</p>
-              </div>
-              
-              {hasCooked && (
-                <div className="mt-4 pt-4 border-t border-border/30 flex items-center justify-between">
-                  <p className="text-sm text-muted-foreground">ארוחות שבישלת</p>
-                  <p className="text-2xl font-bold">{progress.totalMealsCooked}</p>
-                </div>
-              )}
-            </PremiumCard>
             
             {/* Inactivity Alert */}
             {shouldShowAlert && (
