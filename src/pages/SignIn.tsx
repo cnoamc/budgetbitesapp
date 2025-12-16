@@ -91,11 +91,15 @@ const SignIn: React.FC = () => {
   
   // Use onboarding data if available, otherwise fall back to profile
   const weeklyOrders = onboardingData?.weeklyOrders || profile?.weeklyOrders || 0;
+  const monthlySpending = onboardingData?.monthlySpending || profile?.monthlySpending || 0;
   const monthlyOrders = weeklyOrders * 4;
   
   // Calculate monthly savings: (orders per month) × (savings per meal)
   const monthlySavings = monthlyOrders * SAVINGS_PER_MEAL;
   const yearlySavings = monthlySavings * 12;
+  
+  // Calculate savings percentage compared to current spending
+  const savingsPercentage = monthlySpending > 0 ? Math.round((monthlySavings / monthlySpending) * 100) : 0;
   
   // Progress percentage (capped at 100%)
   const savingsProgress = Math.min((yearlySavings / 20000) * 100, 100);
@@ -283,6 +287,19 @@ const SignIn: React.FC = () => {
                 <p className="text-2xl font-bold text-green-600">₪{yearlySavings.toLocaleString()}</p>
               </div>
             </div>
+
+            {/* Savings percentage badge */}
+            {savingsPercentage > 0 && (
+              <div className="flex justify-center mb-3">
+                <div 
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full"
+                  style={{ background: 'linear-gradient(135deg, #FF6B95 0%, #FF9A56 100%)' }}
+                >
+                  <span className="text-white text-sm font-bold">{savingsPercentage}%</span>
+                  <span className="text-white/90 text-xs">חיסכון מההוצאה הנוכחית</span>
+                </div>
+              </div>
+            )}
 
             {/* Contextual message */}
             <div 

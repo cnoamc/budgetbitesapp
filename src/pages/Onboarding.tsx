@@ -50,7 +50,7 @@ export const Onboarding: React.FC = () => {
     }));
   };
 
-  const spendingOptions = [500, 1000, 1500, 2000, 3000];
+  const spendingOptions = [500, 1000, 1500, 2000, 2500, 3000];
   const orderOptions = [2, 4, 6, 8, 10];
 
   const canProceed = () => {
