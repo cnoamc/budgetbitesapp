@@ -11,6 +11,7 @@ import { TutorialOverlay } from '@/components/TutorialOverlay';
 import { useApp } from '@/contexts/AppContext';
 import { useInactivityTracker } from '@/hooks/useInactivityTracker';
 import { recipes } from '@/lib/recipes';
+import { getRecipeImage } from '@/lib/recipeImages';
 import chefIcon from '@/assets/chef-icon.png';
 
 export const Home: React.FC = () => {
@@ -73,8 +74,18 @@ export const Home: React.FC = () => {
               className="p-5"
             >
               <div className="flex gap-4">
-                <div className="w-24 h-24 bg-gradient-to-br from-secondary to-muted rounded-2xl flex items-center justify-center text-5xl shrink-0 shadow-soft">
-                  {todayRecipe.emoji}
+                <div className="w-24 h-24 rounded-2xl shrink-0 shadow-soft overflow-hidden">
+                  {getRecipeImage(todayRecipe.id) ? (
+                    <img 
+                      src={getRecipeImage(todayRecipe.id)} 
+                      alt={todayRecipe.name}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-gradient-to-br from-secondary to-muted flex items-center justify-center text-5xl">
+                      {todayRecipe.emoji}
+                    </div>
+                  )}
                 </div>
                 <div className="flex-1">
                   <div className="inline-flex items-center gap-1.5 bg-secondary/50 px-2 py-0.5 rounded-full text-xs text-muted-foreground mb-2">

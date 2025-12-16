@@ -4,6 +4,7 @@ import { ArrowRight, Clock, ChefHat, ShoppingCart, MessageCircle } from 'lucide-
 import { Button } from '@/components/ui/button';
 import { SavingsComparisonCard } from '@/components/notifications';
 import { getRecipeById, categoryLabels } from '@/lib/recipes';
+import { getRecipeImage } from '@/lib/recipeImages';
 
 export const RecipeDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -11,6 +12,7 @@ export const RecipeDetail: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'ingredients' | 'savings'>('ingredients');
   
   const recipe = getRecipeById(id || '');
+  const recipeImage = recipe ? getRecipeImage(recipe.id) : undefined;
 
   if (!recipe) {
     return (
@@ -24,8 +26,16 @@ export const RecipeDetail: React.FC = () => {
     <div className="min-h-screen bg-background pb-32">
       {/* Header */}
       <div className="relative">
-        <div className="h-48 bg-secondary flex items-center justify-center text-8xl">
-          {recipe.emoji}
+        <div className="h-56 bg-secondary flex items-center justify-center overflow-hidden">
+          {recipeImage ? (
+            <img 
+              src={recipeImage} 
+              alt={recipe.name}
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <span className="text-8xl">{recipe.emoji}</span>
+          )}
         </div>
         <button
           onClick={() => navigate(-1)}
