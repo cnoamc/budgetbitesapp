@@ -7,11 +7,15 @@ import {
   notificationTemplates 
 } from '@/lib/notifications';
 import { useApp } from './AppContext';
+import { useBrowserNotifications, NotificationPermissionStatus } from '@/hooks/useBrowserNotifications';
 
 interface NotificationContextType {
   notifications: AppNotification[];
   unreadCount: number;
   settings: NotificationSettings;
+  browserPermission: NotificationPermissionStatus;
+  isBrowserNotificationSupported: boolean;
+  requestBrowserPermission: () => Promise<NotificationPermissionStatus>;
   addNotification: (category: NotificationCategory, title: string, message: string, emoji?: string) => void;
   markAsRead: (id: string) => void;
   markAllAsRead: () => void;
@@ -30,6 +34,12 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
   const [notifications, setNotifications] = useState<AppNotification[]>([]);
   const [settings, setSettings] = useState<NotificationSettings>(defaultNotificationSettings);
   const { progress, monthlySavings } = useApp();
+  const { 
+    permission: browserPermission, 
+    isSupported: isBrowserNotificationSupported,
+    requestPermission: requestBrowserPermission,
+    sendNotification: sendBrowserNotification 
+  } = useBrowserNotifications();
 
   // Load from localStorage on mount
   useEffect(() => {
@@ -120,7 +130,15 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
     
     setNotifications(prev => [newNotification, ...prev].slice(0, 50)); // Keep last 50
     localStorage.setItem(LAST_NOTIFICATION_KEY, new Date().toISOString());
-  }, [shouldSendNotification]);
+    
+    // Also send browser notification if permission granted
+    if (browserPermission === 'granted') {
+      sendBrowserNotification(title, {
+        body: message,
+        tag: newNotification.id,
+      });
+    }
+  }, [shouldSendNotification, browserPermission, sendBrowserNotification]);
 
   const markAsRead = useCallback((id: string) => {
     setNotifications(prev => 
@@ -186,6 +204,9 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
       notifications,
       unreadCount,
       settings,
+      browserPermission,
+      isBrowserNotificationSupported,
+      requestBrowserPermission,
       addNotification,
       markAsRead,
       markAllAsRead,
