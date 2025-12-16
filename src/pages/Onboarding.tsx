@@ -34,6 +34,10 @@ export const Onboarding: React.FC = () => {
     if (step < TOTAL_STEPS) {
       setStep(step + 1);
     } else {
+      // Save onboarding data to localStorage for use before signup
+      localStorage.setItem('bb_onboarding_data', JSON.stringify(formData));
+      
+      // Also update profile context (will only persist to DB after auth)
       updateProfile(formData);
       completeOnboarding();
       navigate('/signin');

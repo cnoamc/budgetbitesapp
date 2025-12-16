@@ -58,7 +58,7 @@ const triggerConfetti = () => {
 const SignIn: React.FC = () => {
   const navigate = useNavigate();
   const { user, signIn, signUp, loading } = useAuth();
-  const { profile } = useApp();
+  const { profile, updateProfile } = useApp();
   
   const [view, setView] = useState<AuthView>('signup');
   const [email, setEmail] = useState('');
@@ -68,14 +68,37 @@ const SignIn: React.FC = () => {
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
   const [progressAnimated, setProgressAnimated] = useState(false);
 
-  // Calculate savings from profile data
-  const monthlySavings = profile?.monthlySpending 
-    ? Math.round(profile.monthlySpending * 0.55) 
-    : 0;
+  // Get onboarding data from localStorage (before signup) or from profile (after)
+  const getOnboardingData = () => {
+    const stored = localStorage.getItem('bb_onboarding_data');
+    if (stored) {
+      try {
+        return JSON.parse(stored);
+      } catch {
+        return null;
+      }
+    }
+    return null;
+  };
+
+  const onboardingData = getOnboardingData();
+  
+  // Calculate savings based on actual data
+  // Average costs from our recipes: delivery ~₪55, home ~₪10
+  const AVG_DELIVERY_COST = 55;
+  const AVG_HOME_COST = 10;
+  const SAVINGS_PER_MEAL = AVG_DELIVERY_COST - AVG_HOME_COST; // ₪45 per meal
+  
+  // Use onboarding data if available, otherwise fall back to profile
+  const weeklyOrders = onboardingData?.weeklyOrders || profile?.weeklyOrders || 0;
+  const monthlyOrders = weeklyOrders * 4;
+  
+  // Calculate monthly savings: (orders per month) × (savings per meal)
+  const monthlySavings = monthlyOrders * SAVINGS_PER_MEAL;
   const yearlySavings = monthlySavings * 12;
   
   // Progress percentage (capped at 100%)
-  const savingsProgress = Math.min((yearlySavings / 10000) * 100, 100);
+  const savingsProgress = Math.min((yearlySavings / 20000) * 100, 100);
 
   useEffect(() => {
     if (user && !loading) {
@@ -123,7 +146,19 @@ const SignIn: React.FC = () => {
             toast.error(error.message);
           }
         } else {
-          // Success! Trigger confetti celebration
+          // Success! Sync onboarding data to profile
+          if (onboardingData) {
+            await updateProfile({
+              monthlySpending: onboardingData.monthlySpending,
+              weeklyOrders: onboardingData.weeklyOrders,
+              preferredFood: onboardingData.preferredFood,
+              cookingSkill: onboardingData.cookingSkill,
+              onboardingComplete: true,
+            });
+            // Clear localStorage after sync
+            localStorage.removeItem('bb_onboarding_data');
+          }
+          // Trigger confetti celebration
           triggerConfetti();
           toast.success('נרשמת בהצלחה! 🎉');
         }

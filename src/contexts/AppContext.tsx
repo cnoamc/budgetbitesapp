@@ -29,16 +29,23 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
   // Precompute savings when profile or progress changes
   useEffect(() => {
+    // Average costs from recipes: delivery ~₪55, home ~₪10
+    const AVG_DELIVERY_COST = 55;
+    const AVG_HOME_COST = 10;
+    const SAVINGS_PER_MEAL = AVG_DELIVERY_COST - AVG_HOME_COST; // ₪45 per meal
+    
+    // Calculate monthly orders from weekly orders
+    const monthlyOrders = profile.weeklyOrders * 4;
+    
     // Calculate potential monthly savings
-    const homeCookingFactor = 0.55;
-    const potential = Math.round(profile.monthlySpending * homeCookingFactor);
+    const potential = monthlyOrders * SAVINGS_PER_MEAL;
     setPotentialMonthlySavings(potential);
     
-    // Calculate yearly savings (rounded to nearest 50)
-    const yearly = Math.round((potential * 12) / 50) * 50;
+    // Calculate yearly savings
+    const yearly = potential * 12;
     setYearlySavings(yearly);
     
-    // Calculate actual monthly savings
+    // Calculate actual monthly savings from cooked meals
     const now = new Date();
     const thisMonthMeals = progress.cookedMeals.filter(meal => {
       const mealDate = new Date(meal.date);
@@ -46,7 +53,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     });
     const actualMonthly = thisMonthMeals.reduce((sum, m) => sum + m.savings, 0);
     setMonthlySavings(actualMonthly);
-  }, [profile.monthlySpending, progress.cookedMeals]);
+  }, [profile.weeklyOrders, progress.cookedMeals]);
 
   // Load profile and progress from database when user changes
   useEffect(() => {
