@@ -44,9 +44,9 @@ export const BottomNav: React.FC = () => {
       <nav className="max-w-md mx-auto">
         <div 
           ref={navRef}
-          className="relative flex justify-around items-center py-2 px-2 rounded-[28px] backdrop-blur-xl bg-white/70 dark:bg-black/60 border border-white/30 dark:border-white/10 shadow-lg"
+          className="relative flex justify-around items-center py-2 px-2 rounded-[28px] backdrop-blur-xl bg-neutral-200/80 dark:bg-neutral-900/85 border border-neutral-300/50 dark:border-white/10 shadow-lg"
           style={{
-            boxShadow: '0 8px 32px -8px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(255, 255, 255, 0.1) inset'
+            boxShadow: '0 8px 32px -8px rgba(0, 0, 0, 0.18), 0 0 0 1px rgba(0, 0, 0, 0.05) inset'
           }}
         >
           {/* Animated indicator */}
