@@ -1,5 +1,5 @@
 import React from 'react';
-import { TrendingUp, Star, Target, Trophy } from 'lucide-react';
+import { TrendingUp, Star, Target, Trophy, Flame } from 'lucide-react';
 import { BottomNav } from '@/components/BottomNav';
 import { GradientBackground } from '@/components/ui/GradientBackground';
 import { PremiumCard } from '@/components/ui/PremiumCard';
@@ -8,59 +8,66 @@ import { useApp } from '@/contexts/AppContext';
 import { getRecipeById } from '@/lib/recipes';
 import chefIcon from '@/assets/chef-icon.png';
 
+// Calculate cooking streak from cooked meals
+const calculateStreak = (cookedMeals: { date: string }[]) => {
+  if (cookedMeals.length === 0) return 0;
+  
+  const sortedDates = [...cookedMeals]
+    .map(m => new Date(m.date).toDateString())
+    .filter((date, i, arr) => arr.indexOf(date) === i)
+    .sort((a, b) => new Date(b).getTime() - new Date(a).getTime());
+  
+  const today = new Date().toDateString();
+  const yesterday = new Date(Date.now() - 86400000).toDateString();
+  
+  if (sortedDates[0] !== today && sortedDates[0] !== yesterday) return 0;
+  
+  let streak = 1;
+  for (let i = 1; i < sortedDates.length; i++) {
+    const prevDate = new Date(sortedDates[i - 1]);
+    const currDate = new Date(sortedDates[i]);
+    const diffDays = Math.round((prevDate.getTime() - currDate.getTime()) / 86400000);
+    if (diffDays === 1) streak++;
+    else break;
+  }
+  return streak;
+};
+
 export const Progress: React.FC = () => {
   const { progress, monthlySavings } = useApp();
 
   const skillLabels = ['מתחיל', 'בסיסי', 'מתקדם', 'מומחה', 'שף!'];
   const skillEmojis = ['🌱', '🌿', '🌳', '⭐', '👨‍🍳'];
+  const streak = calculateStreak(progress.cookedMeals);
 
   return (
     <GradientBackground variant="warm">
       <div className="min-h-screen pb-28">
         <div className="p-6 pt-8">
-          <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center justify-between mb-6">
             <h1 className="text-2xl font-bold">ההתקדמות שלי</h1>
             <div className="w-10 h-10 bg-black/5 rounded-xl flex items-center justify-center">
               <Trophy className="w-5 h-5 text-black" />
             </div>
           </div>
 
-          {/* Main Stats */}
-          <div className="grid grid-cols-2 gap-4 mb-6">
-            <PremiumCard className="p-5 bg-savings-light border-savings/20 animate-scale-in">
-              <div className="w-10 h-10 bg-savings/10 rounded-xl flex items-center justify-center mb-3">
-                <TrendingUp className="w-5 h-5 text-savings" />
-              </div>
-              <p className="text-sm text-muted-foreground mb-1">נחסך בסה״כ</p>
-              <p className="text-3xl font-bold text-savings">₪{progress.totalSavings}</p>
-            </PremiumCard>
-            
-            <PremiumCard className="p-5 bg-black/5 border-black/10 animate-scale-in" style={{ animationDelay: '0.1s' }}>
-              <div className="w-10 h-10 rounded-xl overflow-hidden mb-3">
-                <img src={chefIcon} alt="BudgetBites" className="w-full h-full object-cover" />
-              </div>
-              <p className="text-sm text-muted-foreground mb-1">ארוחות שבישלתי</p>
-              <p className="text-3xl font-bold">{progress.totalMealsCooked}</p>
-            </PremiumCard>
-          </div>
-
-          {/* Skill Level */}
-          <PremiumCard variant="elevated" className="p-6 mb-6 animate-slide-up">
-            <div className="flex items-center justify-between mb-5">
+          {/* Skill Level - TOP */}
+          <PremiumCard variant="elevated" className="p-5 mb-4 animate-slide-up">
+            <div className="flex items-center justify-between mb-4">
               <div>
                 <h3 className="font-semibold text-lg mb-1">רמת המיומנות שלי</h3>
                 <p className="text-muted-foreground">{skillLabels[progress.skillLevel - 1]}</p>
               </div>
-              <div className="w-16 h-16 bg-gradient-to-br from-secondary to-muted rounded-2xl flex items-center justify-center text-4xl shadow-soft">
+              <div className="w-14 h-14 bg-gradient-to-br from-secondary to-muted rounded-2xl flex items-center justify-center text-3xl shadow-soft">
                 {skillEmojis[progress.skillLevel - 1]}
               </div>
             </div>
             
-            <div className="flex gap-2 mb-3">
+            <div className="flex gap-2 mb-2">
               {[1, 2, 3, 4, 5].map((level) => (
                 <div
                   key={level}
-                  className={`flex-1 h-3 rounded-full transition-all ${
+                  className={`flex-1 h-2.5 rounded-full transition-all ${
                     level <= progress.skillLevel ? 'bg-black shadow-sm' : 'bg-muted'
                   }`}
                 />
@@ -68,10 +75,47 @@ export const Progress: React.FC = () => {
             </div>
             
             {progress.skillLevel < 5 && (
-              <p className="text-sm text-muted-foreground">
+              <p className="text-xs text-muted-foreground">
                 עוד {(progress.skillLevel * 5) - progress.totalMealsCooked + 5} ארוחות לרמה הבאה 🚀
               </p>
             )}
+          </PremiumCard>
+
+          {/* Stats Cards - meals & savings */}
+          <div className="grid grid-cols-2 gap-3 mb-4">
+            <PremiumCard className="p-4 bg-black/5 border-black/10 animate-scale-in">
+              <div className="w-10 h-10 rounded-xl overflow-hidden mb-2">
+                <img src={chefIcon} alt="BudgetBites" className="w-full h-full object-cover" />
+              </div>
+              <p className="text-sm text-muted-foreground mb-1">ארוחות שבישלתי</p>
+              <p className="text-2xl font-bold">{progress.totalMealsCooked}</p>
+            </PremiumCard>
+            
+            <PremiumCard className="p-4 bg-savings-light border-savings/20 animate-scale-in" style={{ animationDelay: '0.1s' }}>
+              <div className="w-10 h-10 bg-savings/10 rounded-xl flex items-center justify-center mb-2">
+                <TrendingUp className="w-5 h-5 text-savings" />
+              </div>
+              <p className="text-sm text-muted-foreground mb-1">נחסך בסה״כ</p>
+              <p className="text-2xl font-bold text-savings">₪{progress.totalSavings}</p>
+            </PremiumCard>
+          </div>
+
+          {/* Cooking Streak */}
+          <PremiumCard className="p-4 mb-4 animate-scale-in bg-orange-50 dark:bg-orange-950/20 border-orange-200 dark:border-orange-800/30" style={{ animationDelay: '0.15s' }}>
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 bg-orange-100 dark:bg-orange-900/30 rounded-xl flex items-center justify-center">
+                <Flame className="w-6 h-6 text-orange-500" />
+              </div>
+              <div className="flex-1">
+                <p className="text-sm text-muted-foreground">רצף בישול</p>
+                <p className="text-2xl font-bold">{streak} {streak === 1 ? 'יום' : 'ימים'} 🔥</p>
+              </div>
+              {streak >= 3 && (
+                <span className="text-xs bg-orange-200 dark:bg-orange-800/50 text-orange-700 dark:text-orange-300 px-2 py-1 rounded-full">
+                  מדהים!
+                </span>
+              )}
+            </div>
           </PremiumCard>
 
           {/* Monthly Summary */}
