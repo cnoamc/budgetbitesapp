@@ -101,7 +101,7 @@ const Premium: React.FC = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="bg-muted/70 rounded-2xl p-5"
+          className="bg-muted/70 rounded-2xl p-5 border border-border/50"
         >
           <div className="space-y-4">
             {features.map((feature, index) => (
