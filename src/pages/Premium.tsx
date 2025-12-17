@@ -49,7 +49,14 @@ const Premium: React.FC = () => {
   ];
 
   return (
-    <div className="h-[100dvh] bg-background flex flex-col overflow-hidden" dir="rtl">
+    <div className="h-[100dvh] bg-background flex flex-col overflow-hidden relative" dir="rtl">
+      {/* Subtle gradient background */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-20 -right-20 w-64 h-64 bg-primary/5 rounded-full blur-3xl" />
+        <div className="absolute top-1/3 -left-32 w-80 h-80 bg-primary/3 rounded-full blur-3xl" />
+        <div className="absolute bottom-20 right-10 w-48 h-48 bg-muted/50 rounded-full blur-3xl" />
+      </div>
+      
       {/* Clean Header */}
       <div className="pt-14 pb-8 px-6 text-center">
         <motion.div
