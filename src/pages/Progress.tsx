@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { TrendingUp, Star, Target, Trophy, Flame } from 'lucide-react';
+import { TrendingUp, Star, Target, Trophy, Flame, UtensilsCrossed } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { BottomNav } from '@/components/BottomNav';
 import { GradientBackground } from '@/components/ui/GradientBackground';
@@ -8,6 +8,7 @@ import { StarRating } from '@/components/StarRating';
 import { useApp } from '@/contexts/AppContext';
 import { getRecipeById } from '@/lib/recipes';
 import chefIcon from '@/assets/chef-icon.png';
+
 
 // Calculate cooking streak from cooked meals
 const calculateStreak = (cookedMeals: { date: string }[]) => {
@@ -114,8 +115,8 @@ export const Progress: React.FC = () => {
           {/* Stats Cards - meals & savings */}
           <div className="grid grid-cols-2 gap-3 mb-4">
             <PremiumCard className="p-4 bg-black/5 border-black/10 animate-scale-in">
-              <div className="w-10 h-10 rounded-xl overflow-hidden mb-2">
-                <img src={chefIcon} alt="BudgetBites" className="w-full h-full object-cover" />
+              <div className="w-10 h-10 bg-black/10 rounded-xl flex items-center justify-center mb-2">
+                <UtensilsCrossed className="w-5 h-5 text-black" />
               </div>
               <p className="text-sm text-muted-foreground mb-1">ארוחות שבישלתי</p>
               <p className="text-2xl font-bold">{progress.totalMealsCooked}</p>
