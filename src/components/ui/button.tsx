@@ -17,6 +17,7 @@ const buttonVariants = cva(
         link: "text-primary underline-offset-4 hover:underline",
         savings: "gradient-savings text-accent-foreground shadow-card hover:shadow-elevated hover:brightness-105",
         soft: "bg-primary/10 text-primary hover:bg-primary/20",
+        cook: "bg-[hsl(217,91%,60%)] text-white shadow-card hover:shadow-elevated hover:bg-[hsl(217,91%,55%)]",
       },
       size: {
         default: "h-12 px-6 py-3",

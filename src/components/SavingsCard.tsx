@@ -52,14 +52,14 @@ export const SavingsCard: React.FC<SavingsCardProps> = ({
             <TrendingUp className="w-4 h-4" />
             חיסכון
           </span>
-          <span className="font-bold text-savings text-xl">₪{savings}</span>
+          <span className="font-bold text-savings text-xl animate-fade-in">₪{savings}</span>
         </div>
 
         {showMonthly && monthlyMultiplier > 1 && (
-          <div className="bg-savings-light rounded-xl p-4 mt-4">
+          <div className="bg-savings-light rounded-xl p-4 mt-4 animate-fade-in">
             <div className="flex justify-between items-center">
               <span className="text-savings font-medium">חיסכון חודשי</span>
-              <span className="font-bold text-savings text-2xl">₪{monthlySavings}</span>
+              <span className="font-bold text-savings text-2xl animate-scale-in" style={{ animationDelay: '0.1s' }}>₪{monthlySavings}</span>
             </div>
             <p className="text-sm text-muted-foreground mt-1">
               על בסיס {monthlyMultiplier} הזמנות בחודש
