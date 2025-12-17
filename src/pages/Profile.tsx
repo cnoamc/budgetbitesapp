@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Settings, RefreshCw, User, MapPin, LogOut, Pencil, Camera, X, Bell, Moon } from 'lucide-react';
+import { Settings, RefreshCw, MapPin, LogOut, Pencil, Camera, X, Bell, Moon } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import chefIcon from '@/assets/chef-icon.png';
 import { Button } from '@/components/ui/button';
@@ -37,7 +37,7 @@ export const Profile: React.FC = () => {
   const { profile, progress } = useApp();
   const { user, signOut } = useAuth();
   const { unreadCount } = useNotifications();
-  const { mode, resolvedMode, setMode } = useTheme();
+  const { resolvedMode, setMode } = useTheme();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [bbProfile, setBBProfile] = useState<BBProfile>(() => getBBProfile());
@@ -161,142 +161,88 @@ export const Profile: React.FC = () => {
     toast.success('התמונה הוסרה');
   };
 
-
   return (
-    <div className="min-h-screen bg-background pb-24">
-      <div className="p-4">
-        {/* Profile Header */}
-        <div className="text-center mb-4">
+    <div className="h-screen bg-background flex flex-col overflow-hidden">
+      <div className="flex-1 p-4 pb-24 flex flex-col">
+        {/* Profile Header - Compact */}
+        <div className="text-center mb-3">
           <div className="relative inline-block">
             <div 
-              className="w-24 h-24 gradient-primary rounded-full mx-auto flex items-center justify-center shadow-glow cursor-pointer overflow-hidden group"
+              className="w-16 h-16 gradient-primary rounded-full mx-auto flex items-center justify-center shadow-glow cursor-pointer overflow-hidden group"
               onClick={handlePhotoClick}
             >
               {bbProfile.photoDataUrl ? (
-                <img 
-                  src={bbProfile.photoDataUrl} 
-                  alt="Profile" 
-                  className="w-full h-full object-cover"
-                />
+                <img src={bbProfile.photoDataUrl} alt="Profile" className="w-full h-full object-cover" />
               ) : (
                 <img src={chefIcon} alt="Profile" className="w-full h-full object-cover" />
               )}
               <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity rounded-full">
-                <Camera className="w-6 h-6 text-white" />
+                <Camera className="w-5 h-5 text-white" />
               </div>
             </div>
             {bbProfile.photoDataUrl && (
               <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleRemovePhoto();
-                }}
-                className="absolute -top-1 -right-1 w-6 h-6 bg-destructive rounded-full flex items-center justify-center shadow-md hover:bg-destructive/90 transition-colors"
+                onClick={(e) => { e.stopPropagation(); handleRemovePhoto(); }}
+                className="absolute -top-1 -right-1 w-5 h-5 bg-destructive rounded-full flex items-center justify-center shadow-md"
               >
                 <X className="w-3 h-3 text-destructive-foreground" />
               </button>
             )}
           </div>
-          <p className="text-xs text-muted-foreground mt-2">לחץ כדי להחליף תמונה</p>
           
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept="image/jpeg,image/png,image/webp"
-            className="hidden"
-            onChange={handleFileChange}
-          />
+          <input ref={fileInputRef} type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={handleFileChange} />
 
-          <div className="flex items-center justify-center gap-2 mt-3">
-            <h1 className="text-2xl font-bold">{bbProfile.displayName}</h1>
-            <button
-              onClick={() => setIsEditingName(true)}
-              className="p-1 hover:bg-muted rounded-full transition-colors"
-            >
-              <Pencil className="w-4 h-4 text-muted-foreground" />
+          <div className="flex items-center justify-center gap-1 mt-2">
+            <h1 className="text-xl font-bold">{bbProfile.displayName}</h1>
+            <button onClick={() => setIsEditingName(true)} className="p-1 hover:bg-muted rounded-full">
+              <Pencil className="w-3 h-3 text-muted-foreground" />
             </button>
           </div>
           
-          <p className="text-muted-foreground">
+          <p className="text-sm text-muted-foreground">
             {skillLabels[progress.skillLevel - 1]} • {progress.totalMealsCooked} ארוחות
           </p>
-          {user && (
-            <p className="text-sm text-muted-foreground mt-2" dir="ltr">
-              {user.email}
-            </p>
-          )}
+          {user && <p className="text-xs text-muted-foreground" dir="ltr">{user.email}</p>}
         </div>
 
-        {/* Edit Name Dialog */}
-        <Dialog open={isEditingName} onOpenChange={setIsEditingName}>
-          <DialogContent className="max-w-sm">
-            <DialogHeader>
-              <DialogTitle>עריכת שם תצוגה</DialogTitle>
-            </DialogHeader>
-            <div className="py-4">
-              <Input
-                value={editedName}
-                onChange={(e) => setEditedName(e.target.value)}
-                placeholder="הכנס שם תצוגה"
-                maxLength={24}
-                className="text-right"
-                dir="rtl"
-              />
-              <p className="text-xs text-muted-foreground mt-2">
-                2-24 תווים
-              </p>
-            </div>
-            <DialogFooter className="flex gap-2">
-              <Button variant="outline" onClick={handleCancelEdit}>
-                ביטול
-              </Button>
-              <Button onClick={handleSaveName}>
-                שמור
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-
-
-
-        {/* Profile Info */}
-        <div className="bg-card rounded-2xl p-5 shadow-card border border-border/50 mb-6">
-          <h3 className="font-semibold mb-4 flex items-center gap-2">
-            <Settings className="w-5 h-5" />
+        {/* Settings Card - Compact */}
+        <div className="bg-card rounded-xl p-3 shadow-card border border-border/50 mb-3">
+          <h3 className="font-semibold text-sm mb-2 flex items-center gap-2">
+            <Settings className="w-4 h-4" />
             הגדרות
           </h3>
           
-          <div className="space-y-4">
-            <div className="flex items-center justify-between py-2 border-b border-border/50">
-              <div className="flex items-center gap-3">
-                <MapPin className="w-5 h-5 text-muted-foreground" />
-                <span>מיקום</span>
+          <div className="space-y-2">
+            <div className="flex items-center justify-between py-1.5 border-b border-border/50">
+              <div className="flex items-center gap-2">
+                <MapPin className="w-4 h-4 text-muted-foreground" />
+                <span className="text-sm">מיקום</span>
               </div>
-              <span className="text-muted-foreground">ישראל</span>
+              <span className="text-sm text-muted-foreground">ישראל</span>
             </div>
             
-            <div className="flex items-center justify-between py-2 border-b border-border/50">
-              <div className="flex items-center gap-3">
-                <div className="w-5 h-5 rounded overflow-hidden">
+            <div className="flex items-center justify-between py-1.5 border-b border-border/50">
+              <div className="flex items-center gap-2">
+                <div className="w-4 h-4 rounded overflow-hidden">
                   <img src={chefIcon} alt="Skill" className="w-full h-full object-cover" />
                 </div>
-                <span>רמת מיומנות התחלתית</span>
+                <span className="text-sm">רמת מיומנות</span>
               </div>
-              <span className="text-muted-foreground">{profile.cookingSkill}/5</span>
+              <span className="text-sm text-muted-foreground">{profile.cookingSkill}/5</span>
             </div>
             
-            <div className="flex items-center justify-between py-2 border-b border-border/50">
-              <div className="flex items-center gap-3">
-                <span className="text-xl">🍔</span>
-                <span>הזמנות שבועיות</span>
+            <div className="flex items-center justify-between py-1.5 border-b border-border/50">
+              <div className="flex items-center gap-2">
+                <span className="text-base">🍔</span>
+                <span className="text-sm">הזמנות שבועיות</span>
               </div>
-              <span className="text-muted-foreground">{profile.weeklyOrders} פעמים</span>
+              <span className="text-sm text-muted-foreground">{profile.weeklyOrders} פעמים</span>
             </div>
             
-            <div className="flex items-center justify-between py-2">
-              <div className="flex items-center gap-3">
-                <Moon className="w-5 h-5 text-muted-foreground" />
-                <span>מצב כהה</span>
+            <div className="flex items-center justify-between py-1.5">
+              <div className="flex items-center gap-2">
+                <Moon className="w-4 h-4 text-muted-foreground" />
+                <span className="text-sm">מצב כהה</span>
               </div>
               <Switch
                 checked={resolvedMode === 'dark'}
@@ -306,79 +252,70 @@ export const Profile: React.FC = () => {
           </div>
         </div>
 
-        {/* Actions */}
-        <div className="space-y-3">
-          <Button
-            variant="outline"
-            className="w-full justify-start"
-            onClick={() => setIsNotificationSettingsOpen(true)}
-          >
-            <Bell className="w-5 h-5" />
+        {/* Actions - Compact */}
+        <div className="space-y-2">
+          <Button variant="outline" size="sm" className="w-full justify-start h-10" onClick={() => setIsNotificationSettingsOpen(true)}>
+            <Bell className="w-4 h-4" />
             הגדרות התראות
             {unreadCount > 0 && (
-              <span className="mr-auto bg-primary text-primary-foreground text-xs px-2 py-0.5 rounded-full">
-                {unreadCount}
-              </span>
+              <span className="mr-auto bg-primary text-primary-foreground text-xs px-1.5 py-0.5 rounded-full">{unreadCount}</span>
             )}
           </Button>
           
-          <Button
-            variant="outline"
-            className="w-full justify-start"
-            onClick={handleRestartOnboarding}
-          >
-            <RefreshCw className="w-5 h-5" />
+          <Button variant="outline" size="sm" className="w-full justify-start h-10" onClick={handleRestartOnboarding}>
+            <RefreshCw className="w-4 h-4" />
             מילוי שאלון מחדש
           </Button>
           
-          <Button
-            variant="ghost"
-            className="w-full justify-start text-destructive hover:text-destructive hover:bg-destructive/10"
-            onClick={() => setIsSignOutDialogOpen(true)}
-          >
-            <LogOut className="w-5 h-5" />
+          <Button variant="ghost" size="sm" className="w-full justify-start h-10 text-destructive hover:text-destructive hover:bg-destructive/10" onClick={() => setIsSignOutDialogOpen(true)}>
+            <LogOut className="w-4 h-4" />
             התנתק
           </Button>
         </div>
 
-        {/* Sign Out Confirmation Dialog */}
-        <AlertDialog open={isSignOutDialogOpen} onOpenChange={setIsSignOutDialogOpen}>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>התנתקות מהחשבון</AlertDialogTitle>
-              <AlertDialogDescription>
-                האם אתה בטוח שברצונך להתנתק?
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter className="flex gap-2">
-              <AlertDialogCancel>ביטול</AlertDialogCancel>
-              <AlertDialogAction 
-                onClick={handleSignOut}
-                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-              >
-                התנתק
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-
-        {/* Notification Settings Dialog */}
-        <Dialog open={isNotificationSettingsOpen} onOpenChange={setIsNotificationSettingsOpen}>
-          <DialogContent className="max-w-md max-h-[80vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle>הגדרות התראות</DialogTitle>
-              <DialogDescription>בחר אילו התראות לקבל ומתי</DialogDescription>
-            </DialogHeader>
-            <NotificationSettings />
-          </DialogContent>
-        </Dialog>
-
         {/* App Info */}
-        <div className="mt-4 text-center text-sm text-muted-foreground">
-          <p>BudgetBites v1.0</p>
-          <p>נבנה באהבה 🧡</p>
+        <div className="mt-auto pt-2 text-center text-xs text-muted-foreground">
+          <p>BudgetBites v1.0 • נבנה באהבה 🧡</p>
         </div>
       </div>
+
+      {/* Dialogs */}
+      <Dialog open={isEditingName} onOpenChange={setIsEditingName}>
+        <DialogContent className="max-w-sm">
+          <DialogHeader><DialogTitle>עריכת שם תצוגה</DialogTitle></DialogHeader>
+          <div className="py-4">
+            <Input value={editedName} onChange={(e) => setEditedName(e.target.value)} placeholder="הכנס שם תצוגה" maxLength={24} className="text-right" dir="rtl" />
+            <p className="text-xs text-muted-foreground mt-2">2-24 תווים</p>
+          </div>
+          <DialogFooter className="flex gap-2">
+            <Button variant="outline" onClick={handleCancelEdit}>ביטול</Button>
+            <Button onClick={handleSaveName}>שמור</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <AlertDialog open={isSignOutDialogOpen} onOpenChange={setIsSignOutDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>התנתקות מהחשבון</AlertDialogTitle>
+            <AlertDialogDescription>האם אתה בטוח שברצונך להתנתק?</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter className="flex gap-2">
+            <AlertDialogCancel>ביטול</AlertDialogCancel>
+            <AlertDialogAction onClick={handleSignOut} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">התנתק</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <Dialog open={isNotificationSettingsOpen} onOpenChange={setIsNotificationSettingsOpen}>
+        <DialogContent className="max-w-md max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>הגדרות התראות</DialogTitle>
+            <DialogDescription>בחר אילו התראות לקבל ומתי</DialogDescription>
+          </DialogHeader>
+          <NotificationSettings />
+        </DialogContent>
+      </Dialog>
 
       <BottomNav />
     </div>
