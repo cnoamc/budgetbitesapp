@@ -7,6 +7,7 @@ import { GradientBackground } from '@/components/ui/GradientBackground';
 import { recipes, categoryLabels, categoryEmojis } from '@/lib/recipes';
 import { cn } from '@/lib/utils';
 import { useFavorites } from '@/hooks/useFavorites';
+import { getBBProfile } from '@/lib/storage';
 import type { RecipeCategory } from '@/lib/types';
 import chefIcon from '@/assets/chef-icon.png';
 
@@ -17,6 +18,7 @@ export const Recipes: React.FC = () => {
   const [activeCategory, setActiveCategory] = useState<RecipeCategory | 'all' | 'favorites'>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const { favorites, toggleFavorite, isFavorite } = useFavorites();
+  const bbProfile = getBBProfile();
 
   const filteredRecipes = recipes.filter(recipe => {
     let matchesCategory = false;
@@ -41,7 +43,11 @@ export const Recipes: React.FC = () => {
           <div className="flex items-center justify-between mb-6">
             <h1 className="text-2xl font-bold">מתכונים</h1>
             <div className="w-10 h-10 rounded-xl overflow-hidden">
-              <img src={chefIcon} alt="BudgetBites" className="w-full h-full object-cover" />
+              <img 
+                src={bbProfile.photoDataUrl || chefIcon} 
+                alt="Profile" 
+                className="w-full h-full object-cover" 
+              />
             </div>
           </div>
 
