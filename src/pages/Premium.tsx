@@ -76,7 +76,13 @@ const Premium: React.FC = () => {
         >
           {/* Subtle glow behind emoji */}
           <div className="absolute inset-0 bg-primary/10 blur-2xl rounded-full scale-150" />
-          <span className="text-6xl relative z-10 block">👨‍🍳</span>
+          <motion.span 
+            className="text-6xl relative z-10 block"
+            animate={{ scale: [1, 1.05, 1] }}
+            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+          >
+            👨‍🍳
+          </motion.span>
         </motion.div>
         
         <motion.div
