@@ -77,7 +77,6 @@ export const Profile: React.FC = () => {
     }
     await updateDisplayName(trimmed);
     setIsEditingName(false);
-    toast.success('השם עודכן בהצלחה');
   };
 
   const handleCancelEdit = () => {
@@ -137,7 +136,6 @@ export const Profile: React.FC = () => {
     try {
       const dataUrl = await compressImage(file);
       await updatePhotoUrl(dataUrl);
-      toast.success('התמונה עודכנה בהצלחה');
     } catch (error) {
       toast.error('שגיאה בעיבוד התמונה');
     }
@@ -149,7 +147,6 @@ export const Profile: React.FC = () => {
 
   const handleRemovePhoto = async () => {
     await updatePhotoUrl(null);
-    toast.success('התמונה הוסרה');
   };
 
   return (
