@@ -46,17 +46,30 @@ const Premium: React.FC = () => {
 
   return (
     <div className="h-[100dvh] bg-background flex flex-col overflow-hidden" dir="rtl">
-      {/* Header */}
-      <div className="pt-12 pb-6 px-6 text-center">
+      {/* Dark Gradient Header */}
+      <div 
+        className="pt-12 pb-8 px-6 text-center text-white relative overflow-hidden"
+        style={{ 
+          background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)'
+        }}
+      >
+        {/* Subtle glow effect */}
+        <div 
+          className="absolute inset-0 opacity-30"
+          style={{
+            background: 'radial-gradient(circle at 50% 0%, rgba(99, 102, 241, 0.4) 0%, transparent 60%)'
+          }}
+        />
+        
         <motion.div
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          className="text-5xl mb-3"
+          className="relative"
         >
-          👨‍🍳
+          <span className="text-5xl mb-3 block">👨‍🍳</span>
+          <h1 className="text-2xl font-bold mt-3">חודש ראשון חינם</h1>
+          <p className="text-white/70 text-sm mt-2">בטל בכל עת • נזכיר לך לפני</p>
         </motion.div>
-        <h1 className="text-2xl font-bold">חודש ראשון חינם</h1>
-        <p className="text-muted-foreground text-sm mt-1">בטל בכל עת • נזכיר לך לפני</p>
       </div>
 
       {/* Features - Simple with emojis */}
