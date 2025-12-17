@@ -69,7 +69,11 @@ export const Home: React.FC = () => {
           <div className="max-w-lg mx-auto">
             <div className="flex items-center gap-4 mb-6" dir="rtl">
               <div className="w-14 h-14 rounded-2xl overflow-hidden shadow-glow shrink-0">
-                <img src={chefIcon} alt="BudgetBites" className="w-full h-full object-cover" />
+                <img 
+                  src={bbProfile.photoDataUrl || chefIcon} 
+                  alt="Profile" 
+                  className="w-full h-full object-cover" 
+                />
               </div>
               <div>
                 <h1 className="text-2xl font-bold">{greeting} {bbProfile.displayName} 👋</h1>
