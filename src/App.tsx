@@ -23,6 +23,7 @@ import CookingAssistant from "./pages/CookingAssistant";
 import RateMeal from "./pages/RateMeal";
 import Progress from "./pages/Progress";
 import Profile from "./pages/Profile";
+import Premium from "./pages/Premium";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -38,6 +39,7 @@ const AnimatedRoutes = () => {
         <Route path="/signin" element={<PageTransition><SignIn /></PageTransition>} />
         <Route path="/onboarding" element={<PageTransition><Onboarding /></PageTransition>} />
         <Route path="/savings" element={<PageTransition><Savings /></PageTransition>} />
+        <Route path="/premium" element={<PageTransition><Premium /></PageTransition>} />
         <Route path="/home" element={<PageTransition><Home /></PageTransition>} />
         <Route path="/recipes" element={<PageTransition><Recipes /></PageTransition>} />
         <Route path="/recipe/:id" element={<PageTransition><RecipeDetail /></PageTransition>} />

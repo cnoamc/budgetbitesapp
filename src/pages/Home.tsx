@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Sparkles, ArrowLeft, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -9,6 +9,7 @@ import { PremiumCard } from '@/components/ui/PremiumCard';
 import { InactivityAlert } from '@/components/notifications';
 import { TutorialOverlay } from '@/components/TutorialOverlay';
 import { useApp } from '@/contexts/AppContext';
+import { useSubscription } from '@/contexts/SubscriptionContext';
 import { useInactivityTracker } from '@/hooks/useInactivityTracker';
 import { recipes } from '@/lib/recipes';
 import { getRecipeImage } from '@/lib/recipeImages';
@@ -47,7 +48,15 @@ const getDailyTip = () => {
 export const Home: React.FC = () => {
   const navigate = useNavigate();
   const { progress, displayName, photoUrl } = useApp();
+  const { subscription, loading: subLoading, hasStartedTrial } = useSubscription();
   const greeting = getTimeBasedGreeting();
+
+  // Redirect to premium if user hasn't started trial
+  useEffect(() => {
+    if (!subLoading && subscription && !hasStartedTrial) {
+      navigate('/premium');
+    }
+  }, [subscription, subLoading, hasStartedTrial, navigate]);
   const dailyTip = getDailyTip();
   
   const hasCooked = progress.totalMealsCooked > 0;

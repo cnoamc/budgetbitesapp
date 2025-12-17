@@ -52,6 +52,7 @@ const SignIn: React.FC = () => {
   
   const [view, setView] = useState<AuthView>('options');
   const [isLogin, setIsLogin] = useState(false);
+  const [isNewSignup, setIsNewSignup] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [phone, setPhone] = useState('+972');
@@ -77,9 +78,10 @@ const SignIn: React.FC = () => {
 
   useEffect(() => {
     if (user && !loading) {
-      navigate('/home');
+      // New signups go to premium paywall, returning users go to home
+      navigate(isNewSignup ? '/premium' : '/home');
     }
-  }, [user, loading, navigate]);
+  }, [user, loading, navigate, isNewSignup]);
 
   // Resend timer countdown
   useEffect(() => {
@@ -143,11 +145,12 @@ const SignIn: React.FC = () => {
           } else {
             toast.error(error.message);
           }
-        } else {
-          await syncOnboardingData();
-          triggerConfetti();
-          toast.success('נרשמת בהצלחה! 🎉');
-        }
+          } else {
+            setIsNewSignup(true);
+            await syncOnboardingData();
+            triggerConfetti();
+            toast.success('נרשמת בהצלחה! 🎉');
+          }
       } else {
         const { error } = await signIn(email, password);
         if (error) {
@@ -207,6 +210,8 @@ const SignIn: React.FC = () => {
       if (error) {
         toast.error('קוד שגוי. נסה שוב.');
       } else {
+        // Phone auth could be new user - mark as new signup for premium flow
+        setIsNewSignup(true);
         await syncOnboardingData();
         triggerConfetti();
         toast.success('התחברת בהצלחה! 🎉');

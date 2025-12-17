@@ -15,7 +15,9 @@ interface SubscriptionContextType {
   subscription: Subscription | null;
   loading: boolean;
   isTrialActive: boolean;
+  hasStartedTrial: boolean;
   daysLeftInTrial: number;
+  startTrial: () => Promise<void>;
   toggleCancelReminder: () => Promise<void>;
 }
 
@@ -60,9 +62,25 @@ export const SubscriptionProvider: React.FC<{ children: ReactNode }> = ({ childr
     ? subscription.status === 'trial' && new Date(subscription.trial_end) > new Date()
     : false;
 
+  // User has started trial if subscription_start is set
+  const hasStartedTrial = subscription?.subscription_start !== null;
+
   const daysLeftInTrial = subscription
     ? Math.max(0, Math.ceil((new Date(subscription.trial_end).getTime() - Date.now()) / (1000 * 60 * 60 * 24)))
     : 0;
+
+  const startTrial = async () => {
+    if (!subscription || !user) return;
+
+    const { error } = await supabase
+      .from('subscriptions')
+      .update({ subscription_start: new Date().toISOString() })
+      .eq('user_id', user.id);
+
+    if (!error) {
+      setSubscription(prev => prev ? { ...prev, subscription_start: new Date().toISOString() } : null);
+    }
+  };
 
   const toggleCancelReminder = async () => {
     if (!subscription || !user) return;
@@ -84,7 +102,9 @@ export const SubscriptionProvider: React.FC<{ children: ReactNode }> = ({ childr
       subscription,
       loading,
       isTrialActive,
+      hasStartedTrial,
       daysLeftInTrial,
+      startTrial,
       toggleCancelReminder,
     }}>
       {children}
