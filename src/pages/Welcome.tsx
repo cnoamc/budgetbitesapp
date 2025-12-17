@@ -24,13 +24,13 @@ const Welcome: React.FC = () => {
   // Generate random floating emojis
   const floatingEmojis = useMemo<FloatingEmoji[]>(() => {
     const emojis: FloatingEmoji[] = [];
-    for (let i = 0; i < 20; i++) {
+    for (let i = 0; i < 25; i++) {
       emojis.push({
         emoji: FOOD_EMOJIS[Math.floor(Math.random() * FOOD_EMOJIS.length)],
         x: Math.random() * 100,
         y: Math.random() * 100,
-        size: 20 + Math.random() * 24,
-        opacity: 0.15 + Math.random() * 0.2,
+        size: 28 + Math.random() * 28,
+        opacity: 0.25 + Math.random() * 0.25,
         rotation: Math.random() * 360,
       });
     }
@@ -48,11 +48,20 @@ const Welcome: React.FC = () => {
     }
   }, [user, loading, navigate]);
 
-  const handleStart = () => {
+  const [ripple, setRipple] = useState<{ x: number; y: number } | null>(null);
+
+  const handleStart = (e: React.MouseEvent<HTMLButtonElement>) => {
+    // Create ripple effect
+    const rect = e.currentTarget.getBoundingClientRect();
+    setRipple({
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top,
+    });
+    
     setZooming(true);
     setTimeout(() => {
       navigate('/onboarding');
-    }, 400);
+    }, 500);
   };
 
   if (loading) {
@@ -81,13 +90,14 @@ const Welcome: React.FC = () => {
         {floatingEmojis.map((item, index) => (
           <span
             key={index}
-            className="absolute select-none"
+            className="absolute select-none drop-shadow-lg"
             style={{
               left: `${item.x}%`,
               top: `${item.y}%`,
               fontSize: `${item.size}px`,
               opacity: item.opacity,
               transform: `rotate(${item.rotation}deg)`,
+              filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.15))',
             }}
           >
             {item.emoji}
@@ -153,13 +163,24 @@ const Welcome: React.FC = () => {
           {/* CTA Button - triggers zoom then navigates */}
           <Button
             onClick={handleStart}
-            className="w-full h-[60px] rounded-2xl text-[17px] font-semibold transition-all active:scale-[0.98]"
+            className="w-full h-[60px] rounded-2xl text-[17px] font-semibold transition-all active:scale-[0.96] relative overflow-hidden"
             style={{
               background: '#1D1D1F',
               color: 'white',
               boxShadow: '0 8px 30px -6px rgba(0, 0, 0, 0.3)'
             }}
           >
+            {ripple && (
+              <span
+                className="absolute rounded-full bg-white/30 animate-ping"
+                style={{
+                  left: ripple.x - 20,
+                  top: ripple.y - 20,
+                  width: 40,
+                  height: 40,
+                }}
+              />
+            )}
             בואו נתחיל
           </Button>
 
