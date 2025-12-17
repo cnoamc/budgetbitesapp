@@ -12,11 +12,13 @@ import { useApp } from '@/contexts/AppContext';
 import { useInactivityTracker } from '@/hooks/useInactivityTracker';
 import { recipes } from '@/lib/recipes';
 import { getRecipeImage } from '@/lib/recipeImages';
+import { getBBProfile } from '@/lib/storage';
 import chefIcon from '@/assets/chef-icon.png';
 
 export const Home: React.FC = () => {
   const navigate = useNavigate();
   const { progress } = useApp();
+  const bbProfile = getBBProfile();
   
   const hasCooked = progress.totalMealsCooked > 0;
   
@@ -35,8 +37,8 @@ export const Home: React.FC = () => {
           <div className="max-w-lg mx-auto">
             <div className="flex items-center justify-between mb-8">
               <div>
-                <p className="text-muted-foreground text-sm mb-1">שלום! 👋</p>
-                <h1 className="text-2xl font-bold">מה נבשל היום?</h1>
+                <h1 className="text-3xl font-bold mb-1">שלום {bbProfile.displayName} 👋</h1>
+                <p className="text-xl text-muted-foreground">מה נבשל היום?</p>
               </div>
               <div className="w-14 h-14 rounded-2xl overflow-hidden shadow-glow">
                 <img src={chefIcon} alt="BudgetBites" className="w-full h-full object-cover" />
