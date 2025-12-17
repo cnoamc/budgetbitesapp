@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { TrendingUp, Star, Target, Trophy, Flame, UtensilsCrossed } from 'lucide-react';
+import { TrendingUp, Star, Target, Trophy, Flame, UtensilsCrossed, Award } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { BottomNav } from '@/components/BottomNav';
 import { GradientBackground } from '@/components/ui/GradientBackground';
@@ -40,6 +40,17 @@ const MILESTONES = [
   { days: 7, emoji: '⭐', label: 'שבוע!' },
   { days: 14, emoji: '👨‍🍳', label: 'שף!' },
   { days: 30, emoji: '🔥', label: 'אלוף!' },
+];
+
+const ACHIEVEMENTS = [
+  { id: 'first_meal', emoji: '🍳', name: 'הארוחה הראשונה', description: 'בישלת את הארוחה הראשונה', check: (meals: number, savings: number) => meals >= 1 },
+  { id: 'five_meals', emoji: '🥘', name: 'שף מתחיל', description: 'בישלת 5 ארוחות', check: (meals: number, savings: number) => meals >= 5 },
+  { id: 'ten_meals', emoji: '👨‍🍳', name: 'שף מנוסה', description: 'בישלת 10 ארוחות', check: (meals: number, savings: number) => meals >= 10 },
+  { id: 'twenty_five_meals', emoji: '🌟', name: 'שף מקצועי', description: 'בישלת 25 ארוחות', check: (meals: number, savings: number) => meals >= 25 },
+  { id: 'fifty_meals', emoji: '👑', name: 'מלך המטבח', description: 'בישלת 50 ארוחות', check: (meals: number, savings: number) => meals >= 50 },
+  { id: 'save_100', emoji: '💰', name: 'חוסך מתחיל', description: 'חסכת ₪100', check: (meals: number, savings: number) => savings >= 100 },
+  { id: 'save_500', emoji: '💎', name: 'חוסך מומחה', description: 'חסכת ₪500', check: (meals: number, savings: number) => savings >= 500 },
+  { id: 'save_1000', emoji: '🏆', name: 'אלוף החיסכון', description: 'חסכת ₪1,000', check: (meals: number, savings: number) => savings >= 1000 },
 ];
 
 export const Progress: React.FC = () => {
@@ -201,7 +212,40 @@ export const Progress: React.FC = () => {
             </div>
           </PremiumCard>
 
-          {/* Average Rating */}
+          {/* Achievements */}
+          <PremiumCard className="p-5 mb-6 animate-slide-up" style={{ animationDelay: '0.12s' }}>
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-xl flex items-center justify-center">
+                <Award className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-lg">הישגים</h3>
+                <p className="text-xs text-muted-foreground">
+                  {ACHIEVEMENTS.filter(a => a.check(progress.totalMealsCooked, progress.totalSavings)).length}/{ACHIEVEMENTS.length} הושגו
+                </p>
+              </div>
+            </div>
+            <div className="grid grid-cols-4 gap-2">
+              {ACHIEVEMENTS.map((achievement) => {
+                const isUnlocked = achievement.check(progress.totalMealsCooked, progress.totalSavings);
+                return (
+                  <div
+                    key={achievement.id}
+                    className={`relative p-2 rounded-xl text-center transition-all ${
+                      isUnlocked
+                        ? 'bg-purple-100 dark:bg-purple-900/30 border border-purple-300 dark:border-purple-700'
+                        : 'bg-muted/30 opacity-40'
+                    }`}
+                    title={`${achievement.name}: ${achievement.description}`}
+                  >
+                    <p className="text-2xl mb-1">{isUnlocked ? achievement.emoji : '🔒'}</p>
+                    <p className="text-[10px] font-medium leading-tight truncate">{achievement.name}</p>
+                  </div>
+                );
+              })}
+            </div>
+          </PremiumCard>
+
           {progress.totalMealsCooked > 0 && (
             <PremiumCard className="p-5 mb-6 animate-slide-up" style={{ animationDelay: '0.15s' }}>
               <div className="flex items-center gap-3 mb-3">
