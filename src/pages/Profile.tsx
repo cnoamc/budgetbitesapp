@@ -1,13 +1,15 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Settings, RefreshCw, User, MapPin, LogOut, Pencil, Camera, X, Bell } from 'lucide-react';
+import { Settings, RefreshCw, User, MapPin, LogOut, Pencil, Camera, X, Bell, Moon } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import chefIcon from '@/assets/chef-icon.png';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Switch } from '@/components/ui/switch';
 import { BottomNav } from '@/components/BottomNav';
 import { useApp } from '@/contexts/AppContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNotifications } from '@/contexts/NotificationContext';
+import { useTheme } from '@/contexts/ThemeContext';
 import { NotificationSettings } from '@/components/NotificationSettings';
 import { getBBProfile, saveBBProfile, BBProfile } from '@/lib/storage';
 import { toast } from 'sonner';
@@ -35,6 +37,7 @@ export const Profile: React.FC = () => {
   const { profile, progress } = useApp();
   const { user, signOut } = useAuth();
   const { unreadCount } = useNotifications();
+  const { mode, toggleMode } = useTheme();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [bbProfile, setBBProfile] = useState<BBProfile>(() => getBBProfile());
@@ -282,12 +285,23 @@ export const Profile: React.FC = () => {
               <span className="text-muted-foreground">{profile.cookingSkill}/5</span>
             </div>
             
-            <div className="flex items-center justify-between py-2">
+            <div className="flex items-center justify-between py-2 border-b border-border/50">
               <div className="flex items-center gap-3">
                 <span className="text-xl">🍔</span>
                 <span>הזמנות שבועיות</span>
               </div>
               <span className="text-muted-foreground">{profile.weeklyOrders} פעמים</span>
+            </div>
+            
+            <div className="flex items-center justify-between py-2">
+              <div className="flex items-center gap-3">
+                <Moon className="w-5 h-5 text-muted-foreground" />
+                <span>מצב כהה</span>
+              </div>
+              <Switch
+                checked={mode === 'dark'}
+                onCheckedChange={toggleMode}
+              />
             </div>
           </div>
         </div>
@@ -360,7 +374,7 @@ export const Profile: React.FC = () => {
         </Dialog>
 
         {/* App Info */}
-        <div className="mt-8 text-center text-sm text-muted-foreground">
+        <div className="mt-4 text-center text-sm text-muted-foreground">
           <p>BudgetBites v1.0</p>
           <p>נבנה באהבה 🧡</p>
         </div>
