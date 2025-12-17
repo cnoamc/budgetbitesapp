@@ -66,7 +66,7 @@ export const Recipes: React.FC = () => {
                 className={cn(
                   "px-5 py-2.5 rounded-full whitespace-nowrap transition-all duration-300 text-sm font-medium btn-press flex items-center gap-1.5",
                   activeCategory === category
-                    ? "gradient-primary text-primary-foreground shadow-soft"
+                    ? "bg-black text-white shadow-soft"
                     : "bg-card text-muted-foreground hover:bg-secondary border border-border/50"
                 )}
               >
