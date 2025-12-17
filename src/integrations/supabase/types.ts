@@ -73,9 +73,11 @@ export type Database = {
           cooking_skill: number | null
           country: string | null
           created_at: string
+          display_name: string | null
           id: string
           monthly_spending: number | null
           onboarding_complete: boolean | null
+          photo_url: string | null
           preferred_food: string[] | null
           updated_at: string
           user_id: string
@@ -85,9 +87,11 @@ export type Database = {
           cooking_skill?: number | null
           country?: string | null
           created_at?: string
+          display_name?: string | null
           id?: string
           monthly_spending?: number | null
           onboarding_complete?: boolean | null
+          photo_url?: string | null
           preferred_food?: string[] | null
           updated_at?: string
           user_id: string
@@ -97,9 +101,11 @@ export type Database = {
           cooking_skill?: number | null
           country?: string | null
           created_at?: string
+          display_name?: string | null
           id?: string
           monthly_spending?: number | null
           onboarding_complete?: boolean | null
+          photo_url?: string | null
           preferred_food?: string[] | null
           updated_at?: string
           user_id?: string

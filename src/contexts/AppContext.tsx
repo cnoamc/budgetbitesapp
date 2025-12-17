@@ -3,6 +3,7 @@ import { UserProfile, UserProgress, defaultUserProfile, defaultUserProgress, Coo
 import { useAuth } from './AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { saveBBProfile, getBBProfile } from '@/lib/storage';
 
 interface AppContextType {
   profile: UserProfile;
@@ -11,9 +12,13 @@ interface AppContextType {
   monthlySavings: number;
   potentialMonthlySavings: number;
   yearlySavings: number;
+  displayName: string;
+  photoUrl: string | null;
   updateProfile: (updates: Partial<UserProfile>) => Promise<void>;
   completeOnboarding: () => Promise<void>;
   addCookedMeal: (meal: CookedMeal) => Promise<void>;
+  updateDisplayName: (name: string) => Promise<void>;
+  updatePhotoUrl: (url: string | null) => Promise<void>;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -26,6 +31,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const [monthlySavings, setMonthlySavings] = useState(0);
   const [potentialMonthlySavings, setPotentialMonthlySavings] = useState(0);
   const [yearlySavings, setYearlySavings] = useState(0);
+  const [displayName, setDisplayName] = useState('השף הביתי');
+  const [photoUrl, setPhotoUrl] = useState<string | null>(null);
 
   // Precompute savings when profile or progress changes
   useEffect(() => {
@@ -62,6 +69,10 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     } else {
       setProfile(defaultUserProfile);
       setProgress(defaultUserProgress);
+      // Load from localStorage for non-authenticated users
+      const bbProfile = getBBProfile();
+      setDisplayName(bbProfile.displayName);
+      setPhotoUrl(bbProfile.photoDataUrl);
       setLoading(false);
     }
   }, [user]);
@@ -89,6 +100,15 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
           cookingSkill: profileData.cooking_skill || 1,
           onboardingComplete: profileData.onboarding_complete || false,
         });
+        
+        // Load display name and photo from database
+        const dbDisplayName = (profileData as any).display_name || 'השף הביתי';
+        const dbPhotoUrl = (profileData as any).photo_url || null;
+        setDisplayName(dbDisplayName);
+        setPhotoUrl(dbPhotoUrl);
+        
+        // Sync to localStorage for offline access
+        saveBBProfile({ displayName: dbDisplayName, photoDataUrl: dbPhotoUrl });
       }
 
       // Load cooked meals
@@ -202,6 +222,44 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     }
   };
 
+  const updateDisplayName = async (name: string) => {
+    setDisplayName(name);
+    saveBBProfile({ displayName: name, photoDataUrl: photoUrl });
+
+    if (!user) return;
+
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .update({ display_name: name } as any)
+        .eq('user_id', user.id);
+
+      if (error) throw error;
+    } catch (error) {
+      console.error('Error updating display name:', error);
+      toast.error('שגיאה בשמירת השם');
+    }
+  };
+
+  const updatePhotoUrl = async (url: string | null) => {
+    setPhotoUrl(url);
+    saveBBProfile({ displayName, photoDataUrl: url });
+
+    if (!user) return;
+
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .update({ photo_url: url } as any)
+        .eq('user_id', user.id);
+
+      if (error) throw error;
+    } catch (error) {
+      console.error('Error updating photo:', error);
+      toast.error('שגיאה בשמירת התמונה');
+    }
+  };
+
   return (
     <AppContext.Provider value={{
       profile,
@@ -210,9 +268,13 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       monthlySavings,
       potentialMonthlySavings,
       yearlySavings,
+      displayName,
+      photoUrl,
       updateProfile,
       completeOnboarding,
       addCookedMeal,
+      updateDisplayName,
+      updatePhotoUrl,
     }}>
       {children}
     </AppContext.Provider>

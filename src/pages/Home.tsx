@@ -12,7 +12,6 @@ import { useApp } from '@/contexts/AppContext';
 import { useInactivityTracker } from '@/hooks/useInactivityTracker';
 import { recipes } from '@/lib/recipes';
 import { getRecipeImage } from '@/lib/recipeImages';
-import { getBBProfile } from '@/lib/storage';
 import chefIcon from '@/assets/chef-icon.png';
 
 const getTimeBasedGreeting = () => {
@@ -47,8 +46,7 @@ const getDailyTip = () => {
 
 export const Home: React.FC = () => {
   const navigate = useNavigate();
-  const { progress } = useApp();
-  const bbProfile = getBBProfile();
+  const { progress, displayName, photoUrl } = useApp();
   const greeting = getTimeBasedGreeting();
   const dailyTip = getDailyTip();
   
@@ -70,13 +68,13 @@ export const Home: React.FC = () => {
             <div className="flex items-center gap-4 mb-6" dir="rtl">
               <div className="w-14 h-14 rounded-2xl overflow-hidden shadow-glow shrink-0">
                 <img 
-                  src={bbProfile.photoDataUrl || chefIcon} 
+                  src={photoUrl || chefIcon} 
                   alt="Profile" 
                   className="w-full h-full object-cover" 
                 />
               </div>
               <div>
-                <h1 className="text-2xl font-bold">{greeting} {bbProfile.displayName} 👋</h1>
+                <h1 className="text-2xl font-bold">{greeting} {displayName} 👋</h1>
                 <p className="text-base text-muted-foreground">מה נבשל היום?</p>
               </div>
             </div>
