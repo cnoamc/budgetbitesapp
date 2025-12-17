@@ -8,6 +8,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { AppProvider } from "@/contexts/AppContext";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { NotificationProvider } from "@/contexts/NotificationContext";
+import { SubscriptionProvider } from "@/contexts/SubscriptionContext";
 import { NotificationBanner } from "@/components/NotificationBanner";
 import { PageTransition } from "@/components/PageTransition";
 import Welcome from "./pages/Welcome";
@@ -54,18 +55,20 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <ThemeProvider>
       <AuthProvider>
-        <AppProvider>
-          <NotificationProvider>
-            <TooltipProvider>
-              <Toaster />
-              <Sonner />
-              <NotificationBanner />
-              <BrowserRouter>
-                <AnimatedRoutes />
-              </BrowserRouter>
-            </TooltipProvider>
-          </NotificationProvider>
-        </AppProvider>
+        <SubscriptionProvider>
+          <AppProvider>
+            <NotificationProvider>
+              <TooltipProvider>
+                <Toaster />
+                <Sonner />
+                <NotificationBanner />
+                <BrowserRouter>
+                  <AnimatedRoutes />
+                </BrowserRouter>
+              </TooltipProvider>
+            </NotificationProvider>
+          </AppProvider>
+        </SubscriptionProvider>
       </AuthProvider>
     </ThemeProvider>
   </QueryClientProvider>

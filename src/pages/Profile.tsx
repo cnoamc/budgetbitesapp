@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Settings, RefreshCw, MapPin, LogOut, Pencil, Camera, X, Bell, Moon } from 'lucide-react';
+import { Settings, RefreshCw, MapPin, LogOut, Pencil, Camera, X, Bell, Moon, Crown } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import chefIcon from '@/assets/chef-icon.png';
 import { Button } from '@/components/ui/button';
@@ -7,10 +7,12 @@ import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import { BottomNav } from '@/components/BottomNav';
 import { SyncIndicator } from '@/components/SyncIndicator';
+import { TrialReminderBanner } from '@/components/PremiumPaywall';
 import { useApp } from '@/contexts/AppContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNotifications } from '@/contexts/NotificationContext';
 import { useTheme } from '@/contexts/ThemeContext';
+import { useSubscription } from '@/contexts/SubscriptionContext';
 import { NotificationSettings } from '@/components/NotificationSettings';
 import { toast } from 'sonner';
 import {
@@ -38,6 +40,7 @@ export const Profile: React.FC = () => {
   const { user, signOut } = useAuth();
   const { unreadCount } = useNotifications();
   const { resolvedMode, setMode } = useTheme();
+  const { daysLeftInTrial, isTrialActive, subscription, toggleCancelReminder } = useSubscription();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [isEditingName, setIsEditingName] = useState(false);
@@ -152,6 +155,15 @@ export const Profile: React.FC = () => {
   return (
     <div className="h-screen bg-background flex flex-col overflow-hidden">
       <div className="flex-1 p-4 pb-24 flex flex-col">
+        {/* Trial Reminder Banner */}
+        {isTrialActive && (
+          <TrialReminderBanner
+            daysLeft={daysLeftInTrial}
+            reminderEnabled={subscription?.cancel_reminder_enabled ?? true}
+            onToggleReminder={toggleCancelReminder}
+          />
+        )}
+
         {/* Profile Header - Compact */}
         <div className="text-center mb-3">
           <div className="relative inline-block">
@@ -191,6 +203,15 @@ export const Profile: React.FC = () => {
             {skillLabels[progress.skillLevel - 1]} • {progress.totalMealsCooked} ארוחות
           </p>
           {user && <p className="text-xs text-muted-foreground" dir="ltr">{user.email}</p>}
+          
+          {/* Subscription Badge */}
+          {isTrialActive && (
+            <div className="inline-flex items-center gap-1 mt-1 px-2 py-0.5 rounded-full bg-primary/10 text-primary text-xs font-medium">
+              <Crown className="w-3 h-3" />
+              Premium • תקופת ניסיון
+            </div>
+          )}
+          
           <div className="flex justify-center mt-2">
             <SyncIndicator syncing={syncing} />
           </div>

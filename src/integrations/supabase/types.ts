@@ -113,6 +113,42 @@ export type Database = {
         }
         Relationships: []
       }
+      subscriptions: {
+        Row: {
+          cancel_reminder_enabled: boolean
+          created_at: string
+          id: string
+          status: string
+          subscription_start: string | null
+          trial_end: string
+          trial_start: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          cancel_reminder_enabled?: boolean
+          created_at?: string
+          id?: string
+          status?: string
+          subscription_start?: string | null
+          trial_end?: string
+          trial_start?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          cancel_reminder_enabled?: boolean
+          created_at?: string
+          id?: string
+          status?: string
+          subscription_start?: string | null
+          trial_end?: string
+          trial_start?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
