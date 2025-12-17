@@ -102,7 +102,7 @@ export const Progress: React.FC = () => {
 
           {/* Cooking Streak */}
           <PremiumCard className="p-4 mb-4 animate-scale-in bg-orange-50 dark:bg-orange-950/20 border-orange-200 dark:border-orange-800/30" style={{ animationDelay: '0.15s' }}>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 mb-4">
               <div className="w-12 h-12 bg-orange-100 dark:bg-orange-900/30 rounded-xl flex items-center justify-center">
                 <Flame className="w-6 h-6 text-orange-500" />
               </div>
@@ -110,11 +110,37 @@ export const Progress: React.FC = () => {
                 <p className="text-sm text-muted-foreground">רצף בישול</p>
                 <p className="text-2xl font-bold">{streak} {streak === 1 ? 'יום' : 'ימים'} 🔥</p>
               </div>
-              {streak >= 3 && (
-                <span className="text-xs bg-orange-200 dark:bg-orange-800/50 text-orange-700 dark:text-orange-300 px-2 py-1 rounded-full">
-                  מדהים!
-                </span>
-              )}
+            </div>
+            
+            {/* Streak Milestones */}
+            <div className="flex gap-2">
+              <div className={`flex-1 p-3 rounded-xl text-center transition-all ${
+                streak >= 3 
+                  ? 'bg-orange-200 dark:bg-orange-800/50 border-2 border-orange-400' 
+                  : 'bg-muted/50 opacity-50'
+              }`}>
+                <p className="text-lg mb-1">{streak >= 3 ? '🏆' : '🔒'}</p>
+                <p className="text-xs font-medium">3 ימים</p>
+                <p className="text-[10px] text-muted-foreground">מתחיל</p>
+              </div>
+              <div className={`flex-1 p-3 rounded-xl text-center transition-all ${
+                streak >= 7 
+                  ? 'bg-orange-200 dark:bg-orange-800/50 border-2 border-orange-400' 
+                  : 'bg-muted/50 opacity-50'
+              }`}>
+                <p className="text-lg mb-1">{streak >= 7 ? '⭐' : '🔒'}</p>
+                <p className="text-xs font-medium">7 ימים</p>
+                <p className="text-[10px] text-muted-foreground">שבוע!</p>
+              </div>
+              <div className={`flex-1 p-3 rounded-xl text-center transition-all ${
+                streak >= 14 
+                  ? 'bg-orange-200 dark:bg-orange-800/50 border-2 border-orange-400' 
+                  : 'bg-muted/50 opacity-50'
+              }`}>
+                <p className="text-lg mb-1">{streak >= 14 ? '👨‍🍳' : '🔒'}</p>
+                <p className="text-xs font-medium">14 ימים</p>
+                <p className="text-[10px] text-muted-foreground">שף!</p>
+              </div>
             </div>
           </PremiumCard>
 
