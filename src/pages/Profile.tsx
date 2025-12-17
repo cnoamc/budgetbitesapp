@@ -11,7 +11,6 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useNotifications } from '@/contexts/NotificationContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { NotificationSettings } from '@/components/NotificationSettings';
-import { getBBProfile, saveBBProfile, BBProfile } from '@/lib/storage';
 import { toast } from 'sonner';
 import {
   Dialog,
@@ -34,25 +33,22 @@ import {
 
 export const Profile: React.FC = () => {
   const navigate = useNavigate();
-  const { profile, progress } = useApp();
+  const { profile, progress, displayName, photoUrl, updateDisplayName, updatePhotoUrl } = useApp();
   const { user, signOut } = useAuth();
   const { unreadCount } = useNotifications();
   const { resolvedMode, setMode } = useTheme();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const [bbProfile, setBBProfile] = useState<BBProfile>(() => getBBProfile());
   const [isEditingName, setIsEditingName] = useState(false);
   const [isNotificationSettingsOpen, setIsNotificationSettingsOpen] = useState(false);
   const [isSignOutDialogOpen, setIsSignOutDialogOpen] = useState(false);
-  const [editedName, setEditedName] = useState(bbProfile.displayName);
+  const [editedName, setEditedName] = useState(displayName);
 
   const skillLabels = ['מתחיל', 'בסיסי', 'מתקדם', 'מומחה', 'שף!'];
 
   useEffect(() => {
-    const stored = getBBProfile();
-    setBBProfile(stored);
-    setEditedName(stored.displayName);
-  }, []);
+    setEditedName(displayName);
+  }, [displayName]);
 
   const handleSignOut = async () => {
     try {
@@ -68,7 +64,7 @@ export const Profile: React.FC = () => {
     navigate('/onboarding');
   };
 
-  const handleSaveName = () => {
+  const handleSaveName = async () => {
     const trimmed = editedName.trim();
     if (trimmed.length < 2) {
       toast.error('השם חייב להכיל לפחות 2 תווים');
@@ -78,15 +74,13 @@ export const Profile: React.FC = () => {
       toast.error('השם יכול להכיל עד 24 תווים');
       return;
     }
-    const updated = { ...bbProfile, displayName: trimmed };
-    setBBProfile(updated);
-    saveBBProfile(updated);
+    await updateDisplayName(trimmed);
     setIsEditingName(false);
     toast.success('השם עודכן בהצלחה');
   };
 
   const handleCancelEdit = () => {
-    setEditedName(bbProfile.displayName);
+    setEditedName(displayName);
     setIsEditingName(false);
   };
 
@@ -141,9 +135,7 @@ export const Profile: React.FC = () => {
 
     try {
       const dataUrl = await compressImage(file);
-      const updated = { ...bbProfile, photoDataUrl: dataUrl };
-      setBBProfile(updated);
-      saveBBProfile(updated);
+      await updatePhotoUrl(dataUrl);
       toast.success('התמונה עודכנה בהצלחה');
     } catch (error) {
       toast.error('שגיאה בעיבוד התמונה');
@@ -154,10 +146,8 @@ export const Profile: React.FC = () => {
     }
   };
 
-  const handleRemovePhoto = () => {
-    const updated = { ...bbProfile, photoDataUrl: null };
-    setBBProfile(updated);
-    saveBBProfile(updated);
+  const handleRemovePhoto = async () => {
+    await updatePhotoUrl(null);
     toast.success('התמונה הוסרה');
   };
 
@@ -171,8 +161,8 @@ export const Profile: React.FC = () => {
               className="w-16 h-16 gradient-primary rounded-full mx-auto flex items-center justify-center shadow-glow cursor-pointer overflow-hidden group"
               onClick={handlePhotoClick}
             >
-              {bbProfile.photoDataUrl ? (
-                <img src={bbProfile.photoDataUrl} alt="Profile" className="w-full h-full object-cover" />
+              {photoUrl ? (
+                <img src={photoUrl} alt="Profile" className="w-full h-full object-cover" />
               ) : (
                 <img src={chefIcon} alt="Profile" className="w-full h-full object-cover" />
               )}
@@ -180,7 +170,7 @@ export const Profile: React.FC = () => {
                 <Camera className="w-5 h-5 text-white" />
               </div>
             </div>
-            {bbProfile.photoDataUrl && (
+            {photoUrl && (
               <button
                 onClick={(e) => { e.stopPropagation(); handleRemovePhoto(); }}
                 className="absolute -top-1 -right-1 w-5 h-5 bg-destructive rounded-full flex items-center justify-center shadow-md"
@@ -193,7 +183,7 @@ export const Profile: React.FC = () => {
           <input ref={fileInputRef} type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={handleFileChange} />
 
           <div className="flex items-center justify-center gap-1 mt-2">
-            <h1 className="text-xl font-bold">{bbProfile.displayName}</h1>
+            <h1 className="text-xl font-bold">{displayName}</h1>
             <button onClick={() => setIsEditingName(true)} className="p-1 hover:bg-muted rounded-full">
               <Pencil className="w-3 h-3 text-muted-foreground" />
             </button>
