@@ -6,6 +6,7 @@ import { motion } from 'framer-motion';
 import { useAuth } from '@/contexts/AuthContext';
 import { useSubscription } from '@/contexts/SubscriptionContext';
 import { toast } from 'sonner';
+import confetti from 'canvas-confetti';
 
 const Premium: React.FC = () => {
   const navigate = useNavigate();
@@ -27,6 +28,14 @@ const Premium: React.FC = () => {
 
   const handleStartTrial = async () => {
     setIsStarting(true);
+    
+    // Trigger confetti
+    confetti({
+      particleCount: 100,
+      spread: 70,
+      origin: { y: 0.6 }
+    });
+    
     await startTrial();
     toast.success('תקופת הניסיון החלה! 🎉');
     navigate('/home');
@@ -41,10 +50,10 @@ const Premium: React.FC = () => {
   }
 
   const features = [
-    '🍳 גישה לכל המתכונים',
+    '🔍 גישה לכל המתכונים',
     '🤖 עוזר בישול AI אישי',
     '💰 מעקב חיסכון מלא',
-    '📈 התקדמות ורמות',
+    'התקדמות ורמות',
     '🔔 התראות חכמות',
   ];
 
@@ -75,8 +84,8 @@ const Premium: React.FC = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
         >
-          <h1 className="text-[28px] font-bold mt-5 tracking-tight">נסה חודש חינם ✨</h1>
-          <p className="text-muted-foreground text-[15px] mt-1.5">אחר כך ₪4.99 לחודש 🎁</p>
+          <h1 className="text-[28px] font-bold mt-5 tracking-tight">נסה חודש חינם</h1>
+          <p className="text-muted-foreground text-[15px] mt-1.5">אחר כך ₪4.99 לחודש</p>
         </motion.div>
       </div>
 
@@ -151,7 +160,7 @@ const Premium: React.FC = () => {
           {isStarting ? (
             <div className="w-5 h-5 border-2 border-background border-t-transparent rounded-full animate-spin" />
           ) : (
-            <span className="relative z-10">🚀 התחל תקופת ניסיון</span>
+            <span className="relative z-10">התחל תקופת ניסיון</span>
           )}
         </Button>
 
