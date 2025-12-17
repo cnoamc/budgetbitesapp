@@ -51,7 +51,7 @@ export const Onboarding: React.FC = () => {
   };
 
   const spendingOptions = [500, 1000, 1500, 2000, 2500, 3000];
-  const orderOptions = [2, 4, 6, 8, 10];
+  const orderOptions = [1, 2, 4, 6, 8, 10];
 
   const canProceed = () => {
     switch (step) {
@@ -81,7 +81,7 @@ export const Onboarding: React.FC = () => {
         <div className="flex-1 flex flex-col justify-center animate-fade-in">
           {step === 1 && (
             <div className="space-y-4">
-              <h2 className="text-lg font-semibold text-center">
+              <h2 className="text-lg font-semibold text-center text-foreground">
                 כמה אתה מוציא על אוכל בחוץ בחודש?
               </h2>
               <div className="grid grid-cols-3 gap-2">
@@ -92,8 +92,8 @@ export const Onboarding: React.FC = () => {
                     className={cn(
                       "py-3 px-2 rounded-xl border-2 transition-all duration-200",
                       formData.monthlySpending === amount
-                        ? "border-primary bg-primary/10"
-                        : "border-border hover:border-primary/50"
+                        ? "border-primary bg-primary/10 text-foreground"
+                        : "border-border hover:border-primary/50 text-foreground"
                     )}
                   >
                     <span className="text-base font-bold">₪{amount.toLocaleString()}</span>
@@ -105,8 +105,8 @@ export const Onboarding: React.FC = () => {
                 className={cn(
                   "w-full py-3 rounded-xl border-2 transition-all duration-200",
                   formData.monthlySpending === 4000
-                    ? "border-primary bg-primary/10"
-                    : "border-border hover:border-primary/50"
+                    ? "border-primary bg-primary/10 text-foreground"
+                    : "border-border hover:border-primary/50 text-foreground"
                 )}
               >
                 <span className="text-base font-bold">יותר מ-₪3,000</span>
@@ -116,10 +116,10 @@ export const Onboarding: React.FC = () => {
 
           {step === 2 && (
             <div className="space-y-4">
-              <h2 className="text-lg font-semibold text-center">
+              <h2 className="text-lg font-semibold text-center text-foreground">
                 כמה פעמים בשבוע אתה מזמין משלוח?
               </h2>
-              <div className="grid grid-cols-5 gap-2">
+              <div className="grid grid-cols-3 gap-2">
                 {orderOptions.map((count) => (
                   <button
                     key={count}
@@ -127,20 +127,31 @@ export const Onboarding: React.FC = () => {
                     className={cn(
                       "py-3 rounded-xl border-2 transition-all duration-200",
                       formData.weeklyOrders === count
-                        ? "border-primary bg-primary/10"
-                        : "border-border hover:border-primary/50"
+                        ? "border-primary bg-primary/10 text-foreground"
+                        : "border-border hover:border-primary/50 text-foreground"
                     )}
                   >
-                    <span className="text-xl font-bold">{count}</span>
+                    <span className="text-xl font-bold">{count === 1 ? '1 או פחות' : count}</span>
                   </button>
                 ))}
               </div>
+              <button
+                onClick={() => setFormData({ ...formData, weeklyOrders: 12 })}
+                className={cn(
+                  "w-full py-3 rounded-xl border-2 transition-all duration-200",
+                  formData.weeklyOrders === 12
+                    ? "border-primary bg-primary/10 text-foreground"
+                    : "border-border hover:border-primary/50 text-foreground"
+                )}
+              >
+                <span className="text-base font-bold">יותר מ-10</span>
+              </button>
             </div>
           )}
 
           {step === 3 && (
             <div className="space-y-4">
-              <h2 className="text-lg font-semibold text-center">
+              <h2 className="text-lg font-semibold text-center text-foreground">
                 מה אתה בדרך כלל מזמין?
               </h2>
               <p className="text-center text-muted-foreground text-xs">אפשר לבחור כמה</p>
@@ -152,8 +163,8 @@ export const Onboarding: React.FC = () => {
                     className={cn(
                       "py-3 rounded-xl border-2 transition-all duration-200 flex flex-col items-center gap-1",
                       formData.preferredFood.includes(food.id)
-                        ? "border-primary bg-primary/10"
-                        : "border-border hover:border-primary/50"
+                        ? "border-primary bg-primary/10 text-foreground"
+                        : "border-border hover:border-primary/50 text-foreground"
                     )}
                   >
                     <span className="text-2xl">{food.emoji}</span>
@@ -166,7 +177,7 @@ export const Onboarding: React.FC = () => {
 
           {step === 4 && (
             <div className="space-y-4">
-              <h2 className="text-lg font-semibold text-center">
+              <h2 className="text-lg font-semibold text-center text-foreground">
                 האם אתה יודע לבשל?
               </h2>
               <div className="space-y-2">
@@ -177,8 +188,8 @@ export const Onboarding: React.FC = () => {
                     className={cn(
                       "w-full py-3 px-4 rounded-xl border-2 transition-all duration-200 flex items-center gap-3",
                       formData.cookingSkill === level
-                        ? "border-primary bg-primary/10"
-                        : "border-border hover:border-primary/50"
+                        ? "border-primary bg-primary/10 text-foreground"
+                        : "border-border hover:border-primary/50 text-foreground"
                     )}
                   >
                     <div className="flex gap-1">
@@ -202,7 +213,7 @@ export const Onboarding: React.FC = () => {
           {step === 5 && (
             <div className="space-y-4 text-center">
               <div className="text-5xl">🎉</div>
-              <h2 className="text-xl font-semibold">מעולה! סיימנו!</h2>
+              <h2 className="text-xl font-semibold text-foreground">מעולה! סיימנו!</h2>
               <p className="text-muted-foreground text-sm">
                 עכשיו נראה לך כמה כסף אתה יכול לחסוך
                 <br />
