@@ -48,20 +48,11 @@ const Welcome: React.FC = () => {
     }
   }, [user, loading, navigate]);
 
-  const [ripple, setRipple] = useState<{ x: number; y: number } | null>(null);
-
-  const handleStart = (e: React.MouseEvent<HTMLButtonElement>) => {
-    // Create ripple effect
-    const rect = e.currentTarget.getBoundingClientRect();
-    setRipple({
-      x: e.clientX - rect.left,
-      y: e.clientY - rect.top,
-    });
-    
+  const handleStart = () => {
     setZooming(true);
     setTimeout(() => {
       navigate('/onboarding');
-    }, 500);
+    }, 400);
   };
 
   if (loading) {
@@ -163,24 +154,13 @@ const Welcome: React.FC = () => {
           {/* CTA Button - triggers zoom then navigates */}
           <Button
             onClick={handleStart}
-            className="w-full h-[60px] rounded-2xl text-[17px] font-semibold transition-all active:scale-[0.96] relative overflow-hidden"
+            className="w-full h-[60px] rounded-2xl text-[17px] font-semibold transition-all active:scale-[0.98]"
             style={{
               background: '#1D1D1F',
               color: 'white',
               boxShadow: '0 8px 30px -6px rgba(0, 0, 0, 0.3)'
             }}
           >
-            {ripple && (
-              <span
-                className="absolute rounded-full bg-white/30 animate-ping"
-                style={{
-                  left: ripple.x - 20,
-                  top: ripple.y - 20,
-                  width: 40,
-                  height: 40,
-                }}
-              />
-            )}
             בואו נתחיל
           </Button>
 
