@@ -1,14 +1,41 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 import chefIcon from '@/assets/chef-icon.png';
+
+const FOOD_EMOJIS = ['🍔', '🍕', '🍝', '🥗', '🍜', '🥘', '🍳', '🥙', '🌮', '🍲', '🥪', '🍱', '🧆', '🥐', '🍰'];
+
+interface FloatingEmoji {
+  emoji: string;
+  x: number;
+  y: number;
+  size: number;
+  opacity: number;
+  rotation: number;
+}
 
 const Welcome: React.FC = () => {
   const navigate = useNavigate();
   const { user, loading } = useAuth();
   const [mounted, setMounted] = useState(false);
   const [zooming, setZooming] = useState(false);
+
+  // Generate random floating emojis
+  const floatingEmojis = useMemo<FloatingEmoji[]>(() => {
+    const emojis: FloatingEmoji[] = [];
+    for (let i = 0; i < 20; i++) {
+      emojis.push({
+        emoji: FOOD_EMOJIS[Math.floor(Math.random() * FOOD_EMOJIS.length)],
+        x: Math.random() * 100,
+        y: Math.random() * 100,
+        size: 20 + Math.random() * 24,
+        opacity: 0.15 + Math.random() * 0.2,
+        rotation: Math.random() * 360,
+      });
+    }
+    return emojis;
+  }, []);
 
   useEffect(() => {
     setMounted(true);
@@ -49,6 +76,25 @@ const Welcome: React.FC = () => {
         style={{ background: 'linear-gradient(180deg, #F8F9FF 0%, #FFE8F0 50%, #F0FFF6 100%)' }}
       />
 
+      {/* Floating emoji wallpaper */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        {floatingEmojis.map((item, index) => (
+          <span
+            key={index}
+            className="absolute select-none"
+            style={{
+              left: `${item.x}%`,
+              top: `${item.y}%`,
+              fontSize: `${item.size}px`,
+              opacity: item.opacity,
+              transform: `rotate(${item.rotation}deg)`,
+            }}
+          >
+            {item.emoji}
+          </span>
+        ))}
+      </div>
+
       {/* Pink radial glow behind icon */}
       <div 
         className="fixed w-[500px] h-[500px] rounded-full blur-3xl opacity-50 pointer-events-none"
@@ -84,12 +130,12 @@ const Welcome: React.FC = () => {
         {/* Bottom section with text and CTA */}
         <div className={`px-6 pb-10 pt-4 transition-all duration-700 ${mounted ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'}`} style={{ transitionDelay: '300ms' }}>
           {/* App name */}
-          <p className="text-center text-sm font-medium text-foreground/50 tracking-widest mb-4 uppercase">
+          <p className="text-center text-sm font-medium text-gray-500 tracking-widest mb-4 uppercase">
             BudgetBites
           </p>
 
           {/* Main headline */}
-          <h1 className="text-center text-[2.5rem] font-bold text-foreground mb-1 leading-[1.1]">
+          <h1 className="text-center text-[2.5rem] font-bold text-gray-900 mb-1 leading-[1.1]">
             בישול קל.
           </h1>
           <h1 
@@ -121,9 +167,9 @@ const Welcome: React.FC = () => {
           <div className="text-center mt-5">
             <button 
               onClick={() => navigate('/signin')}
-              className="text-[15px] text-muted-foreground/80 hover:text-foreground transition-colors"
+              className="text-[15px] text-gray-500 hover:text-gray-900 transition-colors"
             >
-              כבר יש לך חשבון? <span className="font-semibold text-foreground">התחבר</span>
+              כבר יש לך חשבון? <span className="font-semibold text-gray-900">התחבר</span>
             </button>
           </div>
         </div>
