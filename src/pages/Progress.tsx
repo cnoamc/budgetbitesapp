@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { TrendingUp, Star, Target, Trophy, Flame } from 'lucide-react';
+import confetti from 'canvas-confetti';
 import { BottomNav } from '@/components/BottomNav';
 import { GradientBackground } from '@/components/ui/GradientBackground';
 import { PremiumCard } from '@/components/ui/PremiumCard';
@@ -33,12 +34,41 @@ const calculateStreak = (cookedMeals: { date: string }[]) => {
   return streak;
 };
 
+const MILESTONES = [
+  { days: 3, emoji: '🏆', label: 'מתחיל' },
+  { days: 7, emoji: '⭐', label: 'שבוע!' },
+  { days: 14, emoji: '👨‍🍳', label: 'שף!' },
+  { days: 30, emoji: '🔥', label: 'אלוף!' },
+];
+
 export const Progress: React.FC = () => {
   const { progress, monthlySavings } = useApp();
+  const celebratedRef = useRef<Set<number>>(new Set());
 
   const skillLabels = ['מתחיל', 'בסיסי', 'מתקדם', 'מומחה', 'שף!'];
   const skillEmojis = ['🌱', '🌿', '🌳', '⭐', '👨‍🍳'];
   const streak = calculateStreak(progress.cookedMeals);
+
+  // Confetti on milestone unlock
+  useEffect(() => {
+    const celebratedMilestones = JSON.parse(localStorage.getItem('bb_celebrated_milestones') || '[]');
+    celebratedRef.current = new Set(celebratedMilestones);
+
+    MILESTONES.forEach(milestone => {
+      if (streak >= milestone.days && !celebratedRef.current.has(milestone.days)) {
+        celebratedRef.current.add(milestone.days);
+        localStorage.setItem('bb_celebrated_milestones', JSON.stringify([...celebratedRef.current]));
+        
+        // Fire confetti!
+        confetti({
+          particleCount: 100,
+          spread: 70,
+          origin: { y: 0.6 },
+          colors: ['#ff6b35', '#f7c631', '#ff9500']
+        });
+      }
+    });
+  }, [streak]);
 
   return (
     <GradientBackground variant="warm">
@@ -112,34 +142,46 @@ export const Progress: React.FC = () => {
               </div>
             </div>
             
-            {/* Streak Milestones */}
-            <div className="flex gap-2">
-              <div className={`flex-1 p-3 rounded-xl text-center transition-all ${
-                streak >= 3 
-                  ? 'bg-orange-200 dark:bg-orange-800/50 border-2 border-orange-400' 
-                  : 'bg-muted/50 opacity-50'
-              }`}>
-                <p className="text-lg mb-1">{streak >= 3 ? '🏆' : '🔒'}</p>
-                <p className="text-xs font-medium">3 ימים</p>
-                <p className="text-[10px] text-muted-foreground">מתחיל</p>
-              </div>
-              <div className={`flex-1 p-3 rounded-xl text-center transition-all ${
-                streak >= 7 
-                  ? 'bg-orange-200 dark:bg-orange-800/50 border-2 border-orange-400' 
-                  : 'bg-muted/50 opacity-50'
-              }`}>
-                <p className="text-lg mb-1">{streak >= 7 ? '⭐' : '🔒'}</p>
-                <p className="text-xs font-medium">7 ימים</p>
-                <p className="text-[10px] text-muted-foreground">שבוע!</p>
-              </div>
-              <div className={`flex-1 p-3 rounded-xl text-center transition-all ${
-                streak >= 14 
-                  ? 'bg-orange-200 dark:bg-orange-800/50 border-2 border-orange-400' 
-                  : 'bg-muted/50 opacity-50'
-              }`}>
-                <p className="text-lg mb-1">{streak >= 14 ? '👨‍🍳' : '🔒'}</p>
-                <p className="text-xs font-medium">14 ימים</p>
-                <p className="text-[10px] text-muted-foreground">שף!</p>
+            {/* Streak Road Progress */}
+            <div className="relative pt-2 pb-1">
+              {/* Progress Line Background */}
+              <div className="absolute top-1/2 left-4 right-4 h-2 bg-muted/50 rounded-full -translate-y-1/2" />
+              
+              {/* Progress Line Fill */}
+              <div 
+                className="absolute top-1/2 left-4 h-2 bg-gradient-to-r from-orange-400 to-orange-500 rounded-full -translate-y-1/2 transition-all duration-500"
+                style={{ 
+                  width: `calc(${Math.min(streak / 30, 1) * 100}% - 32px)`,
+                  maxWidth: 'calc(100% - 32px)'
+                }}
+              />
+              
+              {/* Milestone Nodes */}
+              <div className="relative flex justify-between px-2">
+                {MILESTONES.map((milestone, index) => {
+                  const isUnlocked = streak >= milestone.days;
+                  const progress = Math.min(streak / milestone.days, 1);
+                  
+                  return (
+                    <div key={milestone.days} className="flex flex-col items-center z-10">
+                      <div 
+                        className={`w-10 h-10 rounded-full flex items-center justify-center text-lg transition-all duration-300 ${
+                          isUnlocked 
+                            ? 'bg-gradient-to-br from-orange-400 to-orange-500 shadow-lg scale-110' 
+                            : 'bg-muted border-2 border-muted-foreground/20'
+                        }`}
+                      >
+                        {isUnlocked ? milestone.emoji : '🔒'}
+                      </div>
+                      <p className={`text-xs font-medium mt-1 ${isUnlocked ? 'text-orange-600 dark:text-orange-400' : 'text-muted-foreground'}`}>
+                        {milestone.days} ימים
+                      </p>
+                      <p className={`text-[10px] ${isUnlocked ? 'text-orange-500' : 'text-muted-foreground/60'}`}>
+                        {milestone.label}
+                      </p>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </PremiumCard>
