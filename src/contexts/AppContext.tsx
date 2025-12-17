@@ -284,8 +284,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         .eq('user_id', user.id);
 
       if (error) throw error;
-      console.log('✅ Display name saved to cloud:', name);
-      toast.success('השם נשמר בענן ☁️');
+      console.log('✅ Display name saved:', name);
+      toast.success('השם נשמר ✓');
     } catch (error) {
       console.error('Error updating display name:', error);
       toast.error('שגיאה בשמירת השם');
@@ -308,8 +308,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         .eq('user_id', user.id);
 
       if (error) throw error;
-      console.log('✅ Photo saved to cloud:', url ? 'New photo uploaded' : 'Photo removed');
-      toast.success(url ? 'התמונה נשמרה בענן ☁️' : 'התמונה הוסרה מהענן');
+      console.log('✅ Photo saved:', url ? 'New photo uploaded' : 'Photo removed');
+      toast.success(url ? 'התמונה נשמרה ✓' : 'התמונה הוסרה ✓');
     } catch (error) {
       console.error('Error updating photo:', error);
       toast.error('שגיאה בשמירת התמונה');
