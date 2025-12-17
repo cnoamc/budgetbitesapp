@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, useRef, ReactNode } from 'react';
 import { UserProfile, UserProgress, defaultUserProfile, defaultUserProgress, CookedMeal } from '@/lib/types';
 import { useAuth } from './AuthContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -9,6 +9,7 @@ interface AppContextType {
   profile: UserProfile;
   progress: UserProgress;
   loading: boolean;
+  syncing: boolean;
   monthlySavings: number;
   potentialMonthlySavings: number;
   yearlySavings: number;
@@ -28,11 +29,13 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const [profile, setProfile] = useState<UserProfile>(defaultUserProfile);
   const [progress, setProgress] = useState<UserProgress>(defaultUserProgress);
   const [loading, setLoading] = useState(true);
+  const [syncing, setSyncing] = useState(false);
   const [monthlySavings, setMonthlySavings] = useState(0);
   const [potentialMonthlySavings, setPotentialMonthlySavings] = useState(0);
   const [yearlySavings, setYearlySavings] = useState(0);
   const [displayName, setDisplayName] = useState('השף הביתי');
   const [photoUrl, setPhotoUrl] = useState<string | null>(null);
+  const realtimeChannelRef = useRef<any>(null);
 
   // Precompute savings when profile or progress changes
   useEffect(() => {
@@ -66,6 +69,51 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   useEffect(() => {
     if (user) {
       loadUserData();
+      
+      // Set up realtime subscription for profile changes
+      const channel = supabase
+        .channel(`profile-${user.id}`)
+        .on(
+          'postgres_changes',
+          {
+            event: 'UPDATE',
+            schema: 'public',
+            table: 'profiles',
+            filter: `user_id=eq.${user.id}`,
+          },
+          (payload) => {
+            console.log('Profile updated from another device:', payload);
+            const newData = payload.new as any;
+            
+            // Update profile state
+            setProfile({
+              monthlySpending: newData.monthly_spending || 0,
+              weeklyOrders: newData.weekly_orders || 0,
+              preferredFood: newData.preferred_food || [],
+              country: newData.country || 'IL',
+              cookingSkill: newData.cooking_skill || 1,
+              onboardingComplete: newData.onboarding_complete || false,
+            });
+            
+            // Update display name and photo
+            const dbDisplayName = newData.display_name || 'השף הביתי';
+            const dbPhotoUrl = newData.photo_url || null;
+            setDisplayName(dbDisplayName);
+            setPhotoUrl(dbPhotoUrl);
+            
+            // Sync to localStorage
+            saveBBProfile({ displayName: dbDisplayName, photoDataUrl: dbPhotoUrl });
+          }
+        )
+        .subscribe();
+      
+      realtimeChannelRef.current = channel;
+      
+      return () => {
+        if (realtimeChannelRef.current) {
+          supabase.removeChannel(realtimeChannelRef.current);
+        }
+      };
     } else {
       setProfile(defaultUserProfile);
       setProgress(defaultUserProgress);
@@ -228,6 +276,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
     if (!user) return;
 
+    setSyncing(true);
     try {
       const { error } = await supabase
         .from('profiles')
@@ -238,6 +287,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     } catch (error) {
       console.error('Error updating display name:', error);
       toast.error('שגיאה בשמירת השם');
+    } finally {
+      setSyncing(false);
     }
   };
 
@@ -247,6 +298,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
     if (!user) return;
 
+    setSyncing(true);
     try {
       const { error } = await supabase
         .from('profiles')
@@ -257,6 +309,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     } catch (error) {
       console.error('Error updating photo:', error);
       toast.error('שגיאה בשמירת התמונה');
+    } finally {
+      setSyncing(false);
     }
   };
 
@@ -265,6 +319,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       profile,
       progress,
       loading,
+      syncing,
       monthlySavings,
       potentialMonthlySavings,
       yearlySavings,

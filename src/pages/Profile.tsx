@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import { BottomNav } from '@/components/BottomNav';
+import { SyncIndicator } from '@/components/SyncIndicator';
 import { useApp } from '@/contexts/AppContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNotifications } from '@/contexts/NotificationContext';
@@ -33,7 +34,7 @@ import {
 
 export const Profile: React.FC = () => {
   const navigate = useNavigate();
-  const { profile, progress, displayName, photoUrl, updateDisplayName, updatePhotoUrl } = useApp();
+  const { profile, progress, displayName, photoUrl, updateDisplayName, updatePhotoUrl, syncing } = useApp();
   const { user, signOut } = useAuth();
   const { unreadCount } = useNotifications();
   const { resolvedMode, setMode } = useTheme();
@@ -193,6 +194,9 @@ export const Profile: React.FC = () => {
             {skillLabels[progress.skillLevel - 1]} • {progress.totalMealsCooked} ארוחות
           </p>
           {user && <p className="text-xs text-muted-foreground" dir="ltr">{user.email}</p>}
+          <div className="flex justify-center mt-2">
+            <SyncIndicator syncing={syncing} />
+          </div>
         </div>
 
         {/* Settings Card - Compact */}
