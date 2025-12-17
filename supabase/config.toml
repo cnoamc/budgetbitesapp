@@ -2,3 +2,6 @@ project_id = "awgblmeyyvrevnncfqho"
 
 [functions.cooking-assistant]
 verify_jwt = false
+
+[functions.trial-reminder]
+verify_jwt = false
