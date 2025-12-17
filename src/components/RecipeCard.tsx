@@ -89,7 +89,7 @@ export const RecipeCard: React.FC<RecipeCardProps> = ({
           
           <div className="flex items-center justify-between">
             <span className="text-base font-semibold">₪{recipe.homeCost}</span>
-            <span className="flex items-center gap-1.5 text-savings text-sm font-medium bg-savings-light px-3 py-1.5 rounded-full">
+            <span className="flex items-center gap-1.5 text-savings text-sm font-medium bg-savings-light px-3 py-1.5 rounded-full animate-fade-in">
               <TrendingUp className="w-3.5 h-3.5" />
               חיסכון ₪{savings}
             </span>

@@ -130,6 +130,7 @@ export const RecipeDetail: React.FC = () => {
         <div className="max-w-lg mx-auto">
           <Button
             onClick={() => navigate(`/cook/${recipe.id}`)}
+            variant="cook"
             size="xl"
             className="w-full"
           >

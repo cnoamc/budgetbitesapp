@@ -101,7 +101,7 @@ export const Home: React.FC = () => {
                   </div>
                 </div>
               </div>
-              <Button className="w-full mt-4 h-12 rounded-xl text-base btn-press">
+              <Button variant="cook" className="w-full mt-4 h-12 rounded-xl text-base btn-press">
                 בוא נבשל! 🍳
                 <ArrowLeft className="w-4 h-4" />
               </Button>
