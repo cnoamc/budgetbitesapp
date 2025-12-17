@@ -57,8 +57,8 @@
     /* Custom tokens - Green savings for visibility */
     --savings: 142 71% 35%;
     --savings-light: 142 76% 94%;
-    --warning: 0 0% 45%;
-    --warning-light: 0 0% 96%;
+    --warning: 38 92% 50%;
+    --warning-light: 45 93% 90%;
     
     /* Minimal gradients */
     --gradient-primary: linear-gradient(135deg, hsl(0 0% 9%) 0%, hsl(0 0% 20%) 100%);
@@ -121,8 +121,8 @@
 
     --savings: 142 71% 50%;
     --savings-light: 142 60% 20%;
-    --warning: 0 0% 55%;
-    --warning-light: 0 0% 15%;
+    --warning: 38 92% 55%;
+    --warning-light: 45 70% 25%;
     
     --glass-bg: hsl(0 0% 8% / 0.9);
     --glass-border: hsl(0 0% 20%);
