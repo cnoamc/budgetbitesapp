@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Check, Shield, Bell, CreditCard } from 'lucide-react';
+import { Shield, Bell } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 import { useAuth } from '@/contexts/AuthContext';
 import { useSubscription } from '@/contexts/SubscriptionContext';
 import { toast } from 'sonner';
-import chefIcon from '@/assets/chef-icon.png';
 
 const Premium: React.FC = () => {
   const navigate = useNavigate();
@@ -14,144 +13,103 @@ const Premium: React.FC = () => {
   const { subscription, loading: subLoading, hasStartedTrial, startTrial } = useSubscription();
   const [isStarting, setIsStarting] = useState(false);
 
-  // Redirect if not logged in
   useEffect(() => {
     if (!authLoading && !user) {
       navigate('/signin');
     }
   }, [user, authLoading, navigate]);
 
-  // Redirect if already started trial
   useEffect(() => {
     if (!subLoading && subscription && hasStartedTrial) {
       navigate('/home');
     }
   }, [subscription, subLoading, hasStartedTrial, navigate]);
 
-  const features = [
-    'גישה מלאה לכל המתכונים',
-    'עוזר בישול AI אישי - שפי 👨‍🍳',
-    'מעקב חיסכון מפורט',
-    'התקדמות ורמות מיומנות',
-    'התראות חכמות ומותאמות אישית',
-  ];
-
   const handleStartTrial = async () => {
     setIsStarting(true);
-    
-    // Start the trial in database
     await startTrial();
-    
     toast.success('תקופת הניסיון החלה! 🎉');
-    toast('תזכורת לביטול מופעלת אוטומטית', {
-      description: 'נזכיר לך יום לפני סיום התקופה',
+    toast('תזכורת לביטול מופעלת', {
+      description: 'נזכיר לך יום לפני סיום',
       icon: <Bell className="w-4 h-4" />,
     });
-    
     navigate('/home');
   };
 
   if (authLoading || subLoading) {
     return (
       <div className="h-[100dvh] flex items-center justify-center bg-background">
-        <div className="w-16 h-16 rounded-2xl overflow-hidden shadow-glow animate-pulse">
-          <img src={chefIcon} alt="BudgetBites" className="w-full h-full object-cover" />
-        </div>
+        <div className="w-12 h-12 rounded-full border-2 border-primary border-t-transparent animate-spin" />
       </div>
     );
   }
 
   return (
     <div className="h-[100dvh] bg-background flex flex-col overflow-hidden" dir="rtl">
-      {/* Header with gradient */}
-      <div className="relative pt-12 pb-8 px-6 text-center">
-        <div 
-          className="absolute inset-0 opacity-50"
-          style={{ background: 'linear-gradient(180deg, hsl(var(--primary) / 0.1) 0%, transparent 100%)' }}
-        />
-        
+      {/* Header */}
+      <div className="pt-12 pb-6 px-6 text-center">
         <motion.div
-          initial={{ scale: 0.8, opacity: 0 }}
+          initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 0.5 }}
-          className="relative"
+          className="text-5xl mb-3"
         >
-          <div className="w-24 h-24 mx-auto mb-4 rounded-3xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center shadow-lg">
-            <img src={chefIcon} alt="BudgetBites Premium" className="w-16 h-16" />
-          </div>
-          <h1 className="text-2xl font-bold mb-1">BudgetBites Premium</h1>
-          <p className="text-muted-foreground">חודש ראשון חינם לחלוטין</p>
+          👨‍🍳
         </motion.div>
+        <h1 className="text-2xl font-bold">חודש ראשון חינם</h1>
+        <p className="text-muted-foreground text-sm mt-1">בטל בכל עת • נזכיר לך לפני</p>
       </div>
 
-      {/* Features */}
-      <div className="flex-1 px-6 overflow-y-auto">
-        <div className="bg-card rounded-2xl p-5 shadow-card border border-border/50 space-y-4">
-          <h2 className="font-semibold text-sm text-muted-foreground">מה כלול:</h2>
-          {features.map((feature, index) => (
+      {/* Features - Simple with emojis */}
+      <div className="flex-1 px-6 flex flex-col justify-center">
+        <div className="space-y-4">
+          {[
+            { emoji: '📖', text: 'כל המתכונים' },
+            { emoji: '🤖', text: 'עוזר בישול AI' },
+            { emoji: '💰', text: 'מעקב חיסכון' },
+            { emoji: '📈', text: 'התקדמות ורמות' },
+            { emoji: '🔔', text: 'התראות חכמות' },
+          ].map((feature, index) => (
             <motion.div
-              key={feature}
+              key={feature.text}
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.1 + index * 0.1 }}
+              transition={{ delay: index * 0.08 }}
               className="flex items-center gap-3"
             >
-              <div className="w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                <Check className="w-4 h-4 text-primary" />
-              </div>
-              <span className="text-sm">{feature}</span>
+              <span className="text-2xl">{feature.emoji}</span>
+              <span className="text-base">{feature.text}</span>
             </motion.div>
           ))}
         </div>
 
-        {/* Pricing Card */}
+        {/* Timeline - How it works */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6 }}
-          className="mt-6 bg-card rounded-2xl p-5 shadow-card border border-border/50 text-center"
+          transition={{ delay: 0.5 }}
+          className="mt-8 bg-card rounded-2xl p-4 border border-border/50"
         >
-          <div className="inline-flex items-baseline gap-1 mb-2">
-            <span className="text-5xl font-bold">₪4.99</span>
-            <span className="text-muted-foreground text-lg">/חודש</span>
-          </div>
-          <p className="text-sm text-muted-foreground">אחרי 30 יום של ניסיון חינם</p>
-          
-          <div className="mt-4 pt-4 border-t border-border/50">
-            <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
-              <CreditCard className="w-4 h-4" />
-              <span>נדרש כרטיס אשראי • לא יחויב עכשיו</span>
+          <div className="flex justify-between text-center">
+            <div className="flex-1">
+              <div className="text-lg font-bold">היום</div>
+              <p className="text-xs text-muted-foreground">גישה מלאה</p>
             </div>
-          </div>
-        </motion.div>
-
-        {/* How it works */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.8 }}
-          className="mt-6 space-y-3"
-        >
-          <h3 className="text-sm font-semibold text-center">איך זה עובד?</h3>
-          <div className="grid grid-cols-3 gap-2 text-center">
-            <div className="bg-card/50 rounded-xl p-3">
-              <div className="text-lg font-bold text-primary">היום</div>
-              <p className="text-xs text-muted-foreground mt-1">גישה מלאה חינם</p>
+            <div className="w-px bg-border/50" />
+            <div className="flex-1">
+              <div className="text-lg font-bold">יום 29</div>
+              <p className="text-xs text-muted-foreground">תזכורת</p>
             </div>
-            <div className="bg-card/50 rounded-xl p-3">
-              <div className="text-lg font-bold text-primary">יום 29</div>
-              <p className="text-xs text-muted-foreground mt-1">נזכיר לך</p>
-            </div>
-            <div className="bg-card/50 rounded-xl p-3">
-              <div className="text-lg font-bold text-primary">יום 30</div>
-              <p className="text-xs text-muted-foreground mt-1">₪4.99 לחודש</p>
+            <div className="w-px bg-border/50" />
+            <div className="flex-1">
+              <div className="text-lg font-bold">יום 30</div>
+              <p className="text-xs text-muted-foreground">₪4.99/חודש</p>
             </div>
           </div>
         </motion.div>
       </div>
 
-      {/* CTA Section */}
-      <div className="p-6 pb-8 space-y-4 bg-gradient-to-t from-background via-background to-transparent">
+      {/* CTA Section - Fixed at bottom */}
+      <div className="p-6 pb-10 space-y-4">
         <Button
           onClick={handleStartTrial}
           disabled={isStarting}
@@ -164,16 +122,9 @@ const Premium: React.FC = () => {
           )}
         </Button>
 
-        {/* Trust badges */}
-        <div className="flex items-center justify-center gap-6 text-xs text-muted-foreground">
-          <div className="flex items-center gap-1.5">
-            <Shield className="w-4 h-4" />
-            <span>בטל בכל עת</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <Bell className="w-4 h-4" />
-            <span>תזכורת אוטומטית</span>
-          </div>
+        <div className="flex items-center justify-center gap-1 text-xs text-muted-foreground">
+          <Shield className="w-3.5 h-3.5" />
+          <span>לא יחויב תשלום עכשיו</span>
         </div>
       </div>
     </div>
