@@ -41,11 +41,11 @@ const Premium: React.FC = () => {
   }
 
   const features = [
-    'גישה לכל המתכונים',
-    'עוזר בישול AI אישי',
-    'מעקב חיסכון מלא',
-    'התקדמות ורמות',
-    'התראות חכמות',
+    '🍳 גישה לכל המתכונים',
+    '🤖 עוזר בישול AI אישי',
+    '💰 מעקב חיסכון מלא',
+    '📈 התקדמות ורמות',
+    '🔔 התראות חכמות',
   ];
 
   return (
@@ -75,8 +75,8 @@ const Premium: React.FC = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
         >
-          <h1 className="text-[28px] font-bold mt-5 tracking-tight">נסה חודש חינם</h1>
-          <p className="text-muted-foreground text-[15px] mt-1.5">אחר כך ₪4.99 לחודש</p>
+          <h1 className="text-[28px] font-bold mt-5 tracking-tight">נסה חודש חינם ✨</h1>
+          <p className="text-muted-foreground text-[15px] mt-1.5">אחר כך ₪4.99 לחודש 🎁</p>
         </motion.div>
       </div>
 
@@ -114,21 +114,21 @@ const Premium: React.FC = () => {
           className="mt-5 flex items-center justify-between text-center px-2"
         >
           <div className="flex-1">
-            <div className="text-[13px] font-semibold">היום</div>
+            <div className="text-[13px] font-semibold">היום 🎉</div>
             <p className="text-[11px] text-muted-foreground mt-0.5">גישה מלאה</p>
           </div>
           <div className="flex-1 flex justify-center">
             <div className="w-16 h-[1px] bg-border self-center" />
           </div>
           <div className="flex-1">
-            <div className="text-[13px] font-semibold">יום 29</div>
+            <div className="text-[13px] font-semibold">יום 29 📩</div>
             <p className="text-[11px] text-muted-foreground mt-0.5">נזכיר לך</p>
           </div>
           <div className="flex-1 flex justify-center">
             <div className="w-16 h-[1px] bg-border self-center" />
           </div>
           <div className="flex-1">
-            <div className="text-[13px] font-semibold">יום 30</div>
+            <div className="text-[13px] font-semibold">יום 30 💳</div>
             <p className="text-[11px] text-muted-foreground mt-0.5">₪4.99/חודש</p>
           </div>
         </motion.div>
@@ -144,19 +144,20 @@ const Premium: React.FC = () => {
         <Button
           onClick={handleStartTrial}
           disabled={isStarting}
-          className="w-full h-[54px] rounded-[14px] text-[17px] font-semibold bg-foreground text-background hover:bg-foreground/90 active:scale-[0.98] transition-transform"
+          className="w-full h-[54px] rounded-[14px] text-[17px] font-semibold bg-foreground text-background hover:bg-foreground/90 active:scale-[0.98] transition-transform relative overflow-hidden"
         >
+          {/* Shimmer effect */}
+          <div className="absolute inset-0 -translate-x-full animate-[shimmer_2s_infinite] bg-gradient-to-r from-transparent via-background/20 to-transparent" />
           {isStarting ? (
             <div className="w-5 h-5 border-2 border-background border-t-transparent rounded-full animate-spin" />
           ) : (
-            'התחל תקופת ניסיון'
+            <span className="relative z-10">🚀 התחל תקופת ניסיון</span>
           )}
         </Button>
 
         {/* Trust badge */}
         <div className="flex items-center justify-center gap-1.5 mt-4">
-          <Check className="w-4 h-4 text-muted-foreground" />
-          <span className="text-[13px] text-muted-foreground">ללא תשלום עכשיו • בטל בכל עת</span>
+          <span className="text-[13px] text-muted-foreground">🔒 ללא תשלום עכשיו • בטל בכל עת 💚</span>
         </div>
       </motion.div>
     </div>
