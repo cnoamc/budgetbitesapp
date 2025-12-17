@@ -23,11 +23,34 @@ const getTimeBasedGreeting = () => {
   return 'לילה טוב';
 };
 
+const cookingTips = [
+  "תמיד חממו מחבת לפני שמוסיפים שמן 🔥",
+  "מלח בסוף - כך השפים עושים 🧂",
+  "סכין חדה = בישול בטוח יותר 🔪",
+  "תנו לבשר לנוח אחרי צלייה 🥩",
+  "קראו את המתכון עד הסוף לפני שמתחילים 📖",
+  "הכינו את כל המרכיבים מראש 🥗",
+  "אל תעמיסו על המחבת - תנו מקום 🍳",
+  "טעמו תוך כדי בישול! 👅",
+  "שמן זית לא לטיגון בחום גבוה 🫒",
+  "עשבי תיבול טריים - בסוף הבישול 🌿",
+  "מים רותחים = פסטה מושלמת 🍝",
+  "תבלינים טחונים טריים = טעם עוצמתי ✨",
+  "אל תלחצו על הבשר במחבת 🚫",
+  "ביצים בטמפרטורת החדר = תוצאה טובה יותר 🥚",
+];
+
+const getDailyTip = () => {
+  const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 86400000);
+  return cookingTips[dayOfYear % cookingTips.length];
+};
+
 export const Home: React.FC = () => {
   const navigate = useNavigate();
   const { progress } = useApp();
   const bbProfile = getBBProfile();
   const greeting = getTimeBasedGreeting();
+  const dailyTip = getDailyTip();
   
   const hasCooked = progress.totalMealsCooked > 0;
   
@@ -44,14 +67,22 @@ export const Home: React.FC = () => {
         {/* Header */}
         <div className="p-6 pt-8">
           <div className="max-w-lg mx-auto">
-            <div className="flex items-center justify-between mb-8">
-              <div>
-                <h1 className="text-3xl font-bold mb-1">{greeting} {bbProfile.displayName} 👋</h1>
-                <p className="text-xl text-muted-foreground">מה נבשל היום?</p>
+            <div className="flex items-center justify-between mb-6">
+              <div className="text-center flex-1">
+                <h1 className="text-2xl font-bold">{greeting} השף הביתי</h1>
+                <p className="text-lg text-muted-foreground">{bbProfile.displayName} 👋</p>
+                <p className="text-base text-muted-foreground mt-1">מה נבשל היום?</p>
               </div>
               <div className="w-14 h-14 rounded-2xl overflow-hidden shadow-glow">
                 <img src={chefIcon} alt="BudgetBites" className="w-full h-full object-cover" />
               </div>
+            </div>
+
+            {/* Daily Cooking Tip */}
+            <div className="bg-secondary/50 rounded-2xl p-4 mb-6">
+              <p className="text-sm text-center">
+                <span className="font-medium">💡 טיפ היום:</span> {dailyTip}
+              </p>
             </div>
 
             
