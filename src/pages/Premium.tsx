@@ -66,7 +66,58 @@ const Premium: React.FC = () => {
           animate={{ scale: 1, opacity: 1 }}
           className="relative"
         >
-          <span className="text-5xl mb-3 block">👨‍🍳</span>
+          {/* Sparkle decorations */}
+          <div className="absolute inset-0 pointer-events-none">
+            {/* Top left sparkle */}
+            <motion.svg
+              initial={{ scale: 0, rotate: -20 }}
+              animate={{ scale: 1, rotate: 0 }}
+              transition={{ delay: 0.3, type: "spring" }}
+              className="absolute -top-2 -left-4 w-6 h-6 text-white/60"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+            >
+              <path d="M12 0L14.59 9.41L24 12L14.59 14.59L12 24L9.41 14.59L0 12L9.41 9.41L12 0Z" />
+            </motion.svg>
+            
+            {/* Top right sparkle */}
+            <motion.svg
+              initial={{ scale: 0, rotate: 20 }}
+              animate={{ scale: 1, rotate: 0 }}
+              transition={{ delay: 0.4, type: "spring" }}
+              className="absolute -top-1 -right-6 w-4 h-4 text-white/40"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+            >
+              <path d="M12 0L14.59 9.41L24 12L14.59 14.59L12 24L9.41 14.59L0 12L9.41 9.41L12 0Z" />
+            </motion.svg>
+            
+            {/* Bottom left sparkle */}
+            <motion.svg
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ delay: 0.5, type: "spring" }}
+              className="absolute bottom-8 -left-8 w-3 h-3 text-white/30"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+            >
+              <path d="M12 0L14.59 9.41L24 12L14.59 14.59L12 24L9.41 14.59L0 12L9.41 9.41L12 0Z" />
+            </motion.svg>
+            
+            {/* Bottom right sparkle */}
+            <motion.svg
+              initial={{ scale: 0, rotate: -10 }}
+              animate={{ scale: 1, rotate: 0 }}
+              transition={{ delay: 0.6, type: "spring" }}
+              className="absolute bottom-6 -right-4 w-5 h-5 text-white/50"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+            >
+              <path d="M12 0L14.59 9.41L24 12L14.59 14.59L12 24L9.41 14.59L0 12L9.41 9.41L12 0Z" />
+            </motion.svg>
+          </div>
+          
+          <span className="text-5xl mb-3 block relative z-10">👨‍🍳</span>
           <h1 className="text-2xl font-bold mt-3">חודש ראשון חינם</h1>
           <p className="text-white/70 text-sm mt-2">בטל בכל עת • נזכיר לך לפני</p>
         </motion.div>
