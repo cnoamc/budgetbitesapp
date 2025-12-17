@@ -9,14 +9,14 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-black text-white shadow-card hover:shadow-elevated hover:bg-black/90",
+        default: "bg-black dark:bg-white text-white dark:text-black shadow-card hover:shadow-elevated hover:bg-black/90 dark:hover:bg-white/90",
         destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90",
-        outline: "border-2 border-black bg-transparent text-black hover:bg-black hover:text-white",
+        outline: "border-2 border-black dark:border-white bg-transparent text-black dark:text-white hover:bg-black dark:hover:bg-white hover:text-white dark:hover:text-black",
         secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         ghost: "hover:bg-secondary hover:text-secondary-foreground",
         link: "text-primary underline-offset-4 hover:underline",
         savings: "bg-savings text-white shadow-card hover:shadow-elevated hover:brightness-105",
-        soft: "bg-black/10 text-black hover:bg-black/20",
+        soft: "bg-black/10 dark:bg-white/10 text-black dark:text-white hover:bg-black/20 dark:hover:bg-white/20",
         cook: "bg-[hsl(217,91%,60%)] text-white shadow-card hover:shadow-elevated hover:bg-[hsl(217,91%,55%)]",
       },
       size: {

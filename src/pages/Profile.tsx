@@ -37,7 +37,7 @@ export const Profile: React.FC = () => {
   const { profile, progress } = useApp();
   const { user, signOut } = useAuth();
   const { unreadCount } = useNotifications();
-  const { mode, toggleMode } = useTheme();
+  const { mode, resolvedMode, setMode } = useTheme();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [bbProfile, setBBProfile] = useState<BBProfile>(() => getBBProfile());
@@ -299,8 +299,8 @@ export const Profile: React.FC = () => {
                 <span>מצב כהה</span>
               </div>
               <Switch
-                checked={mode === 'dark'}
-                onCheckedChange={toggleMode}
+                checked={resolvedMode === 'dark'}
+                onCheckedChange={(checked) => setMode(checked ? 'dark' : 'light')}
               />
             </div>
           </div>
@@ -339,6 +339,7 @@ export const Profile: React.FC = () => {
             <LogOut className="w-5 h-5" />
             התנתק
           </Button>
+        </div>
 
         {/* Sign Out Confirmation Dialog */}
         <AlertDialog open={isSignOutDialogOpen} onOpenChange={setIsSignOutDialogOpen}>
@@ -360,7 +361,6 @@ export const Profile: React.FC = () => {
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
-        </div>
 
         {/* Notification Settings Dialog */}
         <Dialog open={isNotificationSettingsOpen} onOpenChange={setIsNotificationSettingsOpen}>
