@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Home, BookOpen, TrendingUp, User } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { motion } from 'framer-motion';
+import { triggerHaptic } from '@/hooks/useHaptics';
 
 const navItems = [
   { icon: Home, label: 'בית', path: '/home' },
@@ -13,27 +15,69 @@ const navItems = [
 export const BottomNav: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const [indicatorStyle, setIndicatorStyle] = useState({ left: 0, width: 0 });
+  const navRef = useRef<HTMLDivElement>(null);
+  const itemRefs = useRef<(HTMLButtonElement | null)[]>([]);
+
+  const activeIndex = navItems.findIndex(item => item.path === location.pathname);
+
+  useEffect(() => {
+    if (activeIndex >= 0 && itemRefs.current[activeIndex] && navRef.current) {
+      const activeItem = itemRefs.current[activeIndex];
+      const navRect = navRef.current.getBoundingClientRect();
+      const itemRect = activeItem!.getBoundingClientRect();
+      
+      setIndicatorStyle({
+        left: itemRect.left - navRect.left,
+        width: itemRect.width,
+      });
+    }
+  }, [activeIndex, location.pathname]);
+
+  const handleNavClick = (path: string) => {
+    triggerHaptic('light');
+    navigate(path);
+  };
 
   return (
     <div className="fixed bottom-0 left-0 right-0 pb-4 pt-2 z-50 px-4">
       <nav className="max-w-md mx-auto">
         <div 
-          className="flex justify-around items-center py-3 px-2 rounded-[28px] backdrop-blur-xl bg-white/70 dark:bg-black/60 border border-white/30 dark:border-white/10 shadow-lg"
+          ref={navRef}
+          className="relative flex justify-around items-center py-2 px-2 rounded-[28px] backdrop-blur-xl bg-white/70 dark:bg-black/60 border border-white/30 dark:border-white/10 shadow-lg"
           style={{
             boxShadow: '0 8px 32px -8px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(255, 255, 255, 0.1) inset'
           }}
         >
-          {navItems.map((item) => {
+          {/* Animated indicator */}
+          {activeIndex >= 0 && (
+            <motion.div
+              className="absolute top-2 bottom-2 rounded-2xl bg-black/5 dark:bg-white/10"
+              initial={false}
+              animate={{
+                left: indicatorStyle.left,
+                width: indicatorStyle.width,
+              }}
+              transition={{
+                type: 'spring',
+                stiffness: 400,
+                damping: 30,
+              }}
+            />
+          )}
+
+          {navItems.map((item, index) => {
             const isActive = location.pathname === item.path;
             return (
               <button
                 key={item.path}
-                onClick={() => navigate(item.path)}
+                ref={el => itemRefs.current[index] = el}
+                onClick={() => handleNavClick(item.path)}
                 className={cn(
-                  "flex flex-col items-center gap-0.5 py-1.5 px-4 rounded-2xl transition-all duration-200",
+                  "relative flex flex-col items-center gap-0.5 py-2 px-5 rounded-2xl transition-colors duration-200 z-10",
                   isActive 
-                    ? "text-foreground bg-black/5 dark:bg-white/10" 
-                    : "text-foreground/50 hover:text-foreground/70 active:scale-95"
+                    ? "text-foreground" 
+                    : "text-foreground/40 hover:text-foreground/60 active:scale-95"
                 )}
               >
                 <item.icon 
