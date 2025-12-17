@@ -90,10 +90,10 @@ export const Onboarding: React.FC = () => {
                     key={amount}
                     onClick={() => setFormData({ ...formData, monthlySpending: amount })}
                     className={cn(
-                      "py-3 px-2 rounded-xl border-2 transition-all duration-200",
+                      "py-3 px-2 rounded-xl border-2 transition-all duration-200 active:scale-95",
                       formData.monthlySpending === amount
-                        ? "border-primary bg-primary/10 text-foreground"
-                        : "border-border hover:border-primary/50 text-foreground"
+                        ? "border-primary bg-primary/10 text-foreground scale-[1.02] shadow-md"
+                        : "border-border hover:border-primary/50 hover:scale-[1.02] text-foreground"
                     )}
                   >
                     <span className="text-base font-bold">₪{amount.toLocaleString()}</span>
@@ -103,10 +103,10 @@ export const Onboarding: React.FC = () => {
               <button
                 onClick={() => setFormData({ ...formData, monthlySpending: 4000 })}
                 className={cn(
-                  "w-full py-3 rounded-xl border-2 transition-all duration-200",
+                  "w-full py-3 rounded-xl border-2 transition-all duration-200 active:scale-95",
                   formData.monthlySpending === 4000
-                    ? "border-primary bg-primary/10 text-foreground"
-                    : "border-border hover:border-primary/50 text-foreground"
+                    ? "border-primary bg-primary/10 text-foreground scale-[1.02] shadow-md"
+                    : "border-border hover:border-primary/50 hover:scale-[1.02] text-foreground"
                 )}
               >
                 <span className="text-base font-bold">יותר מ-₪3,000</span>
@@ -125,10 +125,10 @@ export const Onboarding: React.FC = () => {
                     key={count}
                     onClick={() => setFormData({ ...formData, weeklyOrders: count })}
                     className={cn(
-                      "py-3 rounded-xl border-2 transition-all duration-200",
+                      "py-3 rounded-xl border-2 transition-all duration-200 active:scale-95",
                       formData.weeklyOrders === count
-                        ? "border-primary bg-primary/10 text-foreground"
-                        : "border-border hover:border-primary/50 text-foreground"
+                        ? "border-primary bg-primary/10 text-foreground scale-[1.02] shadow-md"
+                        : "border-border hover:border-primary/50 hover:scale-[1.02] text-foreground"
                     )}
                   >
                     <span className="text-xl font-bold">{count === 1 ? '1 או פחות' : count}</span>
@@ -138,10 +138,10 @@ export const Onboarding: React.FC = () => {
               <button
                 onClick={() => setFormData({ ...formData, weeklyOrders: 12 })}
                 className={cn(
-                  "w-full py-3 rounded-xl border-2 transition-all duration-200",
+                  "w-full py-3 rounded-xl border-2 transition-all duration-200 active:scale-95",
                   formData.weeklyOrders === 12
-                    ? "border-primary bg-primary/10 text-foreground"
-                    : "border-border hover:border-primary/50 text-foreground"
+                    ? "border-primary bg-primary/10 text-foreground scale-[1.02] shadow-md"
+                    : "border-border hover:border-primary/50 hover:scale-[1.02] text-foreground"
                 )}
               >
                 <span className="text-base font-bold">יותר מ-10</span>
@@ -161,10 +161,10 @@ export const Onboarding: React.FC = () => {
                     key={food.id}
                     onClick={() => toggleFood(food.id)}
                     className={cn(
-                      "py-3 rounded-xl border-2 transition-all duration-200 flex flex-col items-center gap-1",
+                      "py-3 rounded-xl border-2 transition-all duration-200 flex flex-col items-center gap-1 active:scale-95",
                       formData.preferredFood.includes(food.id)
-                        ? "border-primary bg-primary/10 text-foreground"
-                        : "border-border hover:border-primary/50 text-foreground"
+                        ? "border-primary bg-primary/10 text-foreground scale-[1.02] shadow-md"
+                        : "border-border hover:border-primary/50 hover:scale-[1.02] text-foreground"
                     )}
                   >
                     <span className="text-2xl">{food.emoji}</span>
@@ -186,10 +186,10 @@ export const Onboarding: React.FC = () => {
                     key={level}
                     onClick={() => setFormData({ ...formData, cookingSkill: level })}
                     className={cn(
-                      "w-full py-3 px-4 rounded-xl border-2 transition-all duration-200 flex items-center gap-3",
+                      "w-full py-3 px-4 rounded-xl border-2 transition-all duration-200 flex items-center gap-3 active:scale-[0.98]",
                       formData.cookingSkill === level
-                        ? "border-primary bg-primary/10 text-foreground"
-                        : "border-border hover:border-primary/50 text-foreground"
+                        ? "border-primary bg-primary/10 text-foreground scale-[1.01] shadow-md"
+                        : "border-border hover:border-primary/50 hover:scale-[1.01] text-foreground"
                     )}
                   >
                     <div className="flex gap-1">
@@ -197,7 +197,7 @@ export const Onboarding: React.FC = () => {
                         <div
                           key={i}
                           className={cn(
-                            "w-2.5 h-2.5 rounded-full",
+                            "w-2.5 h-2.5 rounded-full transition-all duration-200",
                             i < level ? "gradient-primary" : "bg-muted"
                           )}
                         />

@@ -120,12 +120,12 @@ const LoadingSavings: React.FC = () => {
 
           {phase === 'loading' && (
             <div className="text-center animate-fade-in">
-              <h2 className="text-xl font-bold text-foreground mb-2">מחשבים את החיסכון שלך...</h2>
+              <h2 className="text-xl font-bold text-gray-900 mb-2">מחשבים את החיסכון שלך...</h2>
               <div className="flex justify-center gap-1 mt-4">
                 {[0, 1, 2].map((i) => (
                   <div
                     key={i}
-                    className="w-3 h-3 rounded-full bg-black animate-bounce"
+                    className="w-3 h-3 rounded-full bg-gray-900 animate-bounce"
                     style={{ animationDelay: `${i * 0.15}s` }}
                   />
                 ))}
@@ -144,8 +144,8 @@ const LoadingSavings: React.FC = () => {
             >
               {/* Header */}
               <div className="flex items-center justify-center gap-2 mb-5">
-                <Unlock className="w-5 h-5 text-black" />
-                <p className="text-base font-semibold text-foreground">החיסכון שמחכה לך</p>
+                <Unlock className="w-5 h-5 text-gray-900" />
+                <p className="text-base font-semibold text-gray-900">החיסכון שמחכה לך</p>
               </div>
 
               {/* Progress bar */}
@@ -163,18 +163,18 @@ const LoadingSavings: React.FC = () => {
               <div className="flex justify-between items-start mb-4">
                 <div className="text-center flex-1">
                   <div className="flex items-center justify-center gap-1 mb-1">
-                    <TrendingUp className="w-3.5 h-3.5 text-black" />
-                    <p className="text-xs text-muted-foreground">חודשי</p>
+                    <TrendingUp className="w-3.5 h-3.5 text-gray-900" />
+                    <p className="text-xs text-gray-500">חודשי</p>
                   </div>
-                  <p className="text-3xl font-bold text-black">₪{countedMonthly.toLocaleString()}</p>
+                  <p className="text-3xl font-bold text-gray-900">₪{countedMonthly.toLocaleString()}</p>
                 </div>
                 
-                <div className="w-px h-14 bg-border/50 mx-3" />
+                <div className="w-px h-14 bg-gray-200 mx-3" />
                 
                 <div className="text-center flex-1">
                   <div className="flex items-center justify-center gap-1 mb-1">
                     <TrendingUp className="w-3.5 h-3.5 text-green-600" />
-                    <p className="text-xs text-muted-foreground">שנתי</p>
+                    <p className="text-xs text-gray-500">שנתי</p>
                   </div>
                   <p className="text-3xl font-bold text-green-600">₪{countedYearly.toLocaleString()}</p>
                 </div>
@@ -198,7 +198,7 @@ const LoadingSavings: React.FC = () => {
                 className="text-center py-2.5 px-4 rounded-xl"
                 style={{ background: 'rgba(39, 174, 96, 0.1)' }}
               >
-                <p className="text-sm text-foreground/80">{getSavingsContext(yearlySavings)}</p>
+                <p className="text-sm text-gray-700">{getSavingsContext(yearlySavings)}</p>
               </div>
             </div>
           )}
