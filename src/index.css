@@ -54,15 +54,15 @@
 
     --radius: 0.75rem;
 
-    /* Custom tokens - monochrome */
-    --savings: 0 0% 9%;
-    --savings-light: 0 0% 96%;
+    /* Custom tokens - Green savings for visibility */
+    --savings: 142 71% 35%;
+    --savings-light: 142 76% 94%;
     --warning: 0 0% 45%;
     --warning-light: 0 0% 96%;
     
     /* Minimal gradients */
     --gradient-primary: linear-gradient(135deg, hsl(0 0% 9%) 0%, hsl(0 0% 20%) 100%);
-    --gradient-savings: linear-gradient(135deg, hsl(0 0% 9%) 0%, hsl(0 0% 25%) 100%);
+    --gradient-savings: linear-gradient(135deg, hsl(142 76% 94%) 0%, hsl(142 71% 88%) 100%);
     --gradient-card: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(0 0% 98%) 100%);
     --gradient-hero: linear-gradient(180deg, hsl(0 0% 9% / 0.03) 0%, transparent 60%);
     
@@ -119,8 +119,8 @@
     --input: 0 0% 18%;
     --ring: 0 0% 100%;
 
-    --savings: 0 0% 95%;
-    --savings-light: 0 0% 15%;
+    --savings: 142 71% 50%;
+    --savings-light: 142 60% 20%;
     --warning: 0 0% 55%;
     --warning-light: 0 0% 15%;
     
