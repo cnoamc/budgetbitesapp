@@ -8,22 +8,19 @@ interface PageTransitionProps {
 const pageVariants = {
   initial: {
     opacity: 0,
-    y: 20,
   },
   animate: {
     opacity: 1,
-    y: 0,
   },
   exit: {
     opacity: 0,
-    y: -10,
   },
 };
 
 const pageTransition = {
   type: 'tween' as const,
-  ease: [0.25, 0.1, 0.25, 1] as const,
-  duration: 0.25,
+  ease: 'easeInOut' as const,
+  duration: 0.15,
 };
 
 export const PageTransition: React.FC<PageTransitionProps> = ({ children }) => {
@@ -34,7 +31,7 @@ export const PageTransition: React.FC<PageTransitionProps> = ({ children }) => {
       exit="exit"
       variants={pageVariants}
       transition={pageTransition}
-      style={{ minHeight: '100%' }}
+      className="min-h-screen"
     >
       {children}
     </motion.div>
