@@ -97,7 +97,7 @@ export const TutorialOverlay: React.FC = () => {
         <div className="p-8 pt-12 text-center">
           {/* Emoji with animated background */}
           <div className="relative mb-6">
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-accent/20 rounded-full blur-2xl scale-150 animate-pulse" />
+            <div className="absolute inset-0 bg-gradient-to-br from-black/10 to-muted/20 rounded-full blur-2xl scale-150 animate-pulse" />
             <div className="relative w-24 h-24 mx-auto bg-gradient-to-br from-secondary to-muted rounded-3xl flex items-center justify-center shadow-soft animate-scale-in">
               <span className="text-5xl">{step.emoji}</span>
             </div>
@@ -121,9 +121,9 @@ export const TutorialOverlay: React.FC = () => {
                 onClick={() => setCurrentStep(index)}
                 className={`w-2 h-2 rounded-full transition-all duration-300 ${
                   index === currentStep
-                    ? 'bg-primary w-6'
+                    ? 'bg-black w-6'
                     : index < currentStep
-                    ? 'bg-primary/50'
+                    ? 'bg-black/50'
                     : 'bg-secondary'
                 }`}
                 aria-label={`שלב ${index + 1}`}

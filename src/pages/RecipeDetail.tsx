@@ -74,7 +74,7 @@ export const RecipeDetail: React.FC = () => {
               onClick={() => setActiveTab('ingredients')}
               className={`flex-1 py-2 rounded-lg text-sm font-medium transition-all ${
                 activeTab === 'ingredients'
-                  ? 'gradient-primary text-primary-foreground'
+                  ? 'bg-black text-white'
                   : 'bg-secondary text-secondary-foreground'
               }`}
             >
@@ -85,7 +85,7 @@ export const RecipeDetail: React.FC = () => {
               onClick={() => setActiveTab('savings')}
               className={`flex-1 py-2 rounded-lg text-sm font-medium transition-all ${
                 activeTab === 'savings'
-                  ? 'gradient-primary text-primary-foreground'
+                  ? 'bg-black text-white'
                   : 'bg-secondary text-secondary-foreground'
               }`}
             >
@@ -130,7 +130,7 @@ export const RecipeDetail: React.FC = () => {
         <div className="max-w-lg mx-auto">
           <Button
             onClick={() => navigate(`/cook/${recipe.id}`)}
-            variant="cook"
+            variant="default"
             size="xl"
             className="w-full"
           >

@@ -77,9 +77,9 @@ export const Savings: React.FC = () => {
                     <span className="text-xl">🎉</span>
                     <p className="text-sm text-muted-foreground">חסכת בפועל החודש</p>
                   </div>
-                  <p className="text-3xl font-bold text-primary">₪{actualMonthlySavings.toLocaleString()}</p>
+                  <p className="text-3xl font-bold text-black">₪{actualMonthlySavings.toLocaleString()}</p>
                 </div>
-                <div className="text-center bg-primary/10 rounded-2xl px-4 py-2">
+                <div className="text-center bg-black/5 rounded-2xl px-4 py-2">
                   <p className="text-2xl font-bold">{progress.totalMealsCooked}</p>
                   <p className="text-xs text-muted-foreground">ארוחות</p>
                 </div>
@@ -135,8 +135,8 @@ export const Savings: React.FC = () => {
           {/* Motivation */}
           <PremiumCard variant="glass" className="p-5 animate-fade-in">
             <div className="flex gap-4">
-              <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center shrink-0">
-                <Flame className="w-6 h-6 text-primary" />
+              <div className="w-12 h-12 bg-black/5 rounded-2xl flex items-center justify-center shrink-0">
+                <Flame className="w-6 h-6 text-black" />
               </div>
               <div>
                 <p className="font-semibold text-lg mb-1">מוכן להתחיל לחסוך?</p>

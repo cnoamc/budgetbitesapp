@@ -61,8 +61,8 @@ export const Home: React.FC = () => {
           {/* Today's Recommendation */}
           <div className="mb-8">
             <div className="flex items-center gap-2 mb-4">
-              <div className="w-8 h-8 bg-primary/10 rounded-xl flex items-center justify-center">
-                <Sparkles className="w-4 h-4 text-primary" />
+              <div className="w-8 h-8 bg-black/5 rounded-xl flex items-center justify-center">
+                <Sparkles className="w-4 h-4 text-black" />
               </div>
               <h2 className="font-semibold text-lg">המלצה להיום</h2>
             </div>
@@ -101,7 +101,7 @@ export const Home: React.FC = () => {
                   </div>
                 </div>
               </div>
-              <Button variant="cook" className="w-full mt-4 h-12 rounded-xl text-base btn-press">
+              <Button variant="default" className="w-full mt-4 h-12 rounded-xl text-base btn-press">
                 בוא נבשל! 🍳
                 <ArrowLeft className="w-4 h-4" />
               </Button>
@@ -112,12 +112,12 @@ export const Home: React.FC = () => {
           <div className="mb-8">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 bg-primary/10 rounded-xl flex items-center justify-center">
-                  <Clock className="w-4 h-4 text-primary" />
+                <div className="w-8 h-8 bg-black/5 rounded-xl flex items-center justify-center">
+                  <Clock className="w-4 h-4 text-black" />
                 </div>
                 <h2 className="font-semibold text-lg">מהיר ב-20 דקות</h2>
               </div>
-              <Button variant="ghost" size="sm" onClick={() => navigate('/recipes')} className="text-primary">
+              <Button variant="ghost" size="sm" onClick={() => navigate('/recipes')} className="text-black">
                 הכל
                 <ArrowLeft className="w-4 h-4" />
               </Button>

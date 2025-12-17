@@ -160,7 +160,7 @@ export const CookingAssistant: React.FC = () => {
         {/* Progress Bar */}
         <div className="h-2 bg-secondary rounded-full overflow-hidden">
           <div 
-            className="h-full gradient-primary transition-all duration-500 rounded-full"
+            className="h-full bg-black transition-all duration-500 rounded-full"
             style={{ width: `${progress}%` }}
           />
         </div>
@@ -209,7 +209,7 @@ export const CookingAssistant: React.FC = () => {
             <ArrowLeft className="w-5 h-5" />
           </Button>
         ) : (
-          <Button onClick={handleComplete} size="xl" variant="savings" className="w-full">
+          <Button onClick={handleComplete} size="xl" variant="default" className="w-full">
             <Check className="w-5 h-5" />
             סיימתי לבשל!
           </Button>

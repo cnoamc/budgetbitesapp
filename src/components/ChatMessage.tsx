@@ -25,7 +25,7 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({ message, isBot = true,
         "rounded-2xl px-4 py-3 max-w-[80%]",
         isBot 
           ? "bg-card shadow-card border border-border/50 rounded-tr-none" 
-          : "gradient-primary text-primary-foreground rounded-tl-none"
+          : "bg-black text-white rounded-tl-none"
       )}>
         <p className="text-sm leading-relaxed whitespace-pre-line">{message}</p>
       </div>
