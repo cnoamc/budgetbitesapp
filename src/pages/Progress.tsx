@@ -20,8 +20,8 @@ export const Progress: React.FC = () => {
         <div className="p-6 pt-8">
           <div className="flex items-center justify-between mb-8">
             <h1 className="text-2xl font-bold">ההתקדמות שלי</h1>
-            <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center">
-              <Trophy className="w-5 h-5 text-primary" />
+            <div className="w-10 h-10 bg-black/5 rounded-xl flex items-center justify-center">
+              <Trophy className="w-5 h-5 text-black" />
             </div>
           </div>
 
@@ -35,7 +35,7 @@ export const Progress: React.FC = () => {
               <p className="text-3xl font-bold text-savings">₪{progress.totalSavings}</p>
             </PremiumCard>
             
-            <PremiumCard className="p-5 bg-primary/5 border-primary/20 animate-scale-in" style={{ animationDelay: '0.1s' }}>
+            <PremiumCard className="p-5 bg-black/5 border-black/10 animate-scale-in" style={{ animationDelay: '0.1s' }}>
               <div className="w-10 h-10 rounded-xl overflow-hidden mb-3">
                 <img src={chefIcon} alt="BudgetBites" className="w-full h-full object-cover" />
               </div>
@@ -61,7 +61,7 @@ export const Progress: React.FC = () => {
                 <div
                   key={level}
                   className={`flex-1 h-3 rounded-full transition-all ${
-                    level <= progress.skillLevel ? 'gradient-primary shadow-sm' : 'bg-muted'
+                    level <= progress.skillLevel ? 'bg-black shadow-sm' : 'bg-muted'
                   }`}
                 />
               ))}
@@ -77,8 +77,8 @@ export const Progress: React.FC = () => {
           {/* Monthly Summary */}
           <PremiumCard className="p-5 mb-6 animate-slide-up" style={{ animationDelay: '0.1s' }}>
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center">
-                <Target className="w-5 h-5 text-primary" />
+              <div className="w-10 h-10 bg-black/5 rounded-xl flex items-center justify-center">
+                <Target className="w-5 h-5 text-black" />
               </div>
               <h3 className="font-semibold text-lg">החודש</h3>
             </div>

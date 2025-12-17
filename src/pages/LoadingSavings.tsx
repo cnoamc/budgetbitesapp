@@ -125,7 +125,7 @@ const LoadingSavings: React.FC = () => {
                 {[0, 1, 2].map((i) => (
                   <div
                     key={i}
-                    className="w-3 h-3 rounded-full bg-primary animate-bounce"
+                    className="w-3 h-3 rounded-full bg-black animate-bounce"
                     style={{ animationDelay: `${i * 0.15}s` }}
                   />
                 ))}
@@ -144,7 +144,7 @@ const LoadingSavings: React.FC = () => {
             >
               {/* Header */}
               <div className="flex items-center justify-center gap-2 mb-5">
-                <Unlock className="w-5 h-5 text-primary" />
+                <Unlock className="w-5 h-5 text-black" />
                 <p className="text-base font-semibold text-foreground">החיסכון שמחכה לך</p>
               </div>
 
@@ -154,7 +154,7 @@ const LoadingSavings: React.FC = () => {
                   className="absolute inset-y-0 right-0 rounded-full transition-all duration-1000 ease-out"
                   style={{ 
                     width: progressAnimated ? `${savingsProgress}%` : '0%',
-                    background: 'linear-gradient(90deg, hsl(var(--primary)) 0%, #27AE60 100%)'
+                    background: 'linear-gradient(90deg, #1D1D1F 0%, #27AE60 100%)'
                   }}
                 />
               </div>
@@ -163,10 +163,10 @@ const LoadingSavings: React.FC = () => {
               <div className="flex justify-between items-start mb-4">
                 <div className="text-center flex-1">
                   <div className="flex items-center justify-center gap-1 mb-1">
-                    <TrendingUp className="w-3.5 h-3.5 text-primary" />
+                    <TrendingUp className="w-3.5 h-3.5 text-black" />
                     <p className="text-xs text-muted-foreground">חודשי</p>
                   </div>
-                  <p className="text-3xl font-bold text-primary">₪{countedMonthly.toLocaleString()}</p>
+                  <p className="text-3xl font-bold text-black">₪{countedMonthly.toLocaleString()}</p>
                 </div>
                 
                 <div className="w-px h-14 bg-border/50 mx-3" />

@@ -111,8 +111,8 @@ export const NotificationSettings: React.FC = () => {
       {/* Category Toggles */}
       <PremiumCard className="p-5">
         <div className="flex items-center gap-3 mb-5">
-          <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center">
-            <Bell className="w-5 h-5 text-primary" />
+          <div className="w-10 h-10 bg-black/5 rounded-xl flex items-center justify-center">
+            <Bell className="w-5 h-5 text-black" />
           </div>
           <div>
             <h3 className="font-semibold text-lg">סוגי התראות</h3>
@@ -152,7 +152,7 @@ export const NotificationSettings: React.FC = () => {
               onClick={() => updateSettings({ frequency: freq })}
               className={`flex-1 py-3 px-4 rounded-xl text-sm font-medium transition-all ${
                 settings.frequency === freq
-                  ? 'bg-primary text-primary-foreground'
+                  ? 'bg-black text-white'
                   : 'bg-secondary text-foreground hover:bg-secondary/80'
               }`}
             >
