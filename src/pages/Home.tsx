@@ -67,14 +67,13 @@ export const Home: React.FC = () => {
         {/* Header */}
         <div className="p-6 pt-8">
           <div className="max-w-lg mx-auto">
-            <div className="flex items-center justify-between mb-6">
-              <div className="text-center flex-1">
-                <h1 className="text-2xl font-bold">{greeting} השף הביתי</h1>
-                <p className="text-lg text-muted-foreground">{bbProfile.displayName} 👋</p>
-                <p className="text-base text-muted-foreground mt-1">מה נבשל היום?</p>
-              </div>
-              <div className="w-14 h-14 rounded-2xl overflow-hidden shadow-glow">
+            <div className="flex items-center gap-4 mb-6" dir="rtl">
+              <div className="w-14 h-14 rounded-2xl overflow-hidden shadow-glow shrink-0">
                 <img src={chefIcon} alt="BudgetBites" className="w-full h-full object-cover" />
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold">{greeting} {bbProfile.displayName} 👋</h1>
+                <p className="text-base text-muted-foreground">מה נבשל היום?</p>
               </div>
             </div>
 
