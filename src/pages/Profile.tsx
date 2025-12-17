@@ -161,9 +161,9 @@ export const Profile: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-background pb-24">
-      <div className="p-6">
+      <div className="p-4">
         {/* Profile Header */}
-        <div className="text-center mb-8">
+        <div className="text-center mb-4">
           <div className="relative inline-block">
             <div 
               className="w-24 h-24 gradient-primary rounded-full mx-auto flex items-center justify-center shadow-glow cursor-pointer overflow-hidden group"
@@ -254,17 +254,6 @@ export const Profile: React.FC = () => {
           </DialogContent>
         </Dialog>
 
-        {/* Stats Cards */}
-        <div className="grid grid-cols-2 gap-4 mb-6">
-          <div className="bg-card rounded-2xl p-4 shadow-card border border-border/50 text-center">
-            <p className="text-3xl font-bold text-savings mb-1">₪{progress.totalSavings}</p>
-            <p className="text-sm text-muted-foreground">נחסך בסה״כ</p>
-          </div>
-          <div className="bg-card rounded-2xl p-4 shadow-card border border-border/50 text-center">
-            <p className="text-3xl font-bold mb-1">{progress.totalMealsCooked}</p>
-            <p className="text-sm text-muted-foreground">ארוחות שבושלו</p>
-          </div>
-        </div>
 
 
         {/* Profile Info */}
