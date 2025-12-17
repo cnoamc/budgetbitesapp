@@ -15,10 +15,19 @@ import { getRecipeImage } from '@/lib/recipeImages';
 import { getBBProfile } from '@/lib/storage';
 import chefIcon from '@/assets/chef-icon.png';
 
+const getTimeBasedGreeting = () => {
+  const hour = new Date().getHours();
+  if (hour >= 5 && hour < 12) return 'בוקר טוב';
+  if (hour >= 12 && hour < 17) return 'צהריים טובים';
+  if (hour >= 17 && hour < 21) return 'ערב טוב';
+  return 'לילה טוב';
+};
+
 export const Home: React.FC = () => {
   const navigate = useNavigate();
   const { progress } = useApp();
   const bbProfile = getBBProfile();
+  const greeting = getTimeBasedGreeting();
   
   const hasCooked = progress.totalMealsCooked > 0;
   
@@ -37,7 +46,7 @@ export const Home: React.FC = () => {
           <div className="max-w-lg mx-auto">
             <div className="flex items-center justify-between mb-8">
               <div>
-                <h1 className="text-3xl font-bold mb-1">שלום {bbProfile.displayName} 👋</h1>
+                <h1 className="text-3xl font-bold mb-1">{greeting} {bbProfile.displayName} 👋</h1>
                 <p className="text-xl text-muted-foreground">מה נבשל היום?</p>
               </div>
               <div className="w-14 h-14 rounded-2xl overflow-hidden shadow-glow">
