@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, Heart, X } from 'lucide-react';
+import { Search, Heart } from 'lucide-react';
 import { RecipeCard } from '@/components/RecipeCard';
 import { BottomNav } from '@/components/BottomNav';
 import { GradientBackground } from '@/components/ui/GradientBackground';
@@ -11,57 +11,29 @@ import { useApp } from '@/contexts/AppContext';
 import type { RecipeCategory } from '@/lib/types';
 import chefIcon from '@/assets/chef-icon.png';
 
-const categories: Array<RecipeCategory | 'favorites'> = ['favorites', 'beginner', 'fast', 'cheap', 'protein', 'vegetarian', 'easy', 'kosher'];
+const categories: Array<RecipeCategory | 'all' | 'favorites'> = ['all', 'favorites', 'beginner', 'fast', 'cheap', 'protein', 'vegetarian', 'easy', 'kosher'];
 
 export const Recipes: React.FC = () => {
   const navigate = useNavigate();
-  const [selectedCategories, setSelectedCategories] = useState<Set<RecipeCategory | 'favorites'>>(new Set());
+  const [activeCategory, setActiveCategory] = useState<RecipeCategory | 'all' | 'favorites'>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const { favorites, toggleFavorite, isFavorite } = useFavorites();
   const { photoUrl } = useApp();
 
-  const toggleCategory = (category: RecipeCategory | 'favorites') => {
-    setSelectedCategories(prev => {
-      const newSet = new Set(prev);
-      if (newSet.has(category)) {
-        newSet.delete(category);
-      } else {
-        newSet.add(category);
-      }
-      return newSet;
-    });
-  };
-
-  const clearFilters = () => {
-    setSelectedCategories(new Set());
-  };
-
   const filteredRecipes = recipes.filter(recipe => {
-    // If no categories selected, show all
-    if (selectedCategories.size === 0) {
-      return recipe.name.includes(searchQuery);
-    }
-
-    // Check if recipe matches ALL selected categories (AND logic)
-    let matchesAllCategories = true;
+    let matchesCategory = false;
     
-    selectedCategories.forEach(category => {
-      if (category === 'favorites') {
-        if (!favorites.includes(recipe.id)) {
-          matchesAllCategories = false;
-        }
-      } else {
-        if (recipe.category !== category) {
-          matchesAllCategories = false;
-        }
-      }
-    });
+    if (activeCategory === 'all') {
+      matchesCategory = true;
+    } else if (activeCategory === 'favorites') {
+      matchesCategory = favorites.includes(recipe.id);
+    } else {
+      matchesCategory = recipe.category === activeCategory;
+    }
     
     const matchesSearch = recipe.name.includes(searchQuery);
-    return matchesAllCategories && matchesSearch;
+    return matchesCategory && matchesSearch;
   });
-
-  const hasActiveFilters = selectedCategories.size > 0;
 
   return (
     <GradientBackground variant="minimal">
@@ -91,61 +63,35 @@ export const Recipes: React.FC = () => {
             />
           </div>
 
-          {/* Categories - Multi-select */}
+          {/* Categories */}
           <div className="flex gap-2 overflow-x-auto pb-2 -mx-6 px-6 scrollbar-hide">
-            {hasActiveFilters && (
+            {categories.map((category) => (
               <button
-                onClick={clearFilters}
-                className="px-4 py-2.5 rounded-full whitespace-nowrap transition-all duration-300 text-sm font-medium btn-press flex items-center gap-1.5 bg-red-500/10 text-red-600 hover:bg-red-500/20 border border-red-500/20"
+                key={category}
+                onClick={() => setActiveCategory(category)}
+                className={cn(
+                  "px-5 py-2.5 rounded-full whitespace-nowrap transition-all duration-300 text-sm font-medium btn-press flex items-center gap-1.5",
+                  activeCategory === category
+                    ? "bg-black text-white shadow-soft"
+                    : "bg-card text-muted-foreground hover:bg-secondary border border-border/50"
+                )}
               >
-                <X className="w-4 h-4" />
-                נקה
+                {category === 'all' && '🍽️ הכל'}
+                {category === 'favorites' && (
+                  <>
+                    <Heart className={cn("w-4 h-4", favorites.length > 0 && "fill-current text-red-500")} />
+                    מועדפים
+                    {favorites.length > 0 && (
+                      <span className="bg-red-500/20 text-red-600 text-xs px-1.5 py-0.5 rounded-full">
+                        {favorites.length}
+                      </span>
+                    )}
+                  </>
+                )}
+                {category !== 'all' && category !== 'favorites' && `${categoryEmojis[category]} ${categoryLabels[category]}`}
               </button>
-            )}
-            {categories.map((category) => {
-              const isSelected = selectedCategories.has(category);
-              return (
-                <button
-                  key={category}
-                  onClick={() => toggleCategory(category)}
-                  className={cn(
-                    "px-5 py-2.5 rounded-full whitespace-nowrap transition-all duration-300 text-sm font-medium btn-press flex items-center gap-1.5",
-                    isSelected
-                      ? "bg-black text-white shadow-soft"
-                      : "bg-card text-muted-foreground hover:bg-secondary border border-border/50"
-                  )}
-                >
-                  {category === 'favorites' ? (
-                    <>
-                      <Heart className={cn("w-4 h-4", favorites.length > 0 && isSelected && "fill-current")} />
-                      מועדפים
-                      {favorites.length > 0 && (
-                        <span className={cn(
-                          "text-xs px-1.5 py-0.5 rounded-full",
-                          isSelected ? "bg-white/20 text-white" : "bg-red-500/20 text-red-600"
-                        )}>
-                          {favorites.length}
-                        </span>
-                      )}
-                    </>
-                  ) : (
-                    `${categoryEmojis[category]} ${categoryLabels[category]}`
-                  )}
-                </button>
-              );
-            })}
+            ))}
           </div>
-
-          {/* Active filters summary */}
-          {hasActiveFilters && (
-            <div className="mt-3 text-sm text-muted-foreground">
-              מסנן: {Array.from(selectedCategories).map(cat => 
-                cat === 'favorites' ? 'מועדפים' : categoryLabels[cat]
-              ).join(' + ')}
-              <span className="mx-2">•</span>
-              <span className="font-medium text-foreground">{filteredRecipes.length} מתכונים</span>
-            </div>
-          )}
         </div>
 
         {/* Recipe List */}
@@ -168,19 +114,15 @@ export const Recipes: React.FC = () => {
           {filteredRecipes.length === 0 && (
             <div className="text-center py-16">
               <div className="w-20 h-20 bg-secondary rounded-3xl flex items-center justify-center text-4xl mx-auto mb-4">
-                {selectedCategories.has('favorites') ? '❤️' : '🔍'}
+                {activeCategory === 'favorites' ? '❤️' : '🔍'}
               </div>
               <p className="text-lg font-medium mb-1">
-                {selectedCategories.has('favorites') && selectedCategories.size === 1 
-                  ? 'אין מועדפים עדיין' 
-                  : 'לא נמצאו מתכונים'}
+                {activeCategory === 'favorites' ? 'אין מועדפים עדיין' : 'לא נמצאו מתכונים'}
               </p>
               <p className="text-muted-foreground text-sm">
-                {selectedCategories.has('favorites') && selectedCategories.size === 1
+                {activeCategory === 'favorites' 
                   ? 'לחץ על ❤️ כדי לשמור מתכונים' 
-                  : hasActiveFilters 
-                    ? 'נסה לשנות את הסינון'
-                    : 'נסה לחפש משהו אחר'}
+                  : 'נסה לחפש משהו אחר'}
               </p>
             </div>
           )}
