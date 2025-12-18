@@ -44,7 +44,7 @@ export const BottomNav: React.FC = () => {
       <nav className="max-w-md mx-auto">
         <div 
           ref={navRef}
-          className="relative flex justify-center items-center gap-0 py-2 px-0.5 rounded-full backdrop-blur-xl bg-neutral-200/80 dark:bg-neutral-900/85 border border-neutral-300/50 dark:border-white/10"
+          className="relative flex justify-center items-center gap-0 py-2 px-0.5 rounded-full backdrop-blur-xl bg-neutral-200/60 dark:bg-neutral-900/70 border border-neutral-300/40 dark:border-white/10"
           style={{
             boxShadow: '0 8px 32px -8px rgba(0, 0, 0, 0.18), inset 0 1px 2px rgba(0, 0, 0, 0.06), inset 0 -1px 1px rgba(255, 255, 255, 0.1)'
           }}
