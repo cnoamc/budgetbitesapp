@@ -140,14 +140,49 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       if (profileError) throw profileError;
 
       if (profileData) {
-        setProfile({
-          monthlySpending: profileData.monthly_spending || 0,
-          weeklyOrders: profileData.weekly_orders || 0,
-          preferredFood: profileData.preferred_food || [],
-          country: profileData.country || 'IL',
-          cookingSkill: profileData.cooking_skill || 1,
-          onboardingComplete: profileData.onboarding_complete || false,
-        });
+        // Check if there's unsynced onboarding data in localStorage (e.g., from Google OAuth)
+        const storedOnboarding = localStorage.getItem('bb_onboarding_data');
+        if (storedOnboarding && !profileData.onboarding_complete) {
+          try {
+            const onboardingData = JSON.parse(storedOnboarding);
+            // Sync onboarding data to database
+            const { error: updateError } = await supabase
+              .from('profiles')
+              .update({
+                monthly_spending: onboardingData.monthlySpending,
+                weekly_orders: onboardingData.weeklyOrders,
+                preferred_food: onboardingData.preferredFood,
+                cooking_skill: onboardingData.cookingSkill,
+                onboarding_complete: true,
+              })
+              .eq('user_id', user.id);
+
+            if (!updateError) {
+              console.log('✅ Synced onboarding data from localStorage');
+              localStorage.removeItem('bb_onboarding_data');
+              // Update local state with synced data
+              setProfile({
+                monthlySpending: onboardingData.monthlySpending || 0,
+                weeklyOrders: onboardingData.weeklyOrders || 0,
+                preferredFood: onboardingData.preferredFood || [],
+                country: profileData.country || 'IL',
+                cookingSkill: onboardingData.cookingSkill || 1,
+                onboardingComplete: true,
+              });
+            }
+          } catch {
+            console.error('Failed to parse onboarding data');
+          }
+        } else {
+          setProfile({
+            monthlySpending: profileData.monthly_spending || 0,
+            weeklyOrders: profileData.weekly_orders || 0,
+            preferredFood: profileData.preferred_food || [],
+            country: profileData.country || 'IL',
+            cookingSkill: profileData.cooking_skill || 1,
+            onboardingComplete: profileData.onboarding_complete || false,
+          });
+        }
         
         // Load display name and photo from database
         const dbDisplayName = (profileData as any).display_name || 'השף הביתי';
