@@ -88,7 +88,10 @@ export const RecipeCard: React.FC<RecipeCardProps> = ({
           </div>
           
           <div className="flex items-center justify-between">
-            <span className="text-base font-semibold">₪{recipe.homeCost}</span>
+            <div className="flex flex-col items-start">
+              <span className="text-xs text-muted-foreground">עלות מצרכים</span>
+              <span className="text-base font-light tracking-tight" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>₪{recipe.homeCost}</span>
+            </div>
             <span className="flex items-center gap-1.5 text-savings text-sm font-medium bg-savings-light px-3 py-1.5 rounded-full animate-fade-in">
               <TrendingUp className="w-3.5 h-3.5" />
               חיסכון ₪{savings}
