@@ -28,6 +28,46 @@ import shakshukaGreenImg from '@/assets/recipes/shakshuka-green.jpg';
 import matbuchaImg from '@/assets/recipes/matbucha.jpg';
 import tehinaSaladImg from '@/assets/recipes/tehina-salad.jpg';
 
+// New recipe images
+import frenchFriesImg from '@/assets/recipes/french-fries.jpg';
+import onionRingsImg from '@/assets/recipes/onion-rings.jpg';
+import sushiImg from '@/assets/recipes/sushi.jpg';
+import friedChickenImg from '@/assets/recipes/fried-chicken.jpg';
+import thaiCurryImg from '@/assets/recipes/thai-curry.jpg';
+import padThaiImg from '@/assets/recipes/pad-thai.jpg';
+import ramenImg from '@/assets/recipes/ramen.jpg';
+import pokeBowlImg from '@/assets/recipes/poke-bowl.jpg';
+import burritoImg from '@/assets/recipes/burrito.jpg';
+import tacosImg from '@/assets/recipes/tacos.jpg';
+import dimSumImg from '@/assets/recipes/dim-sum.jpg';
+import fishChipsImg from '@/assets/recipes/fish-chips.jpg';
+import asianDumplingsImg from '@/assets/recipes/asian-dumplings.jpg';
+import grilledChickenImg from '@/assets/recipes/grilled-chicken.jpg';
+import caesarSaladImg from '@/assets/recipes/caesar-salad.jpg';
+import bbqRibsImg from '@/assets/recipes/bbq-ribs.jpg';
+import steakImg from '@/assets/recipes/steak.jpg';
+import kebabsImg from '@/assets/recipes/kebabs.jpg';
+import poutineImg from '@/assets/recipes/poutine.jpg';
+import tandooriChickenImg from '@/assets/recipes/tandoori-chicken.jpg';
+import butterChickenImg from '@/assets/recipes/butter-chicken.jpg';
+import biryaniImg from '@/assets/recipes/biryani.jpg';
+import burrataTomatoImg from '@/assets/recipes/burrata-tomato.jpg';
+import buffaloWingsImg from '@/assets/recipes/buffalo-wings.jpg';
+import quesadillaImg from '@/assets/recipes/quesadilla.jpg';
+import greekGyroImg from '@/assets/recipes/greek-gyro.jpg';
+import brisketImg from '@/assets/recipes/brisket.jpg';
+import meatballsMashImg from '@/assets/recipes/meatballs-mash.jpg';
+import pastaAlfredoImg from '@/assets/recipes/pasta-alfredo.jpg';
+import carbonaraImg from '@/assets/recipes/carbonara.jpg';
+import lasagnaImg from '@/assets/recipes/lasagna.jpg';
+import calzoneImg from '@/assets/recipes/calzone.jpg';
+import steakSandwichImg from '@/assets/recipes/steak-sandwich.jpg';
+import veganBurgerImg from '@/assets/recipes/vegan-burger.jpg';
+import padSeeEwImg from '@/assets/recipes/pad-see-ew.jpg';
+import sashimiImg from '@/assets/recipes/sashimi.jpg';
+import crepesImg from '@/assets/recipes/crepes.jpg';
+import iceCreamImg from '@/assets/recipes/ice-cream.jpg';
+
 export const recipeImages: Record<string, string> = {
   'hamburger': hamburgerImg,
   'pasta-tomato': pastaTomatoImg,
@@ -57,6 +97,47 @@ export const recipeImages: Record<string, string> = {
   'shakshuka-green': shakshukaGreenImg,
   'matbucha': matbuchaImg,
   'tehina-salad': tehinaSaladImg,
+  // New recipes
+  'french-fries': frenchFriesImg,
+  'onion-rings': onionRingsImg,
+  'sushi': sushiImg,
+  'sushi-kosher': sushiImg, // Uses same image
+  'fried-chicken': friedChickenImg,
+  'thai-curry': thaiCurryImg,
+  'pad-thai': padThaiImg,
+  'ramen': ramenImg,
+  'poke-bowl': pokeBowlImg,
+  'burrito': burritoImg,
+  'tacos': tacosImg,
+  'dim-sum': dimSumImg,
+  'fish-chips': fishChipsImg,
+  'asian-dumplings': asianDumplingsImg,
+  'grilled-chicken': grilledChickenImg,
+  'caesar-salad': caesarSaladImg,
+  'bbq-ribs': bbqRibsImg,
+  'steak': steakImg,
+  'kebabs': kebabsImg,
+  'poutine': poutineImg,
+  'tandoori-chicken': tandooriChickenImg,
+  'butter-chicken': butterChickenImg,
+  'biryani': biryaniImg,
+  'burrata-tomato': burrataTomatoImg,
+  'buffalo-wings': buffaloWingsImg,
+  'quesadilla': quesadillaImg,
+  'greek-gyro': greekGyroImg,
+  'brisket': brisketImg,
+  'meatballs-mash': meatballsMashImg,
+  'pasta-alfredo': pastaAlfredoImg,
+  'carbonara': carbonaraImg,
+  'lasagna': lasagnaImg,
+  'calzone': calzoneImg,
+  'steak-sandwich': steakSandwichImg,
+  'vegan-burger': veganBurgerImg,
+  'pad-see-ew': padSeeEwImg,
+  'sashimi': sashimiImg,
+  'sashimi-kosher': sashimiImg, // Uses same image
+  'crepes': crepesImg,
+  'ice-cream': iceCreamImg,
 };
 
 export const getRecipeImage = (recipeId: string): string | undefined => {
