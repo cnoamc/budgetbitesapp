@@ -24,6 +24,9 @@ import RateMeal from "./pages/RateMeal";
 import Progress from "./pages/Progress";
 import Profile from "./pages/Profile";
 import Premium from "./pages/Premium";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import TermsOfService from "./pages/TermsOfService";
+import Support from "./pages/Support";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -47,6 +50,9 @@ const AnimatedRoutes = () => {
         <Route path="/rate/:id" element={<PageTransition><RateMeal /></PageTransition>} />
         <Route path="/progress" element={<PageTransition><Progress /></PageTransition>} />
         <Route path="/profile" element={<PageTransition><Profile /></PageTransition>} />
+        <Route path="/privacy" element={<PageTransition><PrivacyPolicy /></PageTransition>} />
+        <Route path="/terms" element={<PageTransition><TermsOfService /></PageTransition>} />
+        <Route path="/support" element={<PageTransition><Support /></PageTransition>} />
         <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
       </Routes>
     </AnimatePresence>

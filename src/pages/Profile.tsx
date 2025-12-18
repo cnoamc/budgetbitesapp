@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Settings, RefreshCw, MapPin, LogOut, Pencil, Camera, X, Bell, Moon, Crown } from 'lucide-react';
+import { Settings, RefreshCw, MapPin, LogOut, Pencil, Camera, X, Bell, Moon, Crown, FileText, HelpCircle, Shield } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import chefIcon from '@/assets/chef-icon.png';
 import { Button } from '@/components/ui/button';
@@ -283,6 +283,22 @@ export const Profile: React.FC = () => {
             <LogOut className="w-4 h-4" />
             התנתק
           </Button>
+        </div>
+
+        {/* Legal Links */}
+        <div className="flex justify-center gap-4 text-xs text-muted-foreground mt-2">
+          <button onClick={() => navigate('/privacy')} className="hover:underline flex items-center gap-1">
+            <Shield className="w-3 h-3" />
+            פרטיות
+          </button>
+          <button onClick={() => navigate('/terms')} className="hover:underline flex items-center gap-1">
+            <FileText className="w-3 h-3" />
+            תנאי שימוש
+          </button>
+          <button onClick={() => navigate('/support')} className="hover:underline flex items-center gap-1">
+            <HelpCircle className="w-3 h-3" />
+            תמיכה
+          </button>
         </div>
 
         {/* App Info */}
