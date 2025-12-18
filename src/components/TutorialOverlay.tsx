@@ -83,8 +83,8 @@ export const TutorialOverlay: React.FC = () => {
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogContent className="max-w-sm mx-4 p-0 overflow-hidden border-0 rounded-3xl bg-card shadow-elevated">
-        {/* Skip button */}
+      <DialogContent className="max-w-sm mx-4 p-0 overflow-hidden border-0 rounded-3xl bg-card shadow-elevated [&>button]:hidden">
+        {/* Skip button - single X */}
         <button
           onClick={handleSkip}
           className="absolute top-4 left-4 z-10 p-2 rounded-full bg-secondary/50 text-muted-foreground hover:bg-secondary transition-colors"
