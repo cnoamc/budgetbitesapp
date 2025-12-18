@@ -44,7 +44,7 @@ export const BottomNav: React.FC = () => {
       <nav className="max-w-md mx-auto">
         <div 
           ref={navRef}
-          className="relative flex justify-around items-center py-1.5 px-1 rounded-full backdrop-blur-xl bg-neutral-200/80 dark:bg-neutral-900/85 border border-neutral-300/50 dark:border-white/10 shadow-lg"
+          className="relative flex justify-around items-center py-2 px-1 rounded-full backdrop-blur-xl bg-neutral-200/80 dark:bg-neutral-900/85 border border-neutral-300/50 dark:border-white/10 shadow-lg"
           style={{
             boxShadow: '0 8px 32px -8px rgba(0, 0, 0, 0.18), 0 0 0 1px rgba(0, 0, 0, 0.05) inset'
           }}
@@ -52,7 +52,7 @@ export const BottomNav: React.FC = () => {
           {/* Animated indicator */}
           {activeIndex >= 0 && (
             <motion.div
-              className="absolute top-1.5 bottom-1.5 rounded-full bg-black/5 dark:bg-white/10"
+              className="absolute top-2 bottom-2 rounded-full bg-black/5 dark:bg-white/10"
               initial={false}
               animate={{
                 left: indicatorStyle.left,
@@ -74,7 +74,7 @@ export const BottomNav: React.FC = () => {
                 ref={el => itemRefs.current[index] = el}
                 onClick={() => handleNavClick(item.path)}
                 className={cn(
-                  "relative flex flex-col items-center gap-0 py-1.5 px-3.5 rounded-full transition-colors duration-200 z-10",
+                  "relative flex flex-col items-center gap-0.5 py-2 px-4 rounded-full transition-colors duration-200 z-10",
                   isActive 
                     ? "text-foreground" 
                     : "text-foreground/40 hover:text-foreground/60 active:scale-95"
@@ -82,12 +82,12 @@ export const BottomNav: React.FC = () => {
               >
                 <item.icon 
                   className={cn(
-                    "w-5 h-5 transition-all duration-200",
+                    "w-6 h-6 transition-all duration-200",
                     isActive ? "stroke-[2px]" : "stroke-[1.5px]"
                   )} 
                 />
                 <span className={cn(
-                  "text-[9px] transition-all duration-200",
+                  "text-[10px] transition-all duration-200",
                   isActive ? "font-semibold" : "font-medium"
                 )}>
                   {item.label}
