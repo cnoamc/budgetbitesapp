@@ -154,7 +154,7 @@ export const Profile: React.FC = () => {
 
   return (
     <div className="h-screen bg-background flex flex-col overflow-hidden">
-      <div className="flex-1 p-4 pb-24 flex flex-col">
+      <div className="flex-1 p-4 pb-28 flex flex-col overflow-y-auto">
         {/* Trial Reminder Banner */}
         {isTrialActive && (
           <TrialReminderBanner

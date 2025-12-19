@@ -40,11 +40,11 @@ export const BottomNav: React.FC = () => {
   };
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 pb-4 pt-2 z-50 px-4">
+    <div className="fixed bottom-0 left-0 right-0 pb-3 pt-1 z-50 px-4">
       <nav className="max-w-md mx-auto">
         <div 
           ref={navRef}
-          className="relative flex justify-center items-center gap-0 py-2 px-0.5 rounded-full backdrop-blur-xl bg-neutral-200/60 dark:bg-neutral-900/70 border border-neutral-300/40 dark:border-white/10"
+          className="relative flex justify-center items-center gap-0 py-1.5 px-0.5 rounded-full backdrop-blur-xl bg-neutral-200/60 dark:bg-neutral-900/70 border border-neutral-300/40 dark:border-white/10"
           style={{
             boxShadow: '0 8px 32px -8px rgba(0, 0, 0, 0.18), inset 0 1px 2px rgba(0, 0, 0, 0.06), inset 0 -1px 1px rgba(255, 255, 255, 0.1)'
           }}
@@ -52,7 +52,7 @@ export const BottomNav: React.FC = () => {
           {/* Animated indicator */}
           {activeIndex >= 0 && (
             <motion.div
-              className="absolute top-2 bottom-2 rounded-full bg-black/5 dark:bg-white/10"
+              className="absolute top-1.5 bottom-1.5 rounded-full bg-black/5 dark:bg-white/10"
               initial={false}
               animate={{
                 left: indicatorStyle.left,
@@ -74,7 +74,7 @@ export const BottomNav: React.FC = () => {
                 ref={el => itemRefs.current[index] = el}
                 onClick={() => handleNavClick(item.path)}
                 className={cn(
-                  "relative flex flex-col items-center gap-0.5 py-2 px-3 rounded-full transition-colors duration-200 z-10",
+                  "relative flex flex-col items-center gap-0 py-1.5 px-3 rounded-full transition-colors duration-200 z-10",
                   isActive 
                     ? "text-foreground" 
                     : "text-foreground/40 hover:text-foreground/60 active:scale-95"
@@ -82,7 +82,7 @@ export const BottomNav: React.FC = () => {
               >
                 <item.icon 
                   className={cn(
-                    "w-6 h-6 transition-all duration-200",
+                    "w-5 h-5 transition-all duration-200",
                     isActive ? "stroke-[2px]" : "stroke-[1.5px]"
                   )} 
                 />
