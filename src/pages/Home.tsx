@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Sparkles, ArrowLeft, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { RecipeCard } from '@/components/RecipeCard';
-import { BottomNav } from '@/components/BottomNav';
+
 import { GradientBackground } from '@/components/ui/GradientBackground';
 import { PremiumCard } from '@/components/ui/PremiumCard';
 import { InactivityAlert } from '@/components/notifications';
@@ -211,7 +211,6 @@ export const Home: React.FC = () => {
           )}
         </div>
 
-        <BottomNav />
         <TutorialOverlay />
       </div>
     </GradientBackground>

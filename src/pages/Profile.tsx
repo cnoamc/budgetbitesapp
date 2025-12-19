@@ -5,7 +5,7 @@ import chefIcon from '@/assets/chef-icon.png';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
-import { BottomNav } from '@/components/BottomNav';
+
 import { SyncIndicator } from '@/components/SyncIndicator';
 import { TrialReminderBanner } from '@/components/PremiumPaywall';
 import { useApp } from '@/contexts/AppContext';
@@ -344,8 +344,6 @@ export const Profile: React.FC = () => {
           <NotificationSettings />
         </DialogContent>
       </Dialog>
-
-      <BottomNav />
     </div>
   );
 };
