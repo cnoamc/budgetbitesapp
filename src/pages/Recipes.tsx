@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search, Heart } from 'lucide-react';
 import { RecipeCard } from '@/components/RecipeCard';
-import { BottomNav } from '@/components/BottomNav';
+
 import { GradientBackground } from '@/components/ui/GradientBackground';
 import { recipes, categoryLabels, categoryEmojis } from '@/lib/recipes';
 import { cn } from '@/lib/utils';
@@ -127,8 +127,6 @@ export const Recipes: React.FC = () => {
             </div>
           )}
         </div>
-
-        <BottomNav />
       </div>
     </GradientBackground>
   );

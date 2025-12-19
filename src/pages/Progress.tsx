@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { TrendingUp, Star, Target, Trophy, Flame, UtensilsCrossed } from 'lucide-react';
 import confetti from 'canvas-confetti';
-import { BottomNav } from '@/components/BottomNav';
+
 import { GradientBackground } from '@/components/ui/GradientBackground';
 import { PremiumCard } from '@/components/ui/PremiumCard';
 import { StarRating } from '@/components/StarRating';
@@ -263,8 +263,6 @@ export const Progress: React.FC = () => {
             </PremiumCard>
           )}
         </div>
-
-        <BottomNav />
       </div>
     </GradientBackground>
   );
