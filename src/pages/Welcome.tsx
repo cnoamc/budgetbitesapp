@@ -2,7 +2,7 @@ import React, { useEffect, useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
-import chefIcon from '@/assets/chef-icon.png';
+import splashScreen from '@/assets/splash-screen.png';
 
 const FOOD_EMOJIS = ['🍔', '🍕', '🍝', '🥗', '🍜', '🥘', '🍳', '🥙', '🌮', '🍲', '🥪', '🍱', '🧆', '🥐', '🍰'];
 
@@ -62,7 +62,7 @@ const Welcome: React.FC = () => {
         style={{ background: 'linear-gradient(180deg, #F8F9FF 0%, #FFE8F0 50%, #F0FFF6 100%)' }}
       >
         <div className="w-20 h-20 rounded-3xl overflow-hidden shadow-2xl animate-pulse">
-          <img src={chefIcon} alt="BudgetBites" className="w-full h-full object-cover" />
+          <img src={splashScreen} alt="BudgetBites" className="w-full h-full object-cover" />
         </div>
       </div>
     );
@@ -121,7 +121,7 @@ const Welcome: React.FC = () => {
             }}
           >
             <img 
-              src={chefIcon} 
+              src={splashScreen} 
               alt="BudgetBites" 
               className="w-full h-full object-cover"
             />
