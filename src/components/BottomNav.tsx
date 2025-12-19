@@ -44,7 +44,7 @@ export const BottomNav: React.FC = () => {
       <nav>
         <div 
           ref={navRef}
-          className="relative inline-flex justify-center items-center py-1 px-1 rounded-full backdrop-blur-xl bg-neutral-200/60 dark:bg-neutral-900/70 border border-neutral-300/40 dark:border-white/10"
+          className="relative inline-flex justify-center items-center py-1.5 px-1.5 rounded-full backdrop-blur-xl bg-neutral-200/60 dark:bg-neutral-900/70 border border-neutral-300/40 dark:border-white/10"
           style={{
             boxShadow: '0 8px 32px -8px rgba(0, 0, 0, 0.18), inset 0 1px 2px rgba(0, 0, 0, 0.06), inset 0 -1px 1px rgba(255, 255, 255, 0.1)'
           }}
