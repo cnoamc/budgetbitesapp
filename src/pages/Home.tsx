@@ -45,6 +45,15 @@ const getDailyTip = () => {
   return cookingTips[dayOfYear % cookingTips.length];
 };
 
+// Get a consistent daily recipe based on the date (changes at midnight)
+const getDailyRecipeIndex = () => {
+  const today = new Date();
+  // Create a seed from year + month + day
+  const seed = today.getFullYear() * 10000 + (today.getMonth() + 1) * 100 + today.getDate();
+  // Use the seed to get a consistent index
+  return seed % recipes.length;
+};
+
 export const Home: React.FC = () => {
   const navigate = useNavigate();
   const { progress, displayName, photoUrl } = useApp();
@@ -65,7 +74,7 @@ export const Home: React.FC = () => {
   const { daysInactive, potentialSavingsLost, shouldShowAlert, dismissAlert } = useInactivityTracker(hasCooked);
   
   // Memoize recipe selection to prevent re-renders
-  const todayRecipe = useMemo(() => recipes[Math.floor(Math.random() * recipes.length)], []);
+  const todayRecipe = useMemo(() => recipes[getDailyRecipeIndex()], []);
   const quickRecipes = useMemo(() => recipes.filter(r => r.prepTime + r.cookTime <= 20).slice(0, 3), []);
 
   return (
