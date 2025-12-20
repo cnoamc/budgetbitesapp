@@ -350,9 +350,12 @@ export const Onboarding: React.FC = () => {
                 הנה למה שווה להצטרף
               </p>
               <div className="space-y-3 mt-4">
-                <div className="p-4 rounded-2xl bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-blue-950/30 dark:to-cyan-950/30 border border-blue-200/50 dark:border-blue-800/30">
+                <div 
+                  className="p-4 rounded-2xl bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-blue-950/30 dark:to-cyan-950/30 border border-blue-200/50 dark:border-blue-800/30 animate-fade-in opacity-0"
+                  style={{ animationDelay: '0.1s', animationFillMode: 'forwards' }}
+                >
                   <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/50 rounded-xl flex items-center justify-center">
+                    <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/50 rounded-xl flex items-center justify-center animate-scale-in" style={{ animationDelay: '0.2s' }}>
                       <Clock className="w-6 h-6 text-blue-600 dark:text-blue-400" />
                     </div>
                     <div className="flex-1 text-right">
@@ -362,9 +365,12 @@ export const Onboarding: React.FC = () => {
                   </div>
                 </div>
                 
-                <div className="p-4 rounded-2xl bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-950/30 dark:to-pink-950/30 border border-purple-200/50 dark:border-purple-800/30">
+                <div 
+                  className="p-4 rounded-2xl bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-950/30 dark:to-pink-950/30 border border-purple-200/50 dark:border-purple-800/30 animate-fade-in opacity-0"
+                  style={{ animationDelay: '0.3s', animationFillMode: 'forwards' }}
+                >
                   <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/50 rounded-xl flex items-center justify-center">
+                    <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/50 rounded-xl flex items-center justify-center animate-scale-in" style={{ animationDelay: '0.4s' }}>
                       <Trophy className="w-6 h-6 text-purple-600 dark:text-purple-400" />
                     </div>
                     <div className="flex-1 text-right">
@@ -374,9 +380,12 @@ export const Onboarding: React.FC = () => {
                   </div>
                 </div>
                 
-                <div className="p-4 rounded-2xl bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30 border border-amber-200/50 dark:border-amber-800/30">
+                <div 
+                  className="p-4 rounded-2xl bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30 border border-amber-200/50 dark:border-amber-800/30 animate-fade-in opacity-0"
+                  style={{ animationDelay: '0.5s', animationFillMode: 'forwards' }}
+                >
                   <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 bg-amber-100 dark:bg-amber-900/50 rounded-xl flex items-center justify-center">
+                    <div className="w-12 h-12 bg-amber-100 dark:bg-amber-900/50 rounded-xl flex items-center justify-center animate-scale-in" style={{ animationDelay: '0.6s' }}>
                       <Sparkles className="w-6 h-6 text-amber-600 dark:text-amber-400" />
                     </div>
                     <div className="flex-1 text-right">
