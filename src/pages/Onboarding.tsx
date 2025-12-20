@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Clock, Trophy, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 import { useApp } from '@/contexts/AppContext';
@@ -53,11 +53,11 @@ export const Onboarding: React.FC = () => {
         // Saver: spending -> orders -> skill -> food -> done
         return ['goal', 'spending', 'orders', 'skill', 'food', 'done'];
       case 'recipes':
-        // Recipe explorer: skill -> food -> done (skip money questions)
-        return ['goal', 'skill', 'food', 'done'];
+        // Recipe explorer: skill -> food -> benefits -> done
+        return ['goal', 'skill', 'food', 'benefits', 'done'];
       case 'improve':
-        // Skill improver: skill -> food -> done (skip money questions)
-        return ['goal', 'skill', 'food', 'done'];
+        // Skill improver: skill -> food -> benefits -> done
+        return ['goal', 'skill', 'food', 'benefits', 'done'];
       default:
         return ['goal'];
     }
@@ -112,7 +112,7 @@ export const Onboarding: React.FC = () => {
       case 'spending': return formData.monthlySpending > 0;
       case 'orders': return formData.weeklyOrders > 0;
       case 'food': return formData.preferredFood.length > 0;
-      case 'done': return true;
+      case 'benefits': return true;
       default: return false;
     }
   };
@@ -336,6 +336,55 @@ export const Onboarding: React.FC = () => {
                     <span className="text-xs font-medium">{food.label}</span>
                   </button>
                 ))}
+              </div>
+            </div>
+          )}
+
+          {/* Benefits for experienced cooks */}
+          {currentStepType === 'benefits' && (
+            <div className="space-y-4">
+              <h2 className="text-xl font-semibold text-center text-foreground">
+                מה תקבל מאיתנו? ✨
+              </h2>
+              <p className="text-center text-muted-foreground text-sm">
+                הנה למה שווה להצטרף
+              </p>
+              <div className="space-y-3 mt-4">
+                <div className="p-4 rounded-2xl bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-blue-950/30 dark:to-cyan-950/30 border border-blue-200/50 dark:border-blue-800/30">
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/50 rounded-xl flex items-center justify-center">
+                      <Clock className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                    </div>
+                    <div className="flex-1 text-right">
+                      <h3 className="font-semibold text-foreground">חסוך זמן בתכנון</h3>
+                      <p className="text-xs text-muted-foreground">מתכונים מהירים עם רשימת קניות אוטומטית</p>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="p-4 rounded-2xl bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-950/30 dark:to-pink-950/30 border border-purple-200/50 dark:border-purple-800/30">
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/50 rounded-xl flex items-center justify-center">
+                      <Trophy className="w-6 h-6 text-purple-600 dark:text-purple-400" />
+                    </div>
+                    <div className="flex-1 text-right">
+                      <h3 className="font-semibold text-foreground">אתגרים שבועיים</h3>
+                      <p className="text-xs text-muted-foreground">צבור נקודות והישגים ותתחרה עם חברים</p>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="p-4 rounded-2xl bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30 border border-amber-200/50 dark:border-amber-800/30">
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 bg-amber-100 dark:bg-amber-900/50 rounded-xl flex items-center justify-center">
+                      <Sparkles className="w-6 h-6 text-amber-600 dark:text-amber-400" />
+                    </div>
+                    <div className="flex-1 text-right">
+                      <h3 className="font-semibold text-foreground">מתכונים בלעדיים</h3>
+                      <p className="text-xs text-muted-foreground">גישה למתכונים מקצועיים וטכניקות מתקדמות</p>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           )}
