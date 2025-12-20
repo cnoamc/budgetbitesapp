@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -12,6 +13,7 @@ import { SubscriptionProvider } from "@/contexts/SubscriptionContext";
 import { NotificationBanner } from "@/components/NotificationBanner";
 import { PageTransition } from "@/components/PageTransition";
 import { BottomNav } from "@/components/BottomNav";
+import { SplashScreen } from "@/components/SplashScreen";
 import Welcome from "./pages/Welcome";
 import SignIn from "./pages/SignIn";
 import LoadingSavings from "./pages/LoadingSavings";
@@ -74,27 +76,50 @@ const AnimatedRoutes = () => {
   );
 };
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <ThemeProvider>
-      <AuthProvider>
-        <SubscriptionProvider>
-          <AppProvider>
-            <NotificationProvider>
-              <TooltipProvider>
-                <Toaster />
-                <Sonner />
-                <NotificationBanner />
-                <BrowserRouter>
-                  <AnimatedRoutes />
-                </BrowserRouter>
-              </TooltipProvider>
-            </NotificationProvider>
-          </AppProvider>
-        </SubscriptionProvider>
-      </AuthProvider>
-    </ThemeProvider>
-  </QueryClientProvider>
-);
+const App = () => {
+  const [showSplash, setShowSplash] = useState(true);
+  const [hasShownSplash, setHasShownSplash] = useState(false);
+
+  useEffect(() => {
+    // Check if splash was already shown this session
+    const splashShown = sessionStorage.getItem('bb_splash_shown');
+    if (splashShown) {
+      setShowSplash(false);
+      setHasShownSplash(true);
+    }
+  }, []);
+
+  const handleSplashComplete = () => {
+    sessionStorage.setItem('bb_splash_shown', 'true');
+    setShowSplash(false);
+    setHasShownSplash(true);
+  };
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider>
+        <AuthProvider>
+          <SubscriptionProvider>
+            <AppProvider>
+              <NotificationProvider>
+                <TooltipProvider>
+                  <Toaster />
+                  <Sonner />
+                  <NotificationBanner />
+                  {showSplash && !hasShownSplash && (
+                    <SplashScreen onComplete={handleSplashComplete} minDuration={2000} />
+                  )}
+                  <BrowserRouter>
+                    <AnimatedRoutes />
+                  </BrowserRouter>
+                </TooltipProvider>
+              </NotificationProvider>
+            </AppProvider>
+          </SubscriptionProvider>
+        </AuthProvider>
+      </ThemeProvider>
+    </QueryClientProvider>
+  );
+};
 
 export default App;
