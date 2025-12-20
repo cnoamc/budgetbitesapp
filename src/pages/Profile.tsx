@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Settings, RefreshCw, MapPin, LogOut, Pencil, Camera, X, Bell, Moon, Crown, FileText, HelpCircle, Shield } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import chefIcon from '@/assets/chef-icon.png';
+import appLogo from '@/assets/app-logo.png';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
@@ -174,7 +174,7 @@ export const Profile: React.FC = () => {
               {photoUrl ? (
                 <img src={photoUrl} alt="Profile" className="w-full h-full object-cover" />
               ) : (
-                <img src={chefIcon} alt="Profile" className="w-full h-full object-cover" />
+                <img src={appLogo} alt="Profile" className="w-full h-full object-cover" />
               )}
               <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity rounded-full">
                 <Camera className="w-5 h-5 text-white" />
@@ -236,7 +236,7 @@ export const Profile: React.FC = () => {
             <div className="flex items-center justify-between py-1.5 border-b border-border/50">
               <div className="flex items-center gap-2">
                 <div className="w-4 h-4 rounded overflow-hidden">
-                  <img src={chefIcon} alt="Skill" className="w-full h-full object-cover" />
+                  <img src={appLogo} alt="Skill" className="w-full h-full object-cover" />
                 </div>
                 <span className="text-sm">רמת מיומנות</span>
               </div>

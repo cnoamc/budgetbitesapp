@@ -1,6 +1,6 @@
 import React from 'react';
 import { cn } from '@/lib/utils';
-import chefIcon from '@/assets/chef-icon.png';
+import appLogo from '@/assets/app-logo.png';
 
 interface ChatMessageProps {
   message: string;
@@ -17,7 +17,7 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({ message, isBot = true,
     )}>
       {isBot && (
         <div className="w-10 h-10 rounded-full overflow-hidden shrink-0 shadow-card">
-          <img src={chefIcon} alt="שפי" className="w-full h-full object-cover" />
+          <img src={appLogo} alt="שפי" className="w-full h-full object-cover" />
         </div>
       )}
       
