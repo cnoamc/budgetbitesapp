@@ -95,27 +95,53 @@ export const CookingAssistant: React.FC = () => {
   const handleNext = async () => {
     const userText = currentStep === 0 ? 'מוכן להתחיל!' : 'סיימתי את השלב! ✅';
     setMessages(prev => [...prev, { text: userText, isBot: false }]);
+    setChatHistory(prev => [...prev, { role: 'user', content: userText }]);
     
     if (currentStep < recipe.steps.length) {
       const stepInstruction = recipe.steps[currentStep];
-      setMessages(prev => [...prev, { text: stepInstruction, isBot: true }]);
-      setCurrentStep(currentStep + 1);
+      const newStep = currentStep + 1;
+      setCurrentStep(newStep);
       
-      // Get AI encouragement
+      // Check if this is the last step
+      const isLastStep = newStep >= recipe.steps.length;
+      
+      // Build the AI prompt that includes the step
       const prompt = currentStep === 0 
-        ? `המשתמש מוכן להתחיל לבשל ${recipe.name}. תן לו עידוד קצר והסבר את השלב הראשון בצורה ברורה.`
-        : `המשתמש סיים את שלב ${currentStep}. עודד אותו ותן טיפ קצר לשלב הבא אם רלוונטי.`;
+        ? `המשתמש מוכן להתחיל. הנה השלב הראשון: "${stepInstruction}". תן הסבר קצר ועידוד.`
+        : isLastStep
+        ? `המשתמש סיים את כל השלבים! הנה השלב האחרון שהוא סיים: "${stepInstruction}". בשר אותו שהוא סיים וזה נראה טעים!`
+        : `המשתמש סיים שלב ${currentStep}. הנה השלב הבא: "${stepInstruction}". תן הסבר קצר ועידוד.`;
       
-      await sendToAI(prompt, true);
-    }
+      setIsLoading(true);
+      
+      try {
+        const newChatHistory: Message[] = [...chatHistory, { role: 'user', content: userText }];
+        
+        const { data, error } = await supabase.functions.invoke('cooking-assistant', {
+          body: {
+            messages: newChatHistory,
+            recipeName: recipe.name,
+            currentStep: newStep,
+            totalSteps: recipe.steps.length,
+            ingredients: recipe.ingredients.map(i => i.name),
+            stepInstruction: stepInstruction,
+            isLastStep: isLastStep,
+          },
+        });
 
-    if (currentStep === recipe.steps.length - 1) {
-      setTimeout(() => {
-        setMessages(prev => [
-          ...prev,
-          { text: '🎉 וואו, סיימת לבשל! איך יצא? אני בטוח שזה טעים!', isBot: true },
-        ]);
-      }, 2000);
+        if (error) throw error;
+        
+        const aiResponse = data.message;
+        setChatHistory([...newChatHistory, { role: 'assistant', content: aiResponse }]);
+        setMessages(prev => [...prev, { text: aiResponse, isBot: true }]);
+        
+      } catch (error: any) {
+        console.error('AI error:', error);
+        // Fallback: show just the step instruction
+        setMessages(prev => [...prev, { text: stepInstruction, isBot: true }]);
+      } finally {
+        setIsLoading(false);
+      }
     }
   };
 
