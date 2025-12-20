@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect } from 'react';
+import React, { useMemo, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Sparkles, ArrowLeft, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -14,6 +14,20 @@ import { useInactivityTracker } from '@/hooks/useInactivityTracker';
 import { recipes } from '@/lib/recipes';
 import { getRecipeImage } from '@/lib/recipeImages';
 import appLogo from '@/assets/app-logo.png';
+
+// Calculate time until midnight
+const getTimeUntilMidnight = () => {
+  const now = new Date();
+  const midnight = new Date(now);
+  midnight.setHours(24, 0, 0, 0);
+  const diff = midnight.getTime() - now.getTime();
+  
+  const hours = Math.floor(diff / (1000 * 60 * 60));
+  const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+  const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+  
+  return { hours, minutes, seconds };
+};
 
 const getTimeBasedGreeting = () => {
   const hour = new Date().getHours();
@@ -60,6 +74,16 @@ export const Home: React.FC = () => {
   const { subscription, loading: subLoading, hasStartedTrial } = useSubscription();
   const greeting = getTimeBasedGreeting();
 
+  // Countdown timer state
+  const [countdown, setCountdown] = useState(getTimeUntilMidnight());
+  
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCountdown(getTimeUntilMidnight());
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
+  
   // Redirect to premium if user hasn't started trial
   useEffect(() => {
     if (!subLoading && subscription && !hasStartedTrial) {
@@ -121,11 +145,19 @@ export const Home: React.FC = () => {
         <div className="px-6 max-w-lg mx-auto">
           {/* Today's Recommendation */}
           <div className="mb-8">
-            <div className="flex items-center gap-2 mb-4">
-              <div className="w-8 h-8 bg-black/5 rounded-xl flex items-center justify-center">
-                <Sparkles className="w-4 h-4 text-black" />
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 bg-black/5 rounded-xl flex items-center justify-center">
+                  <Sparkles className="w-4 h-4 text-black" />
+                </div>
+                <h2 className="font-semibold text-lg">המלצה להיום</h2>
               </div>
-              <h2 className="font-semibold text-lg">המלצה להיום</h2>
+              <div className="flex items-center gap-1.5 bg-secondary/50 px-3 py-1.5 rounded-full">
+                <Clock className="w-3.5 h-3.5 text-muted-foreground" />
+                <span className="text-xs font-medium text-muted-foreground" dir="ltr">
+                  {String(countdown.hours).padStart(2, '0')}:{String(countdown.minutes).padStart(2, '0')}:{String(countdown.seconds).padStart(2, '0')}
+                </span>
+              </div>
             </div>
             
             <PremiumCard 

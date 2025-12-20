@@ -1,13 +1,23 @@
-import React, { useEffect, useRef } from 'react';
-import { TrendingUp, Star, Target, Trophy, Flame, UtensilsCrossed } from 'lucide-react';
+import React, { useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { TrendingUp, Star, Target, Trophy, Flame, UtensilsCrossed, Plus, ChefHat } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
 import { GradientBackground } from '@/components/ui/GradientBackground';
 import { PremiumCard } from '@/components/ui/PremiumCard';
 import { StarRating } from '@/components/StarRating';
+import { Button } from '@/components/ui/button';
 import { useApp } from '@/contexts/AppContext';
-import { getRecipeById } from '@/lib/recipes';
+import { getRecipeById, recipes } from '@/lib/recipes';
+import { getRecipeImage } from '@/lib/recipeImages';
 import appLogo from '@/assets/app-logo.png';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { cn } from '@/lib/utils';
 
 
 // Calculate cooking streak from cooked meals
@@ -43,12 +53,52 @@ const MILESTONES = [
 ];
 
 export const Progress: React.FC = () => {
-  const { progress, monthlySavings } = useApp();
+  const navigate = useNavigate();
+  const { progress, monthlySavings, addCookedMeal } = useApp();
   const celebratedRef = useRef<Set<number>>(new Set());
+  const [isLogDialogOpen, setIsLogDialogOpen] = useState(false);
+  const [selectedRecipeId, setSelectedRecipeId] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const skillLabels = ['מתחיל', 'בסיסי', 'מתקדם', 'מומחה', 'שף!'];
   const skillEmojis = ['🌱', '🌿', '🌳', '⭐', '👨‍🍳'];
   const streak = calculateStreak(progress.cookedMeals);
+  
+  // Filter recipes for the dialog
+  const filteredRecipes = recipes.filter(r => 
+    r.name.includes(searchQuery) || r.emoji.includes(searchQuery)
+  ).slice(0, 10);
+  
+  // Check if user already cooked today
+  const today = new Date().toDateString();
+  const cookedToday = progress.cookedMeals.some(m => new Date(m.date).toDateString() === today);
+  
+  const handleLogCooking = () => {
+    if (!selectedRecipeId) return;
+    const recipe = getRecipeById(selectedRecipeId);
+    if (!recipe) return;
+    
+    addCookedMeal({
+      recipeId: selectedRecipeId,
+      date: new Date().toISOString(),
+      tasteRating: 4,
+      difficultyRating: 3,
+      wouldMakeAgain: true,
+      savings: recipe.deliveryCost - recipe.homeCost,
+    });
+    
+    setIsLogDialogOpen(false);
+    setSelectedRecipeId(null);
+    setSearchQuery('');
+    
+    // Celebrate!
+    confetti({
+      particleCount: 80,
+      spread: 60,
+      origin: { y: 0.7 },
+      colors: ['#ff6b35', '#f7c631', '#22c55e']
+    });
+  };
 
   // Confetti on milestone unlock
   useEffect(() => {
@@ -141,6 +191,23 @@ export const Progress: React.FC = () => {
                 <p className="text-sm text-muted-foreground">רצף בישול</p>
                 <p className="text-2xl font-bold">{streak} {streak === 1 ? 'יום' : 'ימים'} 🔥</p>
               </div>
+              {!cookedToday && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setIsLogDialogOpen(true)}
+                  className="bg-orange-100 dark:bg-orange-900/30 border-orange-300 dark:border-orange-700 hover:bg-orange-200 dark:hover:bg-orange-900/50"
+                >
+                  <Plus className="w-4 h-4" />
+                  בישלתי היום
+                </Button>
+              )}
+              {cookedToday && (
+                <div className="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1">
+                  <ChefHat className="w-3.5 h-3.5" />
+                  בישלת היום!
+                </div>
+              )}
             </div>
             
             {/* Streak Road Progress */}
@@ -257,12 +324,76 @@ export const Progress: React.FC = () => {
                 <img src={appLogo} alt="BudgetBites" className="w-full h-full object-cover" />
               </div>
               <h3 className="font-semibold text-lg mb-2">עדיין אין נתונים</h3>
-              <p className="text-muted-foreground text-sm">
+              <p className="text-muted-foreground text-sm mb-4">
                 תתחיל לבשל ותראה את ההתקדמות שלך כאן!
               </p>
+              <Button onClick={() => setIsLogDialogOpen(true)} className="rounded-xl">
+                <Plus className="w-4 h-4" />
+                רשום ארוחה ראשונה
+              </Button>
             </PremiumCard>
           )}
         </div>
+        
+        {/* Log Cooking Dialog */}
+        <Dialog open={isLogDialogOpen} onOpenChange={setIsLogDialogOpen}>
+          <DialogContent className="max-w-md max-h-[80vh]">
+            <DialogHeader>
+              <DialogTitle className="text-center">מה בישלת היום? 👨‍🍳</DialogTitle>
+            </DialogHeader>
+            
+            <div className="space-y-4">
+              {/* Search */}
+              <input
+                type="text"
+                placeholder="חפש מתכון..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full h-12 px-4 bg-secondary rounded-xl border border-border/50 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all text-base"
+              />
+              
+              {/* Recipe List */}
+              <div className="max-h-[300px] overflow-y-auto space-y-2">
+                {filteredRecipes.map((recipe) => (
+                  <button
+                    key={recipe.id}
+                    onClick={() => setSelectedRecipeId(recipe.id)}
+                    className={cn(
+                      "w-full p-3 rounded-xl border-2 transition-all flex items-center gap-3 text-right",
+                      selectedRecipeId === recipe.id
+                        ? "border-primary bg-primary/10"
+                        : "border-border hover:border-primary/50"
+                    )}
+                  >
+                    <div className="w-12 h-12 rounded-xl shrink-0 overflow-hidden">
+                      {getRecipeImage(recipe.id) ? (
+                        <img src={getRecipeImage(recipe.id)} alt={recipe.name} className="w-full h-full object-cover" />
+                      ) : (
+                        <div className="w-full h-full bg-secondary flex items-center justify-center text-2xl">
+                          {recipe.emoji}
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex-1">
+                      <p className="font-medium">{recipe.name}</p>
+                      <p className="text-xs text-muted-foreground">חיסכון ₪{recipe.deliveryCost - recipe.homeCost}</p>
+                    </div>
+                  </button>
+                ))}
+              </div>
+              
+              {/* Confirm Button */}
+              <Button 
+                onClick={handleLogCooking} 
+                disabled={!selectedRecipeId}
+                className="w-full h-12 rounded-xl"
+              >
+                <ChefHat className="w-4 h-4" />
+                אישור
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
     </GradientBackground>
   );
