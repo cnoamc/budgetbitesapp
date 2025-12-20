@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { ProgressBar } from '@/components/ProgressBar';
+
 import { useApp } from '@/contexts/AppContext';
 import { cn } from '@/lib/utils';
 import appLogo from '@/assets/app-logo.png';
@@ -168,7 +168,7 @@ export const Onboarding: React.FC = () => {
           <h1 className="text-lg font-bold">BudgetBites</h1>
         </div>
 
-        <ProgressBar currentStep={displayStep} totalSteps={totalSteps} className="mb-4" />
+        
 
         {/* Step Content - flex grow to fill space */}
         <div className="flex-1 flex flex-col justify-center animate-fade-in" key={currentStepType}>
