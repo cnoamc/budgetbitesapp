@@ -213,6 +213,28 @@ export const Progress: React.FC = () => {
             )}
           </PremiumCard>
 
+          {/* Quick Summary Card */}
+          <PremiumCard className="p-4 mb-4 animate-scale-in bg-gradient-to-r from-primary/5 to-savings/5 border-primary/20">
+            <div className="flex items-center justify-around text-center">
+              <div className="flex-1">
+                <div className="text-2xl mb-1">🍳</div>
+                <p className="text-xl font-bold">{progress.totalMealsCooked}</p>
+                <p className="text-xs text-muted-foreground">ארוחות</p>
+              </div>
+              <div className="w-px h-12 bg-border" />
+              <div className="flex-1">
+                <div className="text-2xl mb-1">💰</div>
+                <p className="text-xl font-bold text-savings">₪{progress.totalSavings}</p>
+                <p className="text-xs text-muted-foreground">נחסך</p>
+              </div>
+              <div className="w-px h-12 bg-border" />
+              <div className="flex-1">
+                <div className="text-2xl mb-1">🔥</div>
+                <p className="text-xl font-bold">{streak}</p>
+                <p className="text-xs text-muted-foreground">ימי רצף</p>
+              </div>
+            </div>
+          </PremiumCard>
 
           {/* Weekly Cooking Goals */}
           <PremiumCard className="p-4 mb-4 animate-scale-in bg-purple-50 dark:bg-purple-950/20 border-purple-200 dark:border-purple-800/30" style={{ animationDelay: '0.2s' }}>
