@@ -188,69 +188,6 @@ export const Home: React.FC = () => {
         </div>
 
         <div className="px-4 flex-1 max-w-lg mx-auto w-full flex flex-col gap-3 pb-4">
-          {/* Cooking Streak & Savings Row */}
-          <div className="grid grid-cols-2 gap-2">
-            {/* Streak Card */}
-            <PremiumCard className="p-3 bg-orange-50 dark:bg-orange-950/20 border-orange-200 dark:border-orange-800/30">
-              <div className="flex items-center gap-2 mb-2">
-                <div className="w-8 h-8 bg-orange-100 dark:bg-orange-900/30 rounded-lg flex items-center justify-center">
-                  <Flame className="w-4 h-4 text-orange-500" />
-                </div>
-                <div>
-                  <p className="text-[10px] text-muted-foreground">רצף בישול</p>
-                  <p className="text-lg font-bold leading-tight">{streak} {streak === 1 ? 'יום' : 'ימים'}</p>
-                </div>
-              </div>
-              {cookedToday && (
-                <div className="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 px-2 py-0.5 rounded-full text-[10px] font-medium flex items-center gap-1 w-fit">
-                  <ChefHat className="w-3 h-3" />
-                  בישלת היום!
-                </div>
-              )}
-            </PremiumCard>
-
-            {/* Animated Savings Card */}
-            <PremiumCard className="p-3 bg-savings-light border-savings/20">
-              <div className="flex items-center gap-2 mb-1">
-                <div className="w-8 h-8 bg-savings/10 rounded-lg flex items-center justify-center">
-                  <TrendingUp className="w-4 h-4 text-savings" />
-                </div>
-                <p className="text-[10px] text-muted-foreground">נחסך בסה״כ</p>
-              </div>
-              <p className="text-2xl font-bold text-savings animate-pulse">
-                ₪{displayedSavings}
-              </p>
-            </PremiumCard>
-          </div>
-
-          {/* Streak Milestones */}
-          <PremiumCard className="p-3 bg-orange-50/50 dark:bg-orange-950/10 border-orange-200/50 dark:border-orange-800/20">
-            <div className="flex justify-between">
-              {MILESTONES.map((milestone) => {
-                const isUnlocked = streak >= milestone.days;
-                return (
-                  <div key={milestone.days} className="flex flex-col items-center">
-                    <div 
-                      className={`w-10 h-10 rounded-full flex items-center justify-center text-base transition-all ${
-                        isUnlocked 
-                          ? 'bg-gradient-to-br from-orange-400 to-orange-500 shadow-md scale-105' 
-                          : 'bg-muted border border-muted-foreground/20'
-                      }`}
-                    >
-                      {isUnlocked ? milestone.emoji : '🔒'}
-                    </div>
-                    <p className={`text-[10px] font-medium mt-1 ${isUnlocked ? 'text-orange-600 dark:text-orange-400' : 'text-muted-foreground'}`}>
-                      {milestone.days} ימים
-                    </p>
-                    <p className={`text-[9px] ${isUnlocked ? 'text-orange-500' : 'text-muted-foreground/60'}`}>
-                      {milestone.label}
-                    </p>
-                  </div>
-                );
-              })}
-            </div>
-          </PremiumCard>
-
           {/* Today's Recommendation - Compact */}
           <div>
             <div className="flex items-center justify-between mb-1.5">
@@ -305,7 +242,7 @@ export const Home: React.FC = () => {
           </div>
 
           {/* Quick Recipes - Compact */}
-          <div className="flex-1 min-h-0 flex flex-col">
+          <div>
             <div className="flex items-center justify-between mb-1.5">
               <div className="flex items-center gap-1.5">
                 <Clock className="w-3.5 h-3.5 text-black" />
@@ -333,6 +270,69 @@ export const Home: React.FC = () => {
               ))}
             </div>
           </div>
+
+          {/* Cooking Streak & Savings Row */}
+          <div className="grid grid-cols-2 gap-2">
+            {/* Animated Savings Card */}
+            <PremiumCard className="p-3 bg-savings-light border-savings/20">
+              <div className="flex items-center gap-2 mb-1">
+                <div className="w-8 h-8 bg-savings/10 rounded-lg flex items-center justify-center">
+                  <TrendingUp className="w-4 h-4 text-savings" />
+                </div>
+                <p className="text-[10px] text-muted-foreground">נחסך בסה״כ</p>
+              </div>
+              <p className="text-2xl font-bold text-savings animate-pulse">
+                ₪{displayedSavings}
+              </p>
+            </PremiumCard>
+
+            {/* Streak Card */}
+            <PremiumCard className="p-3 bg-orange-50 dark:bg-orange-950/20 border-orange-200 dark:border-orange-800/30">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-8 h-8 bg-orange-100 dark:bg-orange-900/30 rounded-lg flex items-center justify-center">
+                  <Flame className="w-4 h-4 text-orange-500" />
+                </div>
+                <div>
+                  <p className="text-[10px] text-muted-foreground">רצף בישול</p>
+                  <p className="text-lg font-bold leading-tight">{streak} {streak === 1 ? 'יום' : 'ימים'}</p>
+                </div>
+              </div>
+              {cookedToday && (
+                <div className="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 px-2 py-0.5 rounded-full text-[10px] font-medium flex items-center gap-1 w-fit">
+                  <ChefHat className="w-3 h-3" />
+                  בישלת היום!
+                </div>
+              )}
+            </PremiumCard>
+          </div>
+
+          {/* Streak Milestones */}
+          <PremiumCard className="p-3 bg-orange-50/50 dark:bg-orange-950/10 border-orange-200/50 dark:border-orange-800/20">
+            <div className="flex justify-between">
+              {MILESTONES.map((milestone) => {
+                const isUnlocked = streak >= milestone.days;
+                return (
+                  <div key={milestone.days} className="flex flex-col items-center">
+                    <div 
+                      className={`w-10 h-10 rounded-full flex items-center justify-center text-base transition-all ${
+                        isUnlocked 
+                          ? 'bg-gradient-to-br from-orange-400 to-orange-500 shadow-md scale-105' 
+                          : 'bg-muted border border-muted-foreground/20'
+                      }`}
+                    >
+                      {isUnlocked ? milestone.emoji : '🔒'}
+                    </div>
+                    <p className={`text-[10px] font-medium mt-1 ${isUnlocked ? 'text-orange-600 dark:text-orange-400' : 'text-muted-foreground'}`}>
+                      {milestone.days} ימים
+                    </p>
+                    <p className={`text-[9px] ${isUnlocked ? 'text-orange-500' : 'text-muted-foreground/60'}`}>
+                      {milestone.label}
+                    </p>
+                  </div>
+                );
+              })}
+            </div>
+          </PremiumCard>
         </div>
 
         <TutorialOverlay />
