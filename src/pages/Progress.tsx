@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { TrendingUp, Star, Target, Trophy, Flame, UtensilsCrossed, Plus, ChefHat } from 'lucide-react';
+import { TrendingUp, Star, Target, Trophy, Flame, UtensilsCrossed, Plus, ChefHat, Share2, Gift, CheckCircle2 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
 import { GradientBackground } from '@/components/ui/GradientBackground';
@@ -9,6 +9,7 @@ import { StarRating } from '@/components/StarRating';
 import { Button } from '@/components/ui/button';
 import { useApp } from '@/contexts/AppContext';
 import { getRecipeById, recipes } from '@/lib/recipes';
+import { toast } from 'sonner';
 import { getRecipeImage } from '@/lib/recipeImages';
 import appLogo from '@/assets/app-logo.png';
 import {
@@ -52,6 +53,29 @@ const MILESTONES = [
   { days: 30, emoji: '🔥', label: 'אלוף!' },
 ];
 
+const WEEKLY_GOALS = [
+  { meals: 2, reward: '🥉', label: 'שתי ארוחות', points: 10 },
+  { meals: 4, reward: '🥈', label: 'ארבע ארוחות', points: 25 },
+  { meals: 6, reward: '🥇', label: 'שש ארוחות', points: 50 },
+  { meals: 7, reward: '💎', label: 'שבעה ימים!', points: 100 },
+];
+
+// Get start of current week (Sunday)
+const getWeekStart = () => {
+  const now = new Date();
+  const dayOfWeek = now.getDay();
+  const weekStart = new Date(now);
+  weekStart.setDate(now.getDate() - dayOfWeek);
+  weekStart.setHours(0, 0, 0, 0);
+  return weekStart;
+};
+
+// Count meals cooked this week
+const countWeeklyMeals = (cookedMeals: { date: string }[]) => {
+  const weekStart = getWeekStart();
+  return cookedMeals.filter(m => new Date(m.date) >= weekStart).length;
+};
+
 export const Progress: React.FC = () => {
   const navigate = useNavigate();
   const { progress, monthlySavings, addCookedMeal } = useApp();
@@ -72,6 +96,33 @@ export const Progress: React.FC = () => {
   // Check if user already cooked today
   const today = new Date().toDateString();
   const cookedToday = progress.cookedMeals.some(m => new Date(m.date).toDateString() === today);
+  
+  // Weekly goals
+  const weeklyMealsCount = countWeeklyMeals(progress.cookedMeals);
+  const currentGoal = WEEKLY_GOALS.find(g => weeklyMealsCount < g.meals) || WEEKLY_GOALS[WEEKLY_GOALS.length - 1];
+  const completedGoals = WEEKLY_GOALS.filter(g => weeklyMealsCount >= g.meals);
+  const totalPoints = completedGoals.reduce((sum, g) => sum + g.points, 0);
+  
+  // Share streak function
+  const handleShareStreak = async () => {
+    const shareText = `🔥 יש לי רצף בישול של ${streak} ימים ב-BudgetBites!\n\n✨ כבר חסכתי ₪${progress.totalSavings} בבישול ביתי.\n\nהצטרפו גם אתם לחיסכון! 🍳`;
+    
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: 'רצף הבישול שלי',
+          text: shareText,
+        });
+      } catch (err) {
+        // User cancelled or error
+        console.log('Share cancelled');
+      }
+    } else {
+      // Fallback: copy to clipboard
+      await navigator.clipboard.writeText(shareText);
+      toast.success('הועתק ללוח! 📋');
+    }
+  };
   
   const handleLogCooking = () => {
     if (!selectedRecipeId) return;
@@ -252,6 +303,99 @@ export const Progress: React.FC = () => {
                 })}
               </div>
             </div>
+            
+            {/* Share Streak Button */}
+            {streak >= 3 && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleShareStreak}
+                className="w-full mt-3 bg-orange-100 dark:bg-orange-900/30 border-orange-300 dark:border-orange-700 hover:bg-orange-200 dark:hover:bg-orange-900/50 text-orange-700 dark:text-orange-300"
+              >
+                <Share2 className="w-4 h-4" />
+                שתף את ההישג שלי
+              </Button>
+            )}
+          </PremiumCard>
+
+          {/* Weekly Cooking Goals */}
+          <PremiumCard className="p-4 mb-4 animate-scale-in bg-purple-50 dark:bg-purple-950/20 border-purple-200 dark:border-purple-800/30" style={{ animationDelay: '0.2s' }}>
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-xl flex items-center justify-center">
+                <Gift className="w-6 h-6 text-purple-500" />
+              </div>
+              <div className="flex-1">
+                <p className="text-sm text-muted-foreground">יעדים שבועיים</p>
+                <p className="text-lg font-bold">{weeklyMealsCount} ארוחות השבוע</p>
+              </div>
+              <div className="bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 px-3 py-1.5 rounded-full text-sm font-bold flex items-center gap-1">
+                <Trophy className="w-4 h-4" />
+                {totalPoints} נק׳
+              </div>
+            </div>
+            
+            {/* Goals Grid */}
+            <div className="grid grid-cols-2 gap-2">
+              {WEEKLY_GOALS.map((goal) => {
+                const isCompleted = weeklyMealsCount >= goal.meals;
+                const progressPercent = Math.min((weeklyMealsCount / goal.meals) * 100, 100);
+                
+                return (
+                  <div 
+                    key={goal.meals}
+                    className={cn(
+                      "p-3 rounded-xl border-2 transition-all relative overflow-hidden",
+                      isCompleted 
+                        ? "border-purple-400 bg-purple-100 dark:bg-purple-900/40" 
+                        : "border-border bg-muted/30"
+                    )}
+                  >
+                    {/* Progress bar background */}
+                    {!isCompleted && (
+                      <div 
+                        className="absolute inset-0 bg-purple-100 dark:bg-purple-900/20 transition-all"
+                        style={{ width: `${progressPercent}%` }}
+                      />
+                    )}
+                    
+                    <div className="relative flex items-center gap-2">
+                      <div className={cn(
+                        "w-8 h-8 rounded-full flex items-center justify-center text-lg",
+                        isCompleted ? "bg-purple-200 dark:bg-purple-800" : "bg-muted"
+                      )}>
+                        {isCompleted ? goal.reward : '🔒'}
+                      </div>
+                      <div className="flex-1">
+                        <p className={cn(
+                          "text-sm font-medium",
+                          isCompleted ? "text-purple-700 dark:text-purple-300" : "text-muted-foreground"
+                        )}>
+                          {goal.label}
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          +{goal.points} נק׳
+                        </p>
+                      </div>
+                      {isCompleted && (
+                        <CheckCircle2 className="w-5 h-5 text-purple-500" />
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+            
+            {/* Next goal hint */}
+            {weeklyMealsCount < 7 && (
+              <p className="text-xs text-muted-foreground text-center mt-3">
+                עוד {currentGoal.meals - weeklyMealsCount} ארוחות ליעד הבא {currentGoal.reward}
+              </p>
+            )}
+            {weeklyMealsCount >= 7 && (
+              <p className="text-sm text-purple-600 dark:text-purple-400 text-center mt-3 font-medium">
+                🎉 כל היעדים הושגו השבוע!
+              </p>
+            )}
           </PremiumCard>
 
           {/* Monthly Summary */}
