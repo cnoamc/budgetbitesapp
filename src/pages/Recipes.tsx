@@ -11,7 +11,7 @@ import { useApp } from '@/contexts/AppContext';
 import type { RecipeCategory } from '@/lib/types';
 import appLogo from '@/assets/app-logo.png';
 
-const categories: Array<RecipeCategory | 'all' | 'favorites'> = ['all', 'favorites', 'beginner', 'fast', 'cheap', 'protein', 'vegetarian', 'easy', 'kosher'];
+const categories: Array<RecipeCategory | 'all' | 'favorites'> = ['all', 'favorites', 'desserts', 'beginner', 'fast', 'cheap', 'protein', 'vegetarian', 'easy', 'kosher'];
 
 export const Recipes: React.FC = () => {
   const navigate = useNavigate();

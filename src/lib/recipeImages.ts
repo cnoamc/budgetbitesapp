@@ -68,6 +68,33 @@ import sashimiImg from '@/assets/recipes/sashimi.jpg';
 import crepesImg from '@/assets/recipes/crepes.jpg';
 import iceCreamImg from '@/assets/recipes/ice-cream.jpg';
 
+// Dessert images
+import chocolateCakeImg from '@/assets/recipes/chocolate-cake.jpg';
+import cheesecakeImg from '@/assets/recipes/cheesecake.jpg';
+import carrotCakeImg from '@/assets/recipes/carrot-cake.jpg';
+import appleCakeImg from '@/assets/recipes/apple-cake.jpg';
+import redVelvetImg from '@/assets/recipes/red-velvet.jpg';
+import lemonCakeImg from '@/assets/recipes/lemon-cake.jpg';
+import brownieCakeImg from '@/assets/recipes/brownie-cake.jpg';
+import bananaBreadImg from '@/assets/recipes/banana-bread.jpg';
+import poundCakeImg from '@/assets/recipes/pound-cake.jpg';
+import coffeeCakeImg from '@/assets/recipes/coffee-cake.jpg';
+import chocolateChipCookiesImg from '@/assets/recipes/chocolate-chip-cookies.jpg';
+import oatmealCookiesImg from '@/assets/recipes/oatmeal-cookies.jpg';
+import butterCookiesImg from '@/assets/recipes/butter-cookies.jpg';
+import peanutButterCookiesImg from '@/assets/recipes/peanut-butter-cookies.jpg';
+import tahiniCookiesImg from '@/assets/recipes/tahini-cookies.jpg';
+import tiramisuImg from '@/assets/recipes/tiramisu.jpg';
+import cremeBruleeImg from '@/assets/recipes/creme-brulee.jpg';
+import pannaCottaImg from '@/assets/recipes/panna-cotta.jpg';
+import mochiImg from '@/assets/recipes/mochi.jpg';
+import churrosImg from '@/assets/recipes/churros.jpg';
+import macaronsImg from '@/assets/recipes/macarons.jpg';
+import basqueCheesecakeImg from '@/assets/recipes/basque-cheesecake.jpg';
+import affogatoImg from '@/assets/recipes/affogato.jpg';
+import matchaLavaCakeImg from '@/assets/recipes/matcha-lava-cake.jpg';
+import dubaiChocolateImg from '@/assets/recipes/dubai-chocolate.jpg';
+
 export const recipeImages: Record<string, string> = {
   'hamburger': hamburgerImg,
   'pasta-tomato': pastaTomatoImg,
@@ -138,6 +165,34 @@ export const recipeImages: Record<string, string> = {
   'sashimi-kosher': sashimiImg, // Uses same image
   'crepes': crepesImg,
   'ice-cream': iceCreamImg,
+  // Desserts - Cakes
+  'chocolate-cake': chocolateCakeImg,
+  'cheesecake': cheesecakeImg,
+  'carrot-cake': carrotCakeImg,
+  'apple-cake': appleCakeImg,
+  'red-velvet': redVelvetImg,
+  'lemon-cake': lemonCakeImg,
+  'brownie-cake': brownieCakeImg,
+  'banana-bread': bananaBreadImg,
+  'pound-cake': poundCakeImg,
+  'coffee-cake': coffeeCakeImg,
+  // Desserts - Cookies
+  'chocolate-chip-cookies': chocolateChipCookiesImg,
+  'oatmeal-cookies': oatmealCookiesImg,
+  'butter-cookies': butterCookiesImg,
+  'peanut-butter-cookies': peanutButterCookiesImg,
+  'tahini-cookies': tahiniCookiesImg,
+  // Desserts - Trendy
+  'tiramisu': tiramisuImg,
+  'creme-brulee': cremeBruleeImg,
+  'panna-cotta': pannaCottaImg,
+  'mochi': mochiImg,
+  'churros': churrosImg,
+  'macarons': macaronsImg,
+  'basque-cheesecake': basqueCheesecakeImg,
+  'affogato': affogatoImg,
+  'matcha-lava-cake': matchaLavaCakeImg,
+  'dubai-chocolate': dubaiChocolateImg,
 };
 
 export const getRecipeImage = (recipeId: string): string | undefined => {
