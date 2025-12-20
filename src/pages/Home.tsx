@@ -188,6 +188,14 @@ export const Home: React.FC = () => {
         </div>
 
         <div className="px-4 flex-1 max-w-lg mx-auto w-full flex flex-col gap-3 pb-4">
+          {/* Daily Cooking Tip */}
+          <div className="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/20 dark:to-orange-950/20 rounded-xl p-3 border border-amber-200/50 dark:border-amber-800/30">
+            <p className="text-xs text-center">
+              <span className="font-semibold text-amber-700 dark:text-amber-400">💡 טיפ היום:</span>{" "}
+              <span className="text-foreground/80">{dailyTip}</span>
+            </p>
+          </div>
+
           {/* Today's Recommendation - Compact */}
           <div>
             <div className="flex items-center justify-between mb-1.5">
