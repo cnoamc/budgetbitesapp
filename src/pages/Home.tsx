@@ -103,31 +103,30 @@ export const Home: React.FC = () => {
 
   return (
     <GradientBackground variant="warm">
-      <div className="min-h-screen pb-28">
-        {/* Header */}
-        <div className="p-6 pt-8">
+      <div className="h-[calc(100vh-80px)] overflow-hidden flex flex-col">
+        {/* Header - Compact */}
+        <div className="px-4 pt-4 pb-2">
           <div className="max-w-lg mx-auto">
-            <div className="flex items-center gap-4 mb-6" dir="rtl">
-              <div className="w-14 h-14 rounded-2xl overflow-hidden shadow-glow shrink-0">
+            <div className="flex items-center gap-3" dir="rtl">
+              <div className="w-11 h-11 rounded-xl overflow-hidden shadow-glow shrink-0">
                 <img 
                   src={photoUrl || appLogo} 
                   alt="Profile" 
                   className="w-full h-full object-cover" 
                 />
               </div>
-              <div>
-                <h1 className="text-2xl font-bold">{greeting} {displayName} 👋</h1>
-                <p className="text-base text-muted-foreground">מה נבשל היום?</p>
+              <div className="flex-1">
+                <h1 className="text-xl font-bold">{greeting} {displayName} 👋</h1>
+                <p className="text-sm text-muted-foreground">מה נבשל היום?</p>
               </div>
             </div>
 
-            {/* Daily Cooking Tip */}
-            <div className="bg-secondary/50 rounded-2xl p-4 mb-6">
-              <p className="text-sm text-center">
-                <span className="font-medium">💡 טיפ היום:</span> {dailyTip}
+            {/* Daily Cooking Tip - Compact */}
+            <div className="bg-secondary/50 rounded-xl p-2.5 mt-3">
+              <p className="text-xs text-center">
+                <span className="font-medium">💡 טיפ:</span> {dailyTip}
               </p>
             </div>
-
             
             {/* Inactivity Alert */}
             {shouldShowAlert && (
@@ -136,25 +135,23 @@ export const Home: React.FC = () => {
                 potentialSavingsLost={potentialSavingsLost}
                 onDismiss={dismissAlert}
                 onAction={() => navigate('/recipes')}
-                className="animate-slide-up"
+                className="animate-slide-up mt-2"
               />
             )}
           </div>
         </div>
 
-        <div className="px-6 max-w-lg mx-auto">
-          {/* Today's Recommendation */}
-          <div className="mb-8">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 bg-black/5 rounded-xl flex items-center justify-center">
-                  <Sparkles className="w-4 h-4 text-black" />
-                </div>
-                <h2 className="font-semibold text-lg">המלצה להיום</h2>
+        <div className="px-4 flex-1 overflow-hidden max-w-lg mx-auto w-full flex flex-col">
+          {/* Today's Recommendation - Compact */}
+          <div className="mb-3">
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-1.5">
+                <Sparkles className="w-4 h-4 text-black" />
+                <h2 className="font-semibold text-sm">המלצה להיום</h2>
               </div>
-              <div className="flex items-center gap-1.5 bg-secondary/50 px-3 py-1.5 rounded-full">
-                <Clock className="w-3.5 h-3.5 text-muted-foreground" />
-                <span className="text-xs font-medium text-muted-foreground" dir="ltr">
+              <div className="flex items-center gap-1 bg-secondary/50 px-2 py-1 rounded-full">
+                <Clock className="w-3 h-3 text-muted-foreground" />
+                <span className="text-[10px] font-medium text-muted-foreground" dir="ltr">
                   {String(countdown.hours).padStart(2, '0')}:{String(countdown.minutes).padStart(2, '0')}:{String(countdown.seconds).padStart(2, '0')}
                 </span>
               </div>
@@ -164,10 +161,10 @@ export const Home: React.FC = () => {
               variant="elevated"
               hoverable
               onClick={() => navigate(`/recipe/${todayRecipe.id}`)}
-              className="p-5"
+              className="p-3"
             >
-              <div className="flex gap-4">
-                <div className="w-24 h-24 rounded-2xl shrink-0 shadow-soft overflow-hidden">
+              <div className="flex gap-3">
+                <div className="w-16 h-16 rounded-xl shrink-0 shadow-soft overflow-hidden">
                   {getRecipeImage(todayRecipe.id) ? (
                     <img 
                       src={getRecipeImage(todayRecipe.id)} 
@@ -175,49 +172,47 @@ export const Home: React.FC = () => {
                       className="w-full h-full object-cover"
                     />
                   ) : (
-                    <div className="w-full h-full bg-gradient-to-br from-secondary to-muted flex items-center justify-center text-5xl">
+                    <div className="w-full h-full bg-gradient-to-br from-secondary to-muted flex items-center justify-center text-3xl">
                       {todayRecipe.emoji}
                     </div>
                   )}
                 </div>
-                <div className="flex-1">
-                  <div className="inline-flex items-center gap-1.5 bg-secondary/50 px-2 py-0.5 rounded-full text-xs text-muted-foreground mb-2">
-                    <Clock className="w-3 h-3" />
-                    מוכן ב־{todayRecipe.prepTime + todayRecipe.cookTime} דקות
+                <div className="flex-1 min-w-0">
+                  <div className="inline-flex items-center gap-1 bg-secondary/50 px-1.5 py-0.5 rounded-full text-[10px] text-muted-foreground mb-1">
+                    <Clock className="w-2.5 h-2.5" />
+                    {todayRecipe.prepTime + todayRecipe.cookTime} דקות
                   </div>
-                  <h3 className="font-bold text-lg mb-2">{todayRecipe.name}</h3>
-                  <div className="flex items-center justify-between">
-                    <span className="font-semibold text-lg">₪{todayRecipe.homeCost}</span>
-                    <span className="bg-savings-light text-savings px-3 py-1.5 rounded-full text-sm font-medium">
+                  <h3 className="font-bold text-sm mb-1 truncate">{todayRecipe.name}</h3>
+                  <div className="flex items-center gap-2">
+                    <span className="font-semibold text-sm">₪{todayRecipe.homeCost}</span>
+                    <span className="bg-savings-light text-savings px-2 py-0.5 rounded-full text-xs font-medium">
                       חיסכון ₪{todayRecipe.deliveryCost - todayRecipe.homeCost}
                     </span>
                   </div>
                 </div>
               </div>
-              <Button variant="default" className="w-full mt-4 h-12 rounded-xl text-base btn-press">
+              <Button variant="default" className="w-full mt-2 h-9 rounded-lg text-sm btn-press">
                 בוא נבשל! 🍳
-                <ArrowLeft className="w-4 h-4" />
+                <ArrowLeft className="w-3.5 h-3.5" />
               </Button>
             </PremiumCard>
           </div>
 
-          {/* Quick Recipes */}
-          <div className="mb-8">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 bg-black/5 rounded-xl flex items-center justify-center">
-                  <Clock className="w-4 h-4 text-black" />
-                </div>
-                <h2 className="font-semibold text-lg">מהיר ב-20 דקות</h2>
+          {/* Quick Recipes - Compact */}
+          <div className="flex-1 min-h-0 flex flex-col">
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-1.5">
+                <Clock className="w-4 h-4 text-black" />
+                <h2 className="font-semibold text-sm">מהיר ב-20 דקות</h2>
               </div>
-              <Button variant="ghost" size="sm" onClick={() => navigate('/recipes')} className="text-black">
+              <Button variant="ghost" size="sm" onClick={() => navigate('/recipes')} className="text-black h-7 text-xs px-2">
                 הכל
-                <ArrowLeft className="w-4 h-4" />
+                <ArrowLeft className="w-3 h-3" />
               </Button>
             </div>
             
-            <div className="space-y-3">
-              {quickRecipes.map((recipe, index) => (
+            <div className="space-y-2 flex-1 overflow-hidden">
+              {quickRecipes.slice(0, 2).map((recipe, index) => (
                 <div 
                   key={recipe.id}
                   className="animate-slide-up"
@@ -226,27 +221,29 @@ export const Home: React.FC = () => {
                   <RecipeCard
                     recipe={recipe}
                     onClick={() => navigate(`/recipe/${recipe.id}`)}
+                    compact
                   />
                 </div>
               ))}
             </div>
           </div>
 
-          {/* Motivation Card - Rewritten */}
+          {/* Motivation Card - Compact */}
           {!hasCooked && (
-            <PremiumCard variant="glass" className="p-6 text-center">
-              <p className="text-4xl mb-3">✨</p>
-              <p className="font-semibold text-lg mb-1">הבישול הראשון משנה הכל</p>
-              <p className="text-sm text-muted-foreground mb-4">
+            <PremiumCard variant="glass" className="p-3 text-center mt-2 mb-2">
+              <p className="text-2xl mb-1">✨</p>
+              <p className="font-semibold text-sm mb-0.5">הבישול הראשון משנה הכל</p>
+              <p className="text-xs text-muted-foreground mb-2">
                 אחרי 3 ארוחות, החיסכון כבר מורגש.
               </p>
               <Button 
                 variant="outline" 
+                size="sm"
                 onClick={() => navigate('/recipes')}
-                className="rounded-xl"
+                className="rounded-lg h-8 text-xs"
               >
                 בחר מתכון ראשון
-                <ArrowLeft className="w-4 h-4" />
+                <ArrowLeft className="w-3 h-3" />
               </Button>
             </PremiumCard>
           )}
