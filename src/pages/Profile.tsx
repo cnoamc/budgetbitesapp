@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Settings, RefreshCw, MapPin, LogOut, Pencil, Camera, X, Bell, Moon, Crown, FileText, HelpCircle, Shield } from 'lucide-react';
+import { Settings, RefreshCw, MapPin, LogOut, Pencil, Camera, X, Bell, Moon, Crown, FileText, HelpCircle, Shield, User } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import appLogo from '@/assets/app-logo.png';
 import { Button } from '@/components/ui/button';
@@ -174,7 +174,7 @@ export const Profile: React.FC = () => {
               {photoUrl ? (
                 <img src={photoUrl} alt="Profile" className="w-full h-full object-cover" />
               ) : (
-                <img src={appLogo} alt="Profile" className="w-full h-full object-cover" />
+                <User className="w-8 h-8 text-primary-foreground" />
               )}
               <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity rounded-full">
                 <Camera className="w-5 h-5 text-white" />
