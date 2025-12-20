@@ -83,7 +83,7 @@ export const TutorialOverlay: React.FC = () => {
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogContent className="max-w-sm mx-4 p-0 overflow-hidden border-0 rounded-3xl bg-card shadow-elevated [&>button]:hidden">
+      <DialogContent className="w-[calc(100vw-32px)] max-w-sm p-0 overflow-hidden border-0 rounded-3xl bg-card shadow-elevated [&>button]:hidden">
         {/* Skip button - single X */}
         <button
           onClick={handleSkip}
@@ -94,7 +94,7 @@ export const TutorialOverlay: React.FC = () => {
         </button>
 
         {/* Content */}
-        <div className="p-8 pt-12 text-center">
+        <div className="p-6 pt-10 text-center">
           {/* Emoji with animated background */}
           <div className="relative mb-6">
             <div className="absolute inset-0 bg-gradient-to-br from-black/10 to-muted/20 rounded-full blur-2xl scale-150 animate-pulse" />
@@ -109,12 +109,12 @@ export const TutorialOverlay: React.FC = () => {
           </h2>
 
           {/* Description */}
-          <p className="text-muted-foreground text-base leading-relaxed mb-8 animate-fade-in" style={{ animationDelay: '50ms' }}>
+          <p className="text-muted-foreground text-sm leading-relaxed mb-6 animate-fade-in" style={{ animationDelay: '50ms' }}>
             {step.description}
           </p>
 
           {/* Progress dots */}
-          <div className="flex justify-center gap-2 mb-6">
+          <div className="flex justify-center gap-2 mb-4">
             {tutorialSteps.map((_, index) => (
               <button
                 key={index}
