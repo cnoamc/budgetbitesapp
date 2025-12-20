@@ -22,6 +22,11 @@ const foodOptions = [
   { id: 'pizza', label: 'פיצה', emoji: '🍕' },
   { id: 'asian', label: 'אסייתי', emoji: '🍜' },
   { id: 'home', label: 'אוכל ביתי', emoji: '🍲' },
+  { id: 'sushi', label: 'סושי', emoji: '🍣' },
+  { id: 'salads', label: 'סלטים', emoji: '🥗' },
+  { id: 'desserts', label: 'קינוחים', emoji: '🍰' },
+  { id: 'meat', label: 'בשרים', emoji: '🥩' },
+  { id: 'seafood', label: 'פירות ים', emoji: '🦐' },
 ];
 
 const skillLabels = ['אפס', 'מתחיל', 'בסיסי', 'לא רע', 'שף'];
@@ -60,7 +65,9 @@ export const Onboarding: React.FC = () => {
 
   const flowSteps = useMemo(() => getFlowSteps(formData.goal), [formData.goal]);
   const currentStepType = flowSteps[step - 1];
-  const totalSteps = flowSteps.length;
+  // Fix: Don't count 'done' as a step for progress display, and use actual steps count
+  const totalSteps = flowSteps.filter(s => s !== 'done').length;
+  const displayStep = Math.min(step, totalSteps);
 
   const spendingOptions = [500, 1000, 1500, 2000, 2500, 3000];
   const orderOptions = [1, 2, 4, 6, 8, 10];
@@ -161,7 +168,7 @@ export const Onboarding: React.FC = () => {
           <h1 className="text-lg font-bold">BudgetBites</h1>
         </div>
 
-        <ProgressBar currentStep={step} totalSteps={totalSteps} className="mb-4" />
+        <ProgressBar currentStep={displayStep} totalSteps={totalSteps} className="mb-4" />
 
         {/* Step Content - flex grow to fill space */}
         <div className="flex-1 flex flex-col justify-center animate-fade-in" key={currentStepType}>
