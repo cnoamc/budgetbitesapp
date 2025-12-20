@@ -119,7 +119,6 @@ export const RecipeDetail: React.FC = () => {
               emoji={recipe.emoji}
               homeCost={recipe.homeCost}
               deliveryCost={recipe.deliveryCost}
-              onCook={() => navigate(`/cook/${recipe.id}`)}
             />
           )}
         </div>

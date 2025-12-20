@@ -8,6 +8,7 @@ import { getRecipeById } from '@/lib/recipes';
 import { useApp } from '@/contexts/AppContext';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { soundManager } from '@/lib/sounds';
 import appLogo from '@/assets/app-logo.png';
 
 type Message = { role: 'user' | 'assistant'; content: string };
@@ -67,6 +68,9 @@ export const CookingAssistant: React.FC = () => {
       
       setChatHistory([...newChatHistory, { role: 'assistant', content: aiResponse }]);
       setMessages(prev => [...prev, { text: aiResponse, isBot: true }]);
+      
+      // Play message sound when bot responds
+      soundManager.playMessageSound();
       
     } catch (error: any) {
       console.error('AI error:', error);
@@ -134,6 +138,13 @@ export const CookingAssistant: React.FC = () => {
         const aiResponse = data.message;
         setChatHistory([...newChatHistory, { role: 'assistant', content: aiResponse }]);
         setMessages(prev => [...prev, { text: aiResponse, isBot: true }]);
+        
+        // Play sound effect
+        if (isLastStep) {
+          soundManager.playSuccessSound();
+        } else {
+          soundManager.playStepSound();
+        }
         
       } catch (error: any) {
         console.error('AI error:', error);
