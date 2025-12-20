@@ -12,6 +12,7 @@ interface RecipeCardProps {
   className?: string;
   isFavorite?: boolean;
   onToggleFavorite?: (e: React.MouseEvent) => void;
+  compact?: boolean;
 }
 
 export const RecipeCard: React.FC<RecipeCardProps> = ({ 
@@ -20,6 +21,7 @@ export const RecipeCard: React.FC<RecipeCardProps> = ({
   className,
   isFavorite = false,
   onToggleFavorite,
+  compact = false,
 }) => {
   const savings = recipe.deliveryCost - recipe.homeCost;
   const totalTime = recipe.prepTime + recipe.cookTime;
@@ -29,6 +31,48 @@ export const RecipeCard: React.FC<RecipeCardProps> = ({
     e.stopPropagation();
     onToggleFavorite?.(e);
   };
+
+  if (compact) {
+    return (
+      <PremiumCard
+        onClick={onClick}
+        hoverable
+        className={cn("p-2.5 text-right relative", className)}
+      >
+        <div className="flex gap-3">
+          <div className="w-12 h-12 rounded-xl shrink-0 shadow-soft overflow-hidden">
+            {recipeImage ? (
+              <img 
+                src={recipeImage} 
+                alt={recipe.name}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <div className="w-full h-full bg-gradient-to-br from-secondary to-muted flex items-center justify-center text-2xl">
+                {recipe.emoji}
+              </div>
+            )}
+          </div>
+          
+          <div className="flex-1 min-w-0 flex items-center justify-between">
+            <div>
+              <h3 className="font-semibold text-sm truncate">{recipe.name}</h3>
+              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                <span className="flex items-center gap-1">
+                  <Clock className="w-3 h-3" />
+                  {totalTime} דק׳
+                </span>
+                <span>₪{recipe.homeCost}</span>
+              </div>
+            </div>
+            <span className="text-savings text-xs font-medium bg-savings-light px-2 py-1 rounded-full shrink-0">
+              +₪{savings}
+            </span>
+          </div>
+        </div>
+      </PremiumCard>
+    );
+  }
 
   return (
     <PremiumCard
