@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { ProgressBar } from '@/components/ProgressBar';
 import { useApp } from '@/contexts/AppContext';
 import { cn } from '@/lib/utils';
-import chefIcon from '@/assets/chef-icon.png';
+import appLogo from '@/assets/app-logo.png';
 
 const TOTAL_STEPS = 5;
 
@@ -70,7 +70,7 @@ export const Onboarding: React.FC = () => {
         {/* Header - compact */}
         <div className="text-center mb-4">
           <div className="w-12 h-12 rounded-xl mx-auto overflow-hidden mb-2 shadow-glow">
-            <img src={chefIcon} alt="BudgetBites" className="w-full h-full object-cover" />
+            <img src={appLogo} alt="BudgetBites" className="w-full h-full object-cover" />
           </div>
           <h1 className="text-lg font-bold">BudgetBites</h1>
         </div>

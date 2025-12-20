@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Unlock, TrendingUp, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import chefIcon from '@/assets/chef-icon.png';
+import appLogo from '@/assets/app-logo.png';
 
 const getSavingsContext = (yearlySavings: number): string => {
   if (yearlySavings < 1500) return 'מספיק לארוחה חגיגית או בילוי קטן 🎉';
@@ -114,7 +114,7 @@ const LoadingSavings: React.FC = () => {
                 boxShadow: '0 25px 80px -15px rgba(255, 107, 149, 0.35), 0 10px 30px -10px rgba(0,0,0,0.1)'
               }}
             >
-              <img src={chefIcon} alt="BudgetBites" className="w-full h-full object-cover" />
+              <img src={appLogo} alt="BudgetBites" className="w-full h-full object-cover" />
             </div>
           </div>
 

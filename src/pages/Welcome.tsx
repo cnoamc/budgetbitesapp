@@ -99,7 +99,7 @@ const Welcome: React.FC = () => {
           <div className={`relative w-28 h-28 rounded-[32px] overflow-hidden shadow-2xl transition-all duration-500 ease-out ${mounted ? 'scale-100 opacity-100' : 'scale-50 opacity-0'} ${zooming ? 'scale-150 opacity-0' : ''}`} style={{
           boxShadow: '0 25px 80px -15px rgba(255, 107, 149, 0.35), 0 10px 30px -10px rgba(0,0,0,0.1)'
         }}>
-            <img alt="BudgetBites" className="w-full h-full object-contain" src="/lovable-uploads/068120d0-de7f-4a0e-937d-96354a0915d8.png" />
+            <img alt="BudgetBites" className="w-full h-full object-contain" src="/favicon.png" />
           </div>
         </div>
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import chefIcon from '@/assets/chef-icon.png';
+import appLogo from '@/assets/app-logo.png';
 
 const emojis = ['🍔', '🍝', '🛒', '📈', '💰'];
 
@@ -14,7 +14,7 @@ export const EmojiOrbit: React.FC = () => {
       
       {/* Center chef icon with subtle animation */}
       <div className="absolute inset-0 m-auto w-20 h-20 rounded-2xl overflow-hidden shadow-glow animate-icon-delight-delayed">
-        <img src={chefIcon} alt="BudgetBites" className="w-full h-full object-cover" />
+        <img src={appLogo} alt="BudgetBites" className="w-full h-full object-cover" />
       </div>
       
       {/* Emoji chips in orbit - NO white backgrounds */}

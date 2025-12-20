@@ -1,6 +1,6 @@
 import React from 'react';
 import { ShoppingCart, UtensilsCrossed, TrendingUp, Bell, Wallet } from 'lucide-react';
-import chefIcon from '@/assets/chef-icon.png';
+import appLogo from '@/assets/app-logo.png';
 
 const icons = [
   { Icon: ShoppingCart, angle: 0 },
@@ -59,7 +59,7 @@ export const IconOrbit: React.FC = () => {
       <div 
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 rounded-2xl overflow-hidden shadow-glow"
       >
-        <img src={chefIcon} alt="BudgetBites" className="w-full h-full object-cover" />
+        <img src={appLogo} alt="BudgetBites" className="w-full h-full object-cover" />
       </div>
     </div>
   );

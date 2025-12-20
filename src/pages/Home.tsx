@@ -13,7 +13,7 @@ import { useSubscription } from '@/contexts/SubscriptionContext';
 import { useInactivityTracker } from '@/hooks/useInactivityTracker';
 import { recipes } from '@/lib/recipes';
 import { getRecipeImage } from '@/lib/recipeImages';
-import chefIcon from '@/assets/chef-icon.png';
+import appLogo from '@/assets/app-logo.png';
 
 const getTimeBasedGreeting = () => {
   const hour = new Date().getHours();
@@ -77,7 +77,7 @@ export const Home: React.FC = () => {
             <div className="flex items-center gap-4 mb-6" dir="rtl">
               <div className="w-14 h-14 rounded-2xl overflow-hidden shadow-glow shrink-0">
                 <img 
-                  src={photoUrl || chefIcon} 
+                  src={photoUrl || appLogo} 
                   alt="Profile" 
                   className="w-full h-full object-cover" 
                 />

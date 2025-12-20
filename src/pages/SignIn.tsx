@@ -8,7 +8,7 @@ import { useApp } from '@/contexts/AppContext';
 import { toast } from 'sonner';
 import { z } from 'zod';
 import confetti from 'canvas-confetti';
-import chefIcon from '@/assets/chef-icon.png';
+import appLogo from '@/assets/app-logo.png';
 
 const emailSchema = z.string().email('כתובת אימייל לא תקינה');
 const passwordSchema = z.string().min(6, 'הסיסמה חייבת להכיל לפחות 6 תווים');
@@ -249,7 +249,7 @@ const SignIn: React.FC = () => {
         style={{ background: 'linear-gradient(165deg, #F7F8FF 0%, #FFF2E9 45%, #ECFFF4 100%)' }}
       >
         <div className="w-16 h-16 rounded-2xl overflow-hidden shadow-glow animate-pulse">
-          <img src={chefIcon} alt="BudgetBites" className="w-full h-full object-cover" />
+          <img src={appLogo} alt="BudgetBites" className="w-full h-full object-cover" />
         </div>
       </div>
     );
@@ -306,7 +306,7 @@ const SignIn: React.FC = () => {
         {/* Header */}
         <div className="text-center mb-6 animate-fade-in">
           <div className="w-16 h-16 mx-auto mb-3 rounded-2xl overflow-hidden shadow-glow">
-            <img src={chefIcon} alt="BudgetBites" className="w-full h-full object-cover" />
+            <img src={appLogo} alt="BudgetBites" className="w-full h-full object-cover" />
           </div>
           <h1 className="text-2xl font-bold text-foreground mb-1">{getTitle()}</h1>
           <p className="text-muted-foreground text-sm">{getSubtitle()}</p>

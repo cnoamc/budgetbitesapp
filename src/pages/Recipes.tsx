@@ -9,7 +9,7 @@ import { cn } from '@/lib/utils';
 import { useFavorites } from '@/hooks/useFavorites';
 import { useApp } from '@/contexts/AppContext';
 import type { RecipeCategory } from '@/lib/types';
-import chefIcon from '@/assets/chef-icon.png';
+import appLogo from '@/assets/app-logo.png';
 
 const categories: Array<RecipeCategory | 'all' | 'favorites'> = ['all', 'favorites', 'beginner', 'fast', 'cheap', 'protein', 'vegetarian', 'easy', 'kosher'];
 
@@ -44,7 +44,7 @@ export const Recipes: React.FC = () => {
             <h1 className="text-2xl font-bold">מתכונים</h1>
             <div className="w-10 h-10 rounded-xl overflow-hidden">
               <img 
-                src={photoUrl || chefIcon} 
+                src={photoUrl || appLogo} 
                 alt="Profile" 
                 className="w-full h-full object-cover" 
               />

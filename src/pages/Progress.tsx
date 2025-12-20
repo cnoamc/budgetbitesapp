@@ -7,7 +7,7 @@ import { PremiumCard } from '@/components/ui/PremiumCard';
 import { StarRating } from '@/components/StarRating';
 import { useApp } from '@/contexts/AppContext';
 import { getRecipeById } from '@/lib/recipes';
-import chefIcon from '@/assets/chef-icon.png';
+import appLogo from '@/assets/app-logo.png';
 
 
 // Calculate cooking streak from cooked meals
@@ -254,7 +254,7 @@ export const Progress: React.FC = () => {
           {progress.totalMealsCooked === 0 && (
             <PremiumCard variant="glass" className="p-8 text-center animate-fade-in">
               <div className="w-20 h-20 rounded-3xl mx-auto mb-4 overflow-hidden shadow-soft">
-                <img src={chefIcon} alt="BudgetBites" className="w-full h-full object-cover" />
+                <img src={appLogo} alt="BudgetBites" className="w-full h-full object-cover" />
               </div>
               <h3 className="font-semibold text-lg mb-2">עדיין אין נתונים</h3>
               <p className="text-muted-foreground text-sm">

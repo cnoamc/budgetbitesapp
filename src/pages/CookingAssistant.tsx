@@ -8,7 +8,7 @@ import { getRecipeById } from '@/lib/recipes';
 import { useApp } from '@/contexts/AppContext';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import chefIcon from '@/assets/chef-icon.png';
+import appLogo from '@/assets/app-logo.png';
 
 type Message = { role: 'user' | 'assistant'; content: string };
 
@@ -178,7 +178,7 @@ export const CookingAssistant: React.FC = () => {
         {isLoading && (
           <div className="flex items-center gap-3 text-muted-foreground">
             <div className="w-8 h-8 rounded-xl overflow-hidden shadow-card animate-icon-delight">
-              <img src={chefIcon} alt="שפי" className="w-full h-full object-cover" />
+              <img src={appLogo} alt="שפי" className="w-full h-full object-cover" />
             </div>
             <span className="text-sm">שפי חושב...</span>
           </div>
