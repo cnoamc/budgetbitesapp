@@ -103,15 +103,19 @@ const App = () => {
             <AppProvider>
               <NotificationProvider>
                 <TooltipProvider>
-                  <Toaster />
-                  <Sonner />
-                  <NotificationBanner />
-                  {showSplash && !hasShownSplash && (
-                    <SplashScreen onComplete={handleSplashComplete} minDuration={2000} />
-                  )}
-                  <BrowserRouter>
-                    <AnimatedRoutes />
-                  </BrowserRouter>
+                  <div className="fixed inset-0 w-full h-full flex flex-col overflow-hidden bg-background">
+                    <Toaster />
+                    <Sonner />
+                    <NotificationBanner />
+                    {showSplash && !hasShownSplash && (
+                      <SplashScreen onComplete={handleSplashComplete} minDuration={2000} />
+                    )}
+                    <BrowserRouter>
+                      <div className="flex-1 overflow-hidden relative">
+                        <AnimatedRoutes />
+                      </div>
+                    </BrowserRouter>
+                  </div>
                 </TooltipProvider>
               </NotificationProvider>
             </AppProvider>
