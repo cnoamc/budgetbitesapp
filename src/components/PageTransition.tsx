@@ -31,7 +31,7 @@ export const PageTransition: React.FC<PageTransitionProps> = ({ children }) => {
       exit="exit"
       variants={pageVariants}
       transition={pageTransition}
-      className="min-h-screen"
+      className="h-full"
     >
       {children}
     </motion.div>

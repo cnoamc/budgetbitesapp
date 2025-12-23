@@ -43,7 +43,7 @@ const Premium: React.FC = () => {
 
   if (authLoading || subLoading) {
     return (
-      <div className="h-[100dvh] flex items-center justify-center bg-gradient-to-br from-blue-500 via-blue-600 to-cyan-500">
+      <div className="h-full flex items-center justify-center bg-gradient-to-br from-blue-500 via-blue-600 to-cyan-500">
         <div className="w-10 h-10 rounded-full border-2 border-white/30 border-t-white animate-spin" />
       </div>
     );
@@ -60,7 +60,7 @@ const Premium: React.FC = () => {
   ];
 
   return (
-    <div className="h-[100dvh] flex flex-col overflow-hidden relative" dir="rtl">
+    <div className="h-full flex flex-col overflow-hidden relative" dir="rtl">
       {/* Blue gradient background - matching Welcome page */}
       <div className="absolute inset-0 bg-gradient-to-br from-blue-500 via-blue-600 to-cyan-500" />
       

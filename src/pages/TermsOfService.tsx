@@ -7,7 +7,7 @@ export const TermsOfService: React.FC = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-background p-4" dir="rtl">
+    <div className="h-full bg-background p-4 overflow-y-auto overscroll-none" dir="rtl">
       <div className="max-w-2xl mx-auto">
         <Button variant="ghost" size="sm" onClick={() => navigate(-1)} className="mb-4">
           <ArrowRight className="w-4 h-4 ml-2" />

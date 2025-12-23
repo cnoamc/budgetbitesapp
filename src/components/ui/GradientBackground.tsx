@@ -12,7 +12,7 @@ export const GradientBackground: React.FC<GradientBackgroundProps> = ({
   className = ''
 }) => {
   return (
-    <div className={`min-h-screen relative overflow-hidden ${className}`}>
+    <div className={`h-full relative overflow-hidden ${className}`}>
       {/* Base gradient */}
       <div className={`absolute inset-0 ${variant === 'minimal' ? 'bg-background' : variant === 'fresh' ? 'gradient-bg-fresh' : 'gradient-bg-warm'}`} />
       

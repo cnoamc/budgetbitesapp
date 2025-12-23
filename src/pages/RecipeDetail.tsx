@@ -20,14 +20,14 @@ export const RecipeDetail: React.FC = () => {
 
   if (!recipe) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="h-full flex items-center justify-center">
         <p>המתכון לא נמצא</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background pb-32">
+    <div className="h-full bg-background overflow-y-auto overscroll-none pb-8">
       {/* Header */}
       <div className="relative">
         <div className="h-56 bg-secondary flex items-center justify-center overflow-hidden">

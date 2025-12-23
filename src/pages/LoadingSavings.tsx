@@ -81,7 +81,7 @@ const LoadingSavings: React.FC = () => {
   }, [phase, monthlySavings, yearlySavings]);
 
   return (
-    <div className="h-[100dvh] relative overflow-hidden flex flex-col" dir="rtl">
+    <div className="h-full relative overflow-hidden flex flex-col" dir="rtl">
       {/* Gradient background */}
       <div className="absolute inset-0 bg-gradient-to-br from-blue-500 via-blue-600 to-cyan-500" />
       
