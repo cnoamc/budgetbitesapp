@@ -13,6 +13,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useNotifications } from '@/contexts/NotificationContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useSubscription } from '@/contexts/SubscriptionContext';
+import { useStatusBar } from '@/hooks/useStatusBar';
 import { NotificationSettings } from '@/components/NotificationSettings';
 import { toast } from 'sonner';
 import {
@@ -42,6 +43,9 @@ export const Profile: React.FC = () => {
   const { resolvedMode, setMode } = useTheme();
   const { daysLeftInTrial, isTrialActive, subscription, toggleCancelReminder } = useSubscription();
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Light status bar for light background (dark icons)
+  useStatusBar({ style: 'light', backgroundColor: '#FFFFFF', overlay: false });
 
   const [isEditingName, setIsEditingName] = useState(false);
   const [isNotificationSettingsOpen, setIsNotificationSettingsOpen] = useState(false);

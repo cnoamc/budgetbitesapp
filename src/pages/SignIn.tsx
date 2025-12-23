@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useAuth } from '@/contexts/AuthContext';
 import { useApp } from '@/contexts/AppContext';
+import { useStatusBar } from '@/hooks/useStatusBar';
 import { toast } from 'sonner';
 import { z } from 'zod';
 import confetti from 'canvas-confetti';
@@ -29,6 +30,9 @@ const SignIn: React.FC = () => {
   const navigate = useNavigate();
   const { user, signIn, signUp, signInWithGoogle, signInWithPhone, verifyOtp, loading } = useAuth();
   const { updateProfile } = useApp();
+  
+  // Dark status bar for blue gradient background (light icons)
+  useStatusBar({ style: 'dark', backgroundColor: '#3B82F6', overlay: true });
   
   const [view, setView] = useState<AuthView>('options');
   const [isLogin, setIsLogin] = useState(false);

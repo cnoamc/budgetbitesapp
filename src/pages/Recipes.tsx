@@ -8,6 +8,7 @@ import { recipes, categoryLabels, categoryEmojis } from '@/lib/recipes';
 import { cn } from '@/lib/utils';
 import { useFavorites } from '@/hooks/useFavorites';
 import { useApp } from '@/contexts/AppContext';
+import { useStatusBar } from '@/hooks/useStatusBar';
 import type { RecipeCategory } from '@/lib/types';
 import appLogo from '@/assets/app-logo.png';
 
@@ -19,6 +20,9 @@ export const Recipes: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const { favorites, toggleFavorite, isFavorite } = useFavorites();
   const { photoUrl } = useApp();
+
+  // Light status bar for light background (dark icons)
+  useStatusBar({ style: 'light', backgroundColor: '#FFFFFF', overlay: false });
 
   const filteredRecipes = recipes.filter(recipe => {
     let matchesCategory = false;
