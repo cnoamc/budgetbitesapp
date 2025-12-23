@@ -40,7 +40,7 @@ export const CookingAssistant: React.FC = () => {
 
   if (!recipe) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="h-full flex items-center justify-center">
         <p>המתכון לא נמצא</p>
       </div>
     );
@@ -175,7 +175,7 @@ export const CookingAssistant: React.FC = () => {
   const progress = (currentStep / recipe.steps.length) * 100;
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="h-full bg-background flex flex-col overflow-hidden">
       {/* Header */}
       <div className="bg-card border-b border-border/50 p-4 sticky top-0 z-10">
         <div className="flex items-center gap-3 mb-3">
@@ -204,7 +204,7 @@ export const CookingAssistant: React.FC = () => {
       </div>
 
       {/* Chat Messages */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+      <div className="flex-1 overflow-y-auto overscroll-none p-4 space-y-4">
         {messages.map((msg, index) => (
           <ChatMessage
             key={index}

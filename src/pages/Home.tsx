@@ -171,7 +171,7 @@ export const Home: React.FC = () => {
 
   return (
     <GradientBackground variant="warm">
-      <div className="h-[calc(100dvh-80px)] overflow-hidden flex flex-col">
+      <div className="h-full flex flex-col overflow-hidden">
         {/* Header - Compact */}
         <div className="px-4 pt-3 pb-2">
           <div className="flex items-center gap-3" dir="rtl">

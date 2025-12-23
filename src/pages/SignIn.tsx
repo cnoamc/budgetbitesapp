@@ -221,7 +221,7 @@ const SignIn: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="h-[100dvh] flex items-center justify-center bg-gradient-to-br from-blue-500 via-blue-600 to-cyan-500">
+      <div className="h-full flex items-center justify-center bg-gradient-to-br from-blue-500 via-blue-600 to-cyan-500">
         <div className="w-20 h-20 rounded-3xl overflow-hidden shadow-2xl animate-pulse">
           <img src={appIcon} alt="BudgetBites" className="w-full h-full object-cover" />
         </div>
@@ -236,7 +236,7 @@ const SignIn: React.FC = () => {
   };
 
   return (
-    <div className="h-[100dvh] relative overflow-hidden flex flex-col" dir="rtl">
+    <div className="h-full relative overflow-hidden flex flex-col" dir="rtl">
       {/* Gradient background */}
       <div className="absolute inset-0 bg-gradient-to-br from-blue-500 via-blue-600 to-cyan-500" />
       

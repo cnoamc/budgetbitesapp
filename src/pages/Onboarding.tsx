@@ -159,7 +159,7 @@ export const Onboarding: React.FC = () => {
   };
 
   return (
-    <div className="h-[100dvh] flex flex-col overflow-hidden relative">
+    <div className="h-full flex flex-col overflow-hidden relative">
       {/* Blue gradient background */}
       <div className="absolute inset-0 bg-gradient-to-br from-blue-500 via-blue-600 to-cyan-500" />
       

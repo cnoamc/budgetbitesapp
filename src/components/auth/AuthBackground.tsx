@@ -2,7 +2,7 @@ import React from 'react';
 
 export const AuthBackground: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
-    <div className="min-h-screen relative overflow-hidden flex flex-col">
+    <div className="h-full relative overflow-hidden flex flex-col">
       {/* Multi-stop gradient background */}
       <div 
         className="absolute inset-0"
