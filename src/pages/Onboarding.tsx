@@ -160,16 +160,7 @@ export const Onboarding: React.FC = () => {
   return (
     <div className="h-[100dvh] bg-background flex flex-col overflow-hidden">
       <div className="flex-1 flex flex-col max-w-lg mx-auto w-full px-5 pt-6">
-        {/* Header - compact */}
-        <div className="text-center mb-4">
-          <div className="w-12 h-12 rounded-xl mx-auto overflow-hidden mb-2 shadow-glow">
-            <img src={appLogo} alt="BudgetBites" className="w-full h-full object-cover" />
-          </div>
-          <h1 className="text-lg font-bold">BudgetBites</h1>
-        </div>
-
-        
-
+        {/* Step Content - flex grow to fill space */}
         {/* Step Content - flex grow to fill space */}
         <div className="flex-1 flex flex-col justify-center animate-fade-in" key={currentStepType}>
           
