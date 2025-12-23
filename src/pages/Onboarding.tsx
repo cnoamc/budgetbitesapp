@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Clock, Trophy, Sparkles } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Clock, Trophy, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 import { useApp } from '@/contexts/AppContext';
@@ -157,20 +157,38 @@ export const Onboarding: React.FC = () => {
     }
   };
 
+  const handleBack = () => {
+    if (step > 1) {
+      setStep(step - 1);
+    } else {
+      navigate('/');
+    }
+  };
+
   return (
     <div className="h-[100dvh] bg-background flex flex-col overflow-hidden">
       <div className="flex-1 flex flex-col max-w-lg mx-auto w-full px-5 pt-6">
-        {/* Progress indicator */}
+        {/* Back button and Progress indicator */}
         <div className="mb-6">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-xs text-muted-foreground">שלב {displayStep} מתוך {totalSteps}</span>
-            <span className="text-xs font-medium text-foreground">{Math.round((displayStep / totalSteps) * 100)}%</span>
-          </div>
-          <div className="h-1.5 bg-muted rounded-full overflow-hidden">
-            <div 
-              className="h-full gradient-primary rounded-full transition-all duration-500 ease-out"
-              style={{ width: `${(displayStep / totalSteps) * 100}%` }}
-            />
+          <div className="flex items-center gap-3 mb-3">
+            <button 
+              onClick={handleBack}
+              className="p-2 -mr-2 rounded-full hover:bg-muted transition-colors"
+            >
+              <ArrowRight className="w-5 h-5 text-muted-foreground" />
+            </button>
+            <div className="flex-1">
+              <div className="flex items-center justify-between mb-1">
+                <span className="text-xs text-muted-foreground">שלב {displayStep} מתוך {totalSteps}</span>
+                <span className="text-xs font-medium text-foreground">{Math.round((displayStep / totalSteps) * 100)}%</span>
+              </div>
+              <div className="h-1.5 bg-muted rounded-full overflow-hidden">
+                <div 
+                  className="h-full gradient-primary rounded-full transition-all duration-500 ease-out"
+                  style={{ width: `${(displayStep / totalSteps) * 100}%` }}
+                />
+              </div>
+            </div>
           </div>
         </div>
 
