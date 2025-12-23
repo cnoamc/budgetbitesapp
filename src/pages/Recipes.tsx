@@ -37,9 +37,9 @@ export const Recipes: React.FC = () => {
 
   return (
     <GradientBackground variant="minimal">
-      <div className="min-h-screen pb-28">
+      <div className="h-[100dvh] flex flex-col overflow-hidden">
         {/* Header */}
-        <div className="p-6 pt-8 pb-4">
+        <div className="p-4 pt-6 pb-3 shrink-0">
           <div className="flex items-center justify-between mb-6">
             <h1 className="text-2xl font-bold">מתכונים</h1>
             <div className="w-10 h-10 rounded-xl overflow-hidden">
@@ -52,7 +52,7 @@ export const Recipes: React.FC = () => {
           </div>
 
           {/* Search */}
-          <div className="relative mb-5">
+          <div className="relative mb-3">
             <Search className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
             <input
               type="text"
@@ -64,7 +64,7 @@ export const Recipes: React.FC = () => {
           </div>
 
           {/* Categories */}
-          <div className="flex gap-2 overflow-x-auto pb-2 -mx-6 px-6 scrollbar-hide">
+          <div className="flex gap-2 overflow-x-auto pb-2 -mx-4 px-4 scrollbar-hide">
             {categories.map((category) => (
               <button
                 key={category}
@@ -95,7 +95,7 @@ export const Recipes: React.FC = () => {
         </div>
 
         {/* Recipe List */}
-        <div className="px-6 space-y-3">
+        <div className="flex-1 overflow-y-auto px-4 pb-24 space-y-3">
           {filteredRecipes.map((recipe, index) => (
             <div 
               key={recipe.id} 
