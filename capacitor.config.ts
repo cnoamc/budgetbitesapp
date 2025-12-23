@@ -1,7 +1,7 @@
 import type { CapacitorConfig } from "@capacitor/cli";
 
 const config: CapacitorConfig = {
-  appId: "app.lovable.budgetbites", // Better app ID for App Store
+  appId: "com.noam.budgetbites", // Better app ID for App Store
   appName: "BudgetBites",
   webDir: "dist",
   ios: {
