@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
+import { useStatusBar } from '@/hooks/useStatusBar';
 import appIcon from '@/assets/app-icon.png';
 
 const Welcome: React.FC = () => {
@@ -9,6 +10,9 @@ const Welcome: React.FC = () => {
   const { user, loading } = useAuth();
   const [mounted, setMounted] = useState(false);
   const [zooming, setZooming] = useState(false);
+
+  // Dark status bar for blue gradient background (light icons)
+  useStatusBar({ style: 'dark', backgroundColor: '#3B82F6', overlay: true });
 
   useEffect(() => {
     setMounted(true);

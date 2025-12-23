@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowRight, Clock, ChefHat, ShoppingCart, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { SavingsComparisonCard } from '@/components/notifications';
+import { useStatusBar } from '@/hooks/useStatusBar';
 import { getRecipeById, categoryLabels } from '@/lib/recipes';
 import { getRecipeImage } from '@/lib/recipeImages';
 
@@ -10,6 +11,9 @@ export const RecipeDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<'ingredients' | 'savings'>('ingredients');
+  
+  // Dark status bar for image header (light icons)
+  useStatusBar({ style: 'dark', backgroundColor: '#000000', overlay: true });
   
   const recipe = getRecipeById(id || '');
   const recipeImage = recipe ? getRecipeImage(recipe.id) : undefined;

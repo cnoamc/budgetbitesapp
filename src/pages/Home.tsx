@@ -11,6 +11,7 @@ import { TutorialOverlay } from '@/components/TutorialOverlay';
 import { useApp } from '@/contexts/AppContext';
 import { useSubscription } from '@/contexts/SubscriptionContext';
 import { useInactivityTracker } from '@/hooks/useInactivityTracker';
+import { useStatusBar } from '@/hooks/useStatusBar';
 import { recipes } from '@/lib/recipes';
 import { getRecipeImage } from '@/lib/recipeImages';
 import appLogo from '@/assets/app-logo.png';
@@ -106,6 +107,9 @@ export const Home: React.FC = () => {
   const { progress, displayName, photoUrl } = useApp();
   const { subscription, loading: subLoading, hasStartedTrial } = useSubscription();
   const greeting = getTimeBasedGreeting();
+
+  // Light status bar for light background (dark icons)
+  useStatusBar({ style: 'light', backgroundColor: '#FFFFFF', overlay: false });
 
   // Countdown timer state
   const [countdown, setCountdown] = useState(getTimeUntilMidnight());
