@@ -160,6 +160,20 @@ export const Onboarding: React.FC = () => {
   return (
     <div className="h-[100dvh] bg-background flex flex-col overflow-hidden">
       <div className="flex-1 flex flex-col max-w-lg mx-auto w-full px-5 pt-6">
+        {/* Progress indicator */}
+        <div className="mb-6">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-xs text-muted-foreground">שלב {displayStep} מתוך {totalSteps}</span>
+            <span className="text-xs font-medium text-foreground">{Math.round((displayStep / totalSteps) * 100)}%</span>
+          </div>
+          <div className="h-1.5 bg-muted rounded-full overflow-hidden">
+            <div 
+              className="h-full gradient-primary rounded-full transition-all duration-500 ease-out"
+              style={{ width: `${(displayStep / totalSteps) * 100}%` }}
+            />
+          </div>
+        </div>
+
         {/* Step Content - flex grow to fill space */}
         {/* Step Content - flex grow to fill space */}
         <div className="flex-1 flex flex-col justify-center animate-fade-in" key={currentStepType}>
