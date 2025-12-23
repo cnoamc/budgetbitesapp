@@ -150,12 +150,27 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     height: 100%;
+    height: 100dvh;
     overflow: hidden;
   }
   
   html, body, #root {
     overscroll-behavior: none;
     -webkit-overflow-scrolling: touch;
+    height: 100%;
+    height: 100dvh;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    height: 100dvh;
+  }
+
+  #root {
+    overflow: hidden;
   }
 
   /* Smooth theme transition */
@@ -165,9 +180,36 @@
   html.theme-transition *::after {
     transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease !important;
   }
+}
 
-  body {
-    @apply bg-background text-foreground antialiased;
+/* Safe area utility classes */
+@layer utilities {
+  .pt-safe {
+    padding-top: env(safe-area-inset-top);
+  }
+  
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  
+  .pb-safe-offset-4 {
+    padding-bottom: calc(env(safe-area-inset-bottom) + 1rem);
+  }
+  
+  .pb-safe-offset-20 {
+    padding-bottom: calc(env(safe-area-inset-bottom) + 5rem);
+  }
+  
+  .mb-safe {
+    margin-bottom: env(safe-area-inset-bottom);
+  }
+  
+  .top-safe {
+    top: env(safe-area-inset-top);
+  }
+  
+  .bottom-safe {
+    bottom: env(safe-area-inset-bottom);
   }
 }
 
