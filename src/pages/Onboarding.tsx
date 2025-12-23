@@ -47,16 +47,12 @@ export const Onboarding: React.FC = () => {
   const getFlowSteps = (goal: Goal): string[] => {
     switch (goal) {
       case 'learn':
-        // Beginner: skill -> food preferences -> spending -> orders -> done
         return ['goal', 'skill', 'food', 'spending', 'orders', 'done'];
       case 'save':
-        // Saver: spending -> orders -> skill -> food -> done
         return ['goal', 'spending', 'orders', 'skill', 'food', 'done'];
       case 'recipes':
-        // Recipe explorer: skill -> food -> benefits -> done
         return ['goal', 'skill', 'food', 'benefits', 'done'];
       case 'improve':
-        // Skill improver: skill -> food -> benefits -> done
         return ['goal', 'skill', 'food', 'benefits', 'done'];
       default:
         return ['goal'];
@@ -65,7 +61,6 @@ export const Onboarding: React.FC = () => {
 
   const flowSteps = useMemo(() => getFlowSteps(formData.goal), [formData.goal]);
   const currentStepType = flowSteps[step - 1];
-  // Fix: Don't count 'done' as a step for progress display, and use actual steps count
   const totalSteps = flowSteps.filter(s => s !== 'done').length;
   const displayStep = Math.min(step, totalSteps);
 
@@ -85,7 +80,6 @@ export const Onboarding: React.FC = () => {
     if (step < totalSteps) {
       setStep(step + 1);
     } else {
-      // Set defaults for skipped questions
       const finalData = {
         ...formData,
         monthlySpending: formData.monthlySpending || 1000,
@@ -96,7 +90,6 @@ export const Onboarding: React.FC = () => {
       updateProfile(finalData);
       completeOnboarding();
       
-      // Skip loading screen for recipe/improve goals (not focused on savings)
       if (formData.goal === 'recipes' || formData.goal === 'improve') {
         navigate('/signin');
       } else {
@@ -166,25 +159,35 @@ export const Onboarding: React.FC = () => {
   };
 
   return (
-    <div className="h-[100dvh] bg-background flex flex-col overflow-hidden">
-      <div className="flex-1 flex flex-col max-w-lg mx-auto w-full px-5 pt-6">
+    <div className="h-[100dvh] flex flex-col overflow-hidden relative">
+      {/* Blue gradient background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-500 via-blue-600 to-cyan-500" />
+      
+      {/* Decorative circles */}
+      <div className="absolute -top-20 -right-20 w-64 h-64 bg-white/10 rounded-full blur-3xl" />
+      <div className="absolute -bottom-32 -left-32 w-96 h-96 bg-cyan-400/20 rounded-full blur-3xl" />
+      <div className="absolute top-1/4 left-1/4 w-48 h-48 bg-blue-300/15 rounded-full blur-2xl" />
+      <div className="absolute bottom-1/3 right-1/4 w-32 h-32 bg-white/10 rounded-full blur-xl" />
+
+      {/* Content */}
+      <div className="relative z-10 flex-1 flex flex-col max-w-lg mx-auto w-full px-5 pt-6">
         {/* Back button and Progress indicator */}
         <div className="mb-6">
           <div className="flex items-center gap-3 mb-3">
             <button 
               onClick={handleBack}
-              className="p-2 -mr-2 rounded-full hover:bg-muted transition-colors"
+              className="p-2 -mr-2 rounded-full hover:bg-white/10 transition-colors"
             >
-              <ArrowRight className="w-5 h-5 text-muted-foreground" />
+              <ArrowRight className="w-5 h-5 text-white/70" />
             </button>
             <div className="flex-1">
               <div className="flex items-center justify-between mb-1">
-                <span className="text-xs text-muted-foreground">שלב {displayStep} מתוך {totalSteps}</span>
-                <span className="text-xs font-medium text-foreground">{Math.round((displayStep / totalSteps) * 100)}%</span>
+                <span className="text-xs text-white/70">שלב {displayStep} מתוך {totalSteps}</span>
+                <span className="text-xs font-medium text-white">{Math.round((displayStep / totalSteps) * 100)}%</span>
               </div>
-              <div className="h-1.5 bg-muted rounded-full overflow-hidden">
+              <div className="h-1.5 bg-white/20 rounded-full overflow-hidden">
                 <div 
-                  className="h-full gradient-primary rounded-full transition-all duration-500 ease-out"
+                  className="h-full bg-white rounded-full transition-all duration-500 ease-out"
                   style={{ width: `${(displayStep / totalSteps) * 100}%` }}
                 />
               </div>
@@ -192,17 +195,16 @@ export const Onboarding: React.FC = () => {
           </div>
         </div>
 
-        {/* Step Content - flex grow to fill space */}
-        {/* Step Content - flex grow to fill space */}
+        {/* Step Content */}
         <div className="flex-1 flex flex-col justify-center animate-fade-in" key={currentStepType}>
           
           {/* Step 1: Goal Selection */}
           {currentStepType === 'goal' && (
             <div className="space-y-4">
-              <h2 className="text-xl font-semibold text-center text-foreground">
+              <h2 className="text-xl font-semibold text-center text-white">
                 מה המטרה שלך? 🎯
               </h2>
-              <p className="text-center text-muted-foreground text-sm">
+              <p className="text-center text-white/70 text-sm">
                 בחר את הסיבה העיקרית שלך להשתמש באפליקציה
               </p>
               <div className="space-y-3 mt-6">
@@ -213,14 +215,14 @@ export const Onboarding: React.FC = () => {
                     className={cn(
                       "w-full py-4 px-5 rounded-2xl border-2 transition-all duration-200 flex items-center gap-4 active:scale-[0.98]",
                       formData.goal === goal.id
-                        ? "border-primary bg-primary/10 text-foreground scale-[1.01] shadow-lg"
-                        : "border-border hover:border-primary/50 hover:scale-[1.01] text-foreground bg-card"
+                        ? "border-white bg-white/20 text-white scale-[1.01] shadow-lg"
+                        : "border-white/30 hover:border-white/50 hover:scale-[1.01] text-white bg-white/10 backdrop-blur-sm"
                     )}
                   >
                     <span className="text-3xl">{goal.emoji}</span>
                     <div className="text-right flex-1">
                       <span className="text-base font-semibold block">{goal.label}</span>
-                      <span className="text-xs text-muted-foreground">{goal.description}</span>
+                      <span className="text-xs text-white/70">{goal.description}</span>
                     </div>
                   </button>
                 ))}
@@ -231,7 +233,7 @@ export const Onboarding: React.FC = () => {
           {/* Cooking Skill */}
           {currentStepType === 'skill' && (
             <div className="space-y-4">
-              <h2 className="text-lg font-semibold text-center text-foreground">
+              <h2 className="text-lg font-semibold text-center text-white">
                 מה רמת הבישול שלך? 👨‍🍳
               </h2>
               <div className="space-y-2">
@@ -242,8 +244,8 @@ export const Onboarding: React.FC = () => {
                     className={cn(
                       "w-full py-3 px-4 rounded-xl border-2 transition-all duration-200 flex items-center gap-3 active:scale-[0.98]",
                       formData.cookingSkill === level
-                        ? "border-primary bg-primary/10 text-foreground scale-[1.01] shadow-md"
-                        : "border-border hover:border-primary/50 hover:scale-[1.01] text-foreground"
+                        ? "border-white bg-white/20 text-white scale-[1.01] shadow-md"
+                        : "border-white/30 hover:border-white/50 hover:scale-[1.01] text-white bg-white/10 backdrop-blur-sm"
                     )}
                   >
                     <div className="flex gap-1">
@@ -252,7 +254,7 @@ export const Onboarding: React.FC = () => {
                           key={i}
                           className={cn(
                             "w-2.5 h-2.5 rounded-full transition-all duration-200",
-                            i < level ? "gradient-primary" : "bg-muted"
+                            i < level ? "bg-white" : "bg-white/30"
                           )}
                         />
                       ))}
@@ -267,7 +269,7 @@ export const Onboarding: React.FC = () => {
           {/* Monthly Spending */}
           {currentStepType === 'spending' && (
             <div className="space-y-4">
-              <h2 className="text-lg font-semibold text-center text-foreground">
+              <h2 className="text-lg font-semibold text-center text-white">
                 כמה אתה מוציא על אוכל בחוץ בחודש? 💸
               </h2>
               <div className="grid grid-cols-3 gap-2">
@@ -278,8 +280,8 @@ export const Onboarding: React.FC = () => {
                     className={cn(
                       "py-3 px-2 rounded-xl border-2 transition-all duration-200 active:scale-95",
                       formData.monthlySpending === amount
-                        ? "border-primary bg-primary/10 text-foreground scale-[1.02] shadow-md"
-                        : "border-border hover:border-primary/50 hover:scale-[1.02] text-foreground"
+                        ? "border-white bg-white/20 text-white scale-[1.02] shadow-md"
+                        : "border-white/30 hover:border-white/50 hover:scale-[1.02] text-white bg-white/10 backdrop-blur-sm"
                     )}
                   >
                     <span className="text-base font-bold">₪{amount.toLocaleString()}</span>
@@ -291,8 +293,8 @@ export const Onboarding: React.FC = () => {
                 className={cn(
                   "w-full py-3 rounded-xl border-2 transition-all duration-200 active:scale-95",
                   formData.monthlySpending === 4000
-                    ? "border-primary bg-primary/10 text-foreground scale-[1.02] shadow-md"
-                    : "border-border hover:border-primary/50 hover:scale-[1.02] text-foreground"
+                    ? "border-white bg-white/20 text-white scale-[1.02] shadow-md"
+                    : "border-white/30 hover:border-white/50 hover:scale-[1.02] text-white bg-white/10 backdrop-blur-sm"
                 )}
               >
                 <span className="text-base font-bold">יותר מ-₪3,000</span>
@@ -303,7 +305,7 @@ export const Onboarding: React.FC = () => {
           {/* Weekly Orders */}
           {currentStepType === 'orders' && (
             <div className="space-y-4">
-              <h2 className="text-lg font-semibold text-center text-foreground">
+              <h2 className="text-lg font-semibold text-center text-white">
                 כמה פעמים בשבוע אתה מזמין משלוח? 🛵
               </h2>
               <div className="grid grid-cols-3 gap-2">
@@ -314,8 +316,8 @@ export const Onboarding: React.FC = () => {
                     className={cn(
                       "py-3 rounded-xl border-2 transition-all duration-200 active:scale-95",
                       formData.weeklyOrders === count
-                        ? "border-primary bg-primary/10 text-foreground scale-[1.02] shadow-md"
-                        : "border-border hover:border-primary/50 hover:scale-[1.02] text-foreground"
+                        ? "border-white bg-white/20 text-white scale-[1.02] shadow-md"
+                        : "border-white/30 hover:border-white/50 hover:scale-[1.02] text-white bg-white/10 backdrop-blur-sm"
                     )}
                   >
                     <span className="text-xl font-bold">{count === 1 ? '1 או פחות' : count}</span>
@@ -327,8 +329,8 @@ export const Onboarding: React.FC = () => {
                 className={cn(
                   "w-full py-3 rounded-xl border-2 transition-all duration-200 active:scale-95",
                   formData.weeklyOrders === 12
-                    ? "border-primary bg-primary/10 text-foreground scale-[1.02] shadow-md"
-                    : "border-border hover:border-primary/50 hover:scale-[1.02] text-foreground"
+                    ? "border-white bg-white/20 text-white scale-[1.02] shadow-md"
+                    : "border-white/30 hover:border-white/50 hover:scale-[1.02] text-white bg-white/10 backdrop-blur-sm"
                 )}
               >
                 <span className="text-base font-bold">יותר מ-10</span>
@@ -339,10 +341,10 @@ export const Onboarding: React.FC = () => {
           {/* Food Preferences */}
           {currentStepType === 'food' && (
             <div className="space-y-4">
-              <h2 className="text-lg font-semibold text-center text-foreground">
+              <h2 className="text-lg font-semibold text-center text-white">
                 איזה סוג אוכל אתה אוהב? 🍽️
               </h2>
-              <p className="text-center text-muted-foreground text-xs">אפשר לבחור כמה</p>
+              <p className="text-center text-white/70 text-xs">אפשר לבחור כמה</p>
               <div className="grid grid-cols-3 gap-2">
                 {foodOptions.map((food) => (
                   <button
@@ -351,8 +353,8 @@ export const Onboarding: React.FC = () => {
                     className={cn(
                       "py-3 rounded-xl border-2 transition-all duration-200 flex flex-col items-center gap-1 active:scale-95",
                       formData.preferredFood.includes(food.id)
-                        ? "border-primary bg-primary/10 text-foreground scale-[1.02] shadow-md"
-                        : "border-border hover:border-primary/50 hover:scale-[1.02] text-foreground"
+                        ? "border-white bg-white/20 text-white scale-[1.02] shadow-md"
+                        : "border-white/30 hover:border-white/50 hover:scale-[1.02] text-white bg-white/10 backdrop-blur-sm"
                     )}
                   >
                     <span className="text-2xl">{food.emoji}</span>
@@ -366,54 +368,54 @@ export const Onboarding: React.FC = () => {
           {/* Benefits for experienced cooks */}
           {currentStepType === 'benefits' && (
             <div className="space-y-4">
-              <h2 className="text-xl font-semibold text-center text-foreground">
+              <h2 className="text-xl font-semibold text-center text-white">
                 מה תקבל מאיתנו? ✨
               </h2>
-              <p className="text-center text-muted-foreground text-sm">
+              <p className="text-center text-white/70 text-sm">
                 הנה למה שווה להצטרף
               </p>
               <div className="space-y-3 mt-4">
                 <div 
-                  className="p-4 rounded-2xl bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-blue-950/30 dark:to-cyan-950/30 border border-blue-200/50 dark:border-blue-800/30 animate-fade-in opacity-0"
+                  className="p-4 rounded-2xl bg-white/15 backdrop-blur-sm border border-white/20 animate-fade-in opacity-0"
                   style={{ animationDelay: '0.1s', animationFillMode: 'forwards' }}
                 >
                   <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/50 rounded-xl flex items-center justify-center animate-scale-in" style={{ animationDelay: '0.2s' }}>
-                      <Clock className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                    <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center animate-scale-in" style={{ animationDelay: '0.2s' }}>
+                      <Clock className="w-6 h-6 text-white" />
                     </div>
                     <div className="flex-1 text-right">
-                      <h3 className="font-semibold text-foreground">חסוך זמן בתכנון</h3>
-                      <p className="text-xs text-muted-foreground">מתכונים מהירים עם רשימת קניות אוטומטית</p>
+                      <h3 className="font-semibold text-white">חסוך זמן בתכנון</h3>
+                      <p className="text-xs text-white/70">מתכונים מהירים עם רשימת קניות אוטומטית</p>
                     </div>
                   </div>
                 </div>
                 
                 <div 
-                  className="p-4 rounded-2xl bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-950/30 dark:to-pink-950/30 border border-purple-200/50 dark:border-purple-800/30 animate-fade-in opacity-0"
+                  className="p-4 rounded-2xl bg-white/15 backdrop-blur-sm border border-white/20 animate-fade-in opacity-0"
                   style={{ animationDelay: '0.3s', animationFillMode: 'forwards' }}
                 >
                   <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/50 rounded-xl flex items-center justify-center animate-scale-in" style={{ animationDelay: '0.4s' }}>
-                      <Trophy className="w-6 h-6 text-purple-600 dark:text-purple-400" />
+                    <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center animate-scale-in" style={{ animationDelay: '0.4s' }}>
+                      <Trophy className="w-6 h-6 text-white" />
                     </div>
                     <div className="flex-1 text-right">
-                      <h3 className="font-semibold text-foreground">אתגרים שבועיים</h3>
-                      <p className="text-xs text-muted-foreground">צבור נקודות והישגים ותתחרה עם חברים</p>
+                      <h3 className="font-semibold text-white">אתגרים שבועיים</h3>
+                      <p className="text-xs text-white/70">צבור נקודות והישגים ותתחרה עם חברים</p>
                     </div>
                   </div>
                 </div>
                 
                 <div 
-                  className="p-4 rounded-2xl bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30 border border-amber-200/50 dark:border-amber-800/30 animate-fade-in opacity-0"
+                  className="p-4 rounded-2xl bg-white/15 backdrop-blur-sm border border-white/20 animate-fade-in opacity-0"
                   style={{ animationDelay: '0.5s', animationFillMode: 'forwards' }}
                 >
                   <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 bg-amber-100 dark:bg-amber-900/50 rounded-xl flex items-center justify-center animate-scale-in" style={{ animationDelay: '0.6s' }}>
-                      <Sparkles className="w-6 h-6 text-amber-600 dark:text-amber-400" />
+                    <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center animate-scale-in" style={{ animationDelay: '0.6s' }}>
+                      <Sparkles className="w-6 h-6 text-white" />
                     </div>
                     <div className="flex-1 text-right">
-                      <h3 className="font-semibold text-foreground">מתכונים בלעדיים</h3>
-                      <p className="text-xs text-muted-foreground">גישה למתכונים מקצועיים וטכניקות מתקדמות</p>
+                      <h3 className="font-semibold text-white">מתכונים בלעדיים</h3>
+                      <p className="text-xs text-white/70">גישה למתכונים מקצועיים וטכניקות מתקדמות</p>
                     </div>
                   </div>
                 </div>
@@ -425,8 +427,8 @@ export const Onboarding: React.FC = () => {
           {currentStepType === 'done' && (
             <div className="space-y-4 text-center">
               <div className="text-5xl">{getDoneMessage().emoji}</div>
-              <h2 className="text-xl font-semibold text-foreground">{getDoneMessage().title}</h2>
-              <p className="text-muted-foreground text-sm">
+              <h2 className="text-xl font-semibold text-white">{getDoneMessage().title}</h2>
+              <p className="text-white/70 text-sm">
                 {getDoneMessage().subtitle}
               </p>
             </div>
@@ -439,7 +441,7 @@ export const Onboarding: React.FC = () => {
             onClick={handleNext}
             disabled={!canProceed()}
             size="xl"
-            className="w-full"
+            className="w-full bg-white text-blue-600 hover:bg-white/90 font-bold shadow-xl"
           >
             {getButtonText()}
             <ArrowLeft className="w-5 h-5" />
