@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Mail, Lock, Eye, EyeOff, ArrowRight, Phone, Apple } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, ArrowRight, Phone } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useAuth } from '@/contexts/AuthContext';
@@ -238,9 +238,6 @@ const SignIn: React.FC = () => {
     }
   };
 
-  const handleAppleLogin = () => {
-    toast.info('התחברות עם Apple תהיה זמינה בקרוב');
-  };
 
   if (loading) {
     return (
@@ -342,15 +339,6 @@ const SignIn: React.FC = () => {
                 המשך עם Google
               </Button>
 
-              {/* Apple option */}
-              <Button
-                onClick={handleAppleLogin}
-                variant="outline"
-                className="w-full h-14 rounded-2xl text-base font-medium bg-white/70 backdrop-blur-sm border-border/50 hover:bg-white/90 transition-all"
-              >
-                <Apple className="w-5 h-5 ml-3" />
-                המשך עם Apple
-              </Button>
 
               {/* Divider */}
               <div className="flex items-center gap-3 py-2">
