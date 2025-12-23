@@ -4,10 +4,6 @@ const config: CapacitorConfig = {
   appId: "com.noam.budgetbites",
   appName: "BudgetBites",
   webDir: "dist",
-  server: {
-    url: "https://c034698c-dde1-4f42-bd36-c9d8740a134f.lovableproject.com?forceHideBadge=true",
-    cleartext: true
-  },
   ios: {
     contentInset: "automatic",
     preferredContentMode: "mobile",
