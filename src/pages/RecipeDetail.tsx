@@ -27,7 +27,7 @@ export const RecipeDetail: React.FC = () => {
   }
 
   return (
-    <div className="h-full bg-background overflow-y-auto overscroll-none pb-24">
+    <div className="h-full min-h-0 bg-background overflow-y-auto scroll-touch overscroll-none pb-24">
       {/* Header */}
       <div className="relative">
         <div className="h-56 bg-secondary flex items-center justify-center overflow-hidden">

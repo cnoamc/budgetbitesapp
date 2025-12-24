@@ -23,7 +23,7 @@ export const Savings: React.FC = () => {
 
   return (
     <GradientBackground variant="fresh">
-      <div className="h-full p-6 pb-40 overflow-y-auto overscroll-none">
+      <div className="h-full p-6 pb-40 overflow-y-auto scroll-touch overscroll-none">
         <div className="max-w-lg mx-auto">
           {/* Hero Section */}
           <div className="text-center mb-8 pt-4 animate-scale-in">

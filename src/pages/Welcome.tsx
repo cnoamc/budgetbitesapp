@@ -42,7 +42,7 @@ const Welcome: React.FC = () => {
   }
 
   return (
-    <div className="h-full relative overflow-hidden flex flex-col" dir="rtl">
+    <div className="h-full min-h-0 relative overflow-hidden flex flex-col" dir="rtl">
       {/* Gradient background */}
       <div className="absolute inset-0 bg-gradient-to-br from-blue-500 via-blue-600 to-cyan-500" />
       <div aria-hidden="true" className="absolute inset-0 bg-white/5 backdrop-blur-[2px] pointer-events-none" />
@@ -54,7 +54,7 @@ const Welcome: React.FC = () => {
       <div className="absolute bottom-1/3 right-1/4 w-32 h-32 bg-white/10 rounded-full blur-xl" />
 
       {/* Content */}
-      <div className="relative z-10 flex-1 flex flex-col h-full px-6">
+      <div className="relative z-10 flex-1 min-h-0 overflow-y-auto scroll-touch flex flex-col px-6">
         
         {/* App icon section */}
         <div className="flex-1 flex items-center justify-center pt-safe">

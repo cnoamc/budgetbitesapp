@@ -412,7 +412,7 @@ const SignIn: React.FC = () => {
   };
 
   return (
-    <div className="h-full relative overflow-hidden flex flex-col" dir="rtl">
+    <div className="h-full min-h-0 relative overflow-hidden flex flex-col" dir="rtl">
       {/* Gradient background */}
       <div className="absolute inset-0 bg-gradient-to-br from-blue-500 via-blue-600 to-cyan-500" />
       <div aria-hidden="true" className="absolute inset-0 bg-white/5 backdrop-blur-[2px] pointer-events-none" />
@@ -423,7 +423,7 @@ const SignIn: React.FC = () => {
       <div className="absolute top-1/3 right-1/4 w-32 h-32 bg-blue-300/20 rounded-full blur-2xl" />
 
       {/* Content */}
-      <div className="relative z-10 flex-1 flex flex-col px-6 pt-safe">
+      <div className="relative z-10 flex-1 min-h-0 overflow-y-auto scroll-touch flex flex-col px-6 pt-safe pb-safe-offset-6">
         {/* Back button */}
         <div className="pt-4">
           <button 
@@ -458,7 +458,7 @@ const SignIn: React.FC = () => {
         </div>
 
         {/* Main content area */}
-        <div className="flex-1 flex flex-col max-w-sm mx-auto w-full">
+        <div className="flex-1 min-h-0 flex flex-col max-w-sm mx-auto w-full">
           {view === 'options' && (
             <div className="space-y-3 animate-fade-in">
               {/* Biometric option - only show if available and enabled */}
