@@ -54,7 +54,7 @@ const Welcome: React.FC = () => {
       <div className="absolute bottom-1/3 right-1/4 w-32 h-32 bg-white/10 rounded-full blur-xl" />
 
       {/* Content */}
-      <div className="relative z-10 flex-1 min-h-0 flex flex-col px-5 sm:px-6 pt-safe-offset-4 sm:pt-safe-offset-6">
+      <div className="relative z-10 flex-1 min-h-0 flex flex-col px-5 sm:px-6 pt-safe">
         {/* App icon section - grows to take available space */}
         <div className="flex-1 flex items-center justify-center">
           <div 
