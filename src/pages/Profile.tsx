@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Settings, RefreshCw, MapPin, LogOut, Pencil, Camera, X, Bell, Moon, Crown, FileText, HelpCircle, Shield, User, Fingerprint, ScanFace } from 'lucide-react';
+import { Settings, RefreshCw, MapPin, LogOut, Pencil, Camera, X, Bell, Moon, Crown, FileText, HelpCircle, Shield, User, Fingerprint, ScanFace, CheckCircle, AlertCircle, Mail } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import appLogo from '@/assets/app-logo.png';
 import { Button } from '@/components/ui/button';
@@ -39,7 +39,7 @@ import {
 export const Profile: React.FC = () => {
   const navigate = useNavigate();
   const { profile, progress, displayName, photoUrl, updateDisplayName, updatePhotoUrl, syncing } = useApp();
-  const { user, signOut } = useAuth();
+  const { user, signOut, resendVerificationEmail } = useAuth();
   const { unreadCount } = useNotifications();
   const { resolvedMode, setMode } = useTheme();
   const { daysLeftInTrial, isTrialActive, subscription, toggleCancelReminder } = useSubscription();
@@ -53,6 +53,9 @@ export const Profile: React.FC = () => {
   const [isNotificationSettingsOpen, setIsNotificationSettingsOpen] = useState(false);
   const [isSignOutDialogOpen, setIsSignOutDialogOpen] = useState(false);
   const [editedName, setEditedName] = useState(displayName);
+  const [isResendingVerification, setIsResendingVerification] = useState(false);
+
+  const isEmailVerified = user?.email_confirmed_at != null;
 
   const skillLabels = ['מתחיל', 'בסיסי', 'מתקדם', 'מומחה', 'שף!'];
 
@@ -67,6 +70,20 @@ export const Profile: React.FC = () => {
       navigate('/signin');
     } catch (error) {
       toast.error('שגיאה בהתנתקות');
+    }
+  };
+
+  const handleResendVerification = async () => {
+    setIsResendingVerification(true);
+    try {
+      const { error } = await resendVerificationEmail();
+      if (error) {
+        toast.error('שגיאה בשליחת המייל. נסה שוב.');
+      } else {
+        toast.success('מייל אימות נשלח בהצלחה!');
+      }
+    } finally {
+      setIsResendingVerification(false);
     }
   };
 
@@ -208,7 +225,37 @@ export const Profile: React.FC = () => {
           <p className="text-sm text-muted-foreground">
             {skillLabels[progress.skillLevel - 1]} • {progress.totalMealsCooked} ארוחות
           </p>
-          {user && <p className="text-xs text-muted-foreground" dir="ltr">{user.email}</p>}
+          {user && (
+            <div className="flex flex-col items-center gap-1">
+              <p className="text-xs text-muted-foreground" dir="ltr">{user.email}</p>
+              {/* Email Verification Status */}
+              {isEmailVerified ? (
+                <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs font-medium">
+                  <CheckCircle className="w-3 h-3" />
+                  מייל מאומת
+                </div>
+              ) : (
+                <div className="flex flex-col items-center gap-1">
+                  <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 text-xs font-medium">
+                    <AlertCircle className="w-3 h-3" />
+                    מייל לא מאומת
+                  </div>
+                  <button
+                    onClick={handleResendVerification}
+                    disabled={isResendingVerification}
+                    className="text-xs text-primary hover:underline disabled:opacity-50 flex items-center gap-1"
+                  >
+                    {isResendingVerification ? (
+                      <div className="w-3 h-3 border border-primary border-t-transparent rounded-full animate-spin" />
+                    ) : (
+                      <Mail className="w-3 h-3" />
+                    )}
+                    שלח מייל אימות שוב
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
           
           {/* Subscription Badge */}
           {isTrialActive && (

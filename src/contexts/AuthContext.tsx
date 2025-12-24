@@ -14,6 +14,7 @@ interface AuthContextType {
   verifyOtp: (phone: string, token: string) => Promise<{ error: Error | null }>;
   resetPassword: (email: string) => Promise<{ error: Error | null }>;
   updatePassword: (newPassword: string) => Promise<{ error: Error | null }>;
+  resendVerificationEmail: () => Promise<{ error: Error | null }>;
   signOut: () => Promise<void>;
 }
 
@@ -115,6 +116,20 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     return { error: error as Error | null };
   };
 
+  const resendVerificationEmail = async () => {
+    if (!user?.email) {
+      return { error: new Error('No email found') };
+    }
+    const { error } = await supabase.auth.resend({
+      type: 'signup',
+      email: user.email,
+      options: {
+        emailRedirectTo: `${window.location.origin}/`
+      }
+    });
+    return { error: error as Error | null };
+  };
+
   const signOut = async () => {
     await supabase.auth.signOut();
   };
@@ -132,6 +147,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       verifyOtp,
       resetPassword,
       updatePassword,
+      resendVerificationEmail,
       signOut 
     }}>
       {children}
