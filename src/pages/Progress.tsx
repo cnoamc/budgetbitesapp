@@ -175,7 +175,7 @@ export const Progress: React.FC = () => {
   return (
     <GradientBackground variant="warm">
       <div className="min-h-full flex flex-col">
-        <div className="flex-1 overflow-y-auto pb-24 p-4" style={{ paddingTop: 'calc(env(safe-area-inset-top) + 1rem)' }}>
+        <div className="flex-1 overflow-y-auto pb-24 p-4 pt-4">
           <div className="flex items-center justify-between mb-6">
             <h1 className="text-2xl font-bold">ההתקדמות שלי</h1>
             <div className="w-10 h-10 bg-black/5 rounded-xl flex items-center justify-center">

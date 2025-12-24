@@ -40,7 +40,7 @@ export const BottomNav: React.FC = () => {
   };
 
   return (
-    <div className="fixed left-0 right-0 z-50 flex justify-center" style={{ bottom: 'calc(env(safe-area-inset-bottom) + 0.5rem)' }}>
+    <div className="fixed left-0 right-0 z-50 flex justify-center" style={{ bottom: '0.5rem' }}>
       <nav>
         <div 
           ref={navRef}

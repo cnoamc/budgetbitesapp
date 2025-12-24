@@ -176,8 +176,8 @@ export const CookingAssistant: React.FC = () => {
 
   return (
     <div className="h-full bg-background flex flex-col overflow-hidden">
-      {/* Header with safe area */}
-      <div className="bg-card border-b border-border/50 p-4 sticky top-0 z-10" style={{ paddingTop: 'calc(env(safe-area-inset-top) + 1rem)' }}>
+      {/* Header */}
+      <div className="bg-card border-b border-border/50 p-4 pt-4 sticky top-0 z-10">
         <div className="flex items-center gap-3 mb-3">
           <button
             onClick={() => navigate(-1)}
@@ -230,7 +230,7 @@ export const CookingAssistant: React.FC = () => {
       </div>
 
       {/* Input Area */}
-      <div className="p-4 border-t border-border/50 bg-card space-y-3" style={{ paddingBottom: 'calc(env(safe-area-inset-bottom) + 1rem)' }}>
+      <div className="p-4 pb-4 border-t border-border/50 bg-card space-y-3">
         {/* Question Input */}
         <form onSubmit={handleSendMessage} className="flex gap-2">
           <Input

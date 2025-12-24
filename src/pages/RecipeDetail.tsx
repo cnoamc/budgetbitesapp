@@ -27,7 +27,7 @@ export const RecipeDetail: React.FC = () => {
   }
 
   return (
-    <div className="h-full bg-background overflow-y-auto overscroll-none" style={{ paddingBottom: 'calc(env(safe-area-inset-bottom) + 6rem)' }}>
+    <div className="h-full bg-background overflow-y-auto overscroll-none pb-24">
       {/* Header */}
       <div className="relative">
         <div className="h-56 bg-secondary flex items-center justify-center overflow-hidden">
@@ -43,8 +43,7 @@ export const RecipeDetail: React.FC = () => {
         </div>
         <button
           onClick={() => navigate(-1)}
-          className="absolute right-4 w-10 h-10 bg-card/90 backdrop-blur rounded-full flex items-center justify-center shadow-card"
-          style={{ top: 'calc(env(safe-area-inset-top) + 0.5rem)' }}
+          className="absolute right-4 top-2 w-10 h-10 bg-card/90 backdrop-blur rounded-full flex items-center justify-center shadow-card"
         >
           <ArrowRight className="w-5 h-5" />
         </button>
