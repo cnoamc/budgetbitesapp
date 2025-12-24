@@ -42,8 +42,8 @@ export const Recipes: React.FC = () => {
   return (
     <GradientBackground variant="minimal">
       <div className="h-full flex flex-col overflow-hidden">
-        {/* Header */}
-        <div className="p-4 pt-6 pb-3 shrink-0">
+        {/* Header with safe area */}
+        <div className="p-4 pb-3 shrink-0" style={{ paddingTop: 'calc(env(safe-area-inset-top) + 1rem)' }}>
           <div className="flex items-center justify-between mb-6">
             <h1 className="text-2xl font-bold">מתכונים</h1>
             <div className="w-10 h-10 rounded-xl overflow-hidden">
