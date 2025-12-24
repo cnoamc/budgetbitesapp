@@ -171,38 +171,38 @@ export const Onboarding: React.FC = () => {
       <div className="absolute bottom-1/3 right-1/4 w-32 h-32 bg-white/10 rounded-full blur-xl" />
 
       {/* Content */}
-      <div className="relative z-10 flex-1 min-h-0 flex flex-col max-w-lg mx-auto w-full px-5 pt-safe-offset-6">
+      <div className="relative z-10 flex-1 min-h-0 flex flex-col max-w-lg mx-auto w-full px-4 sm:px-5 pt-safe-offset-4 sm:pt-safe-offset-6">
         {/* Step Content - scrollable area */}
         <div
-          className="flex-1 min-h-0 overflow-y-auto scroll-touch flex flex-col justify-center animate-fade-in"
+          className="flex-1 min-h-0 overflow-y-auto scroll-touch flex flex-col justify-center py-2 animate-fade-in"
           key={currentStepType}
         >
           
           {/* Step 1: Goal Selection */}
           {currentStepType === 'goal' && (
-            <div className="space-y-4">
-              <h2 className="text-xl font-semibold text-center text-white">
+            <div className="space-y-3 sm:space-y-4">
+              <h2 className="text-lg sm:text-xl font-semibold text-center text-white">
                 מה המטרה שלך? 🎯
               </h2>
-              <p className="text-center text-white/70 text-sm">
+              <p className="text-center text-white/70 text-xs sm:text-sm">
                 בחר את הסיבה העיקרית שלך להשתמש באפליקציה
               </p>
-              <div className="space-y-3 mt-6">
+              <div className="space-y-2 sm:space-y-3 mt-3 sm:mt-6">
                 {goalOptions.map((goal) => (
                   <button
                     key={goal.id}
                     onClick={() => setFormData({ ...formData, goal: goal.id })}
                     className={cn(
-                      "w-full py-4 px-5 rounded-2xl border-2 transition-all duration-200 flex items-center gap-4 active:scale-[0.98]",
+                      "w-full py-3 sm:py-4 px-4 sm:px-5 rounded-xl sm:rounded-2xl border-2 transition-all duration-200 flex items-center gap-3 sm:gap-4 active:scale-[0.98]",
                       formData.goal === goal.id
                         ? "border-white bg-white/20 text-white scale-[1.01] shadow-lg"
                         : "border-white/30 hover:border-white/50 hover:scale-[1.01] text-white bg-white/10 backdrop-blur-sm"
                     )}
                   >
-                    <span className="text-3xl">{goal.emoji}</span>
+                    <span className="text-2xl sm:text-3xl">{goal.emoji}</span>
                     <div className="text-right flex-1">
-                      <span className="text-base font-semibold block">{goal.label}</span>
-                      <span className="text-xs text-white/70">{goal.description}</span>
+                      <span className="text-sm sm:text-base font-semibold block">{goal.label}</span>
+                      <span className="text-[11px] sm:text-xs text-white/70">{goal.description}</span>
                     </div>
                   </button>
                 ))}
@@ -416,12 +416,11 @@ export const Onboarding: React.FC = () => {
         </div>
 
         {/* Navigation - fixed at bottom, always visible */}
-        <div className="shrink-0 pt-4 pb-safe-offset-8">
+        <div className="shrink-0 pt-3 sm:pt-4 pb-safe-offset-4 sm:pb-safe-offset-8">
           <Button
             onClick={handleNext}
             disabled={!canProceed()}
-            size="xl"
-            className="w-full bg-white text-blue-600 hover:bg-white/90 font-bold shadow-xl"
+            className="w-full h-14 sm:h-[60px] rounded-2xl text-base sm:text-lg bg-white text-blue-600 hover:bg-white/90 font-bold shadow-xl"
           >
             {getButtonText()}
             <ArrowLeft className="w-5 h-5" />

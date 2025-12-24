@@ -425,23 +425,23 @@ const SignIn: React.FC = () => {
       <div className="absolute top-1/3 right-1/4 w-32 h-32 bg-blue-300/20 rounded-full blur-2xl" />
 
       {/* Content */}
-      <div className="relative z-10 flex-1 min-h-0 overflow-y-auto scroll-touch flex flex-col px-6 pt-safe pb-safe-offset-6">
+      <div className="relative z-10 flex-1 min-h-0 overflow-y-auto scroll-touch flex flex-col px-5 sm:px-6 pt-safe pb-safe-offset-4 sm:pb-safe-offset-6">
         {/* Back button */}
-        <div className="pt-4 shrink-0">
+        <div className="pt-3 sm:pt-4 shrink-0">
           <button 
             onClick={getBackAction()} 
             className="p-2 -mr-2 rounded-full hover:bg-white/10 transition-colors"
           >
-            <ArrowRight className="w-6 h-6 text-white" />
+            <ArrowRight className="w-5 sm:w-6 h-5 sm:h-6 text-white" />
           </button>
         </div>
 
-        {/* Header with logo */}
-        <div className="text-center mt-8 mb-8 animate-fade-in shrink-0">
-          <div className="w-24 h-24 mx-auto mb-4 rounded-3xl overflow-hidden shadow-2xl ring-4 ring-white/20">
+        {/* Header with logo - compact for small screens */}
+        <div className="text-center mt-4 sm:mt-8 mb-5 sm:mb-8 animate-fade-in shrink-0">
+          <div className="w-16 sm:w-24 h-16 sm:h-24 mx-auto mb-3 sm:mb-4 rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl ring-2 sm:ring-4 ring-white/20">
             <img src={appIcon} alt="BudgetBites" className="w-full h-full object-cover" />
           </div>
-          <h1 className="text-3xl font-bold text-white mb-2">
+          <h1 className="text-2xl sm:text-3xl font-bold text-white mb-1 sm:mb-2">
             {view === 'options' ? 'ברוכים הבאים!' : 
              view === 'otp' ? 'הזן קוד אימות' : 
              view === 'phone' ? 'התחברות עם טלפון' : 
@@ -449,7 +449,7 @@ const SignIn: React.FC = () => {
              view === 'reset' ? 'סיסמה חדשה' :
              isLogin ? 'התחברות' : 'יצירת חשבון'}
           </h1>
-          <p className="text-white/80 text-base">
+          <p className="text-white/80 text-sm sm:text-base">
             {view === 'options' ? 'בחר איך להתחבר' : 
              view === 'otp' ? `שלחנו קוד ל-${phone}` : 
              view === 'phone' ? 'נשלח לך קוד אימות ב-SMS' : 
@@ -462,18 +462,18 @@ const SignIn: React.FC = () => {
         {/* Main content area */}
         <div className="flex-1 min-h-0 flex flex-col max-w-sm mx-auto w-full">
           {view === 'options' && (
-            <div className="space-y-3 animate-fade-in">
+            <div className="space-y-2.5 sm:space-y-3 animate-fade-in">
               {/* Biometric option - only show if available and enabled */}
               {biometric.isAvailable && biometric.isEnabled && (
                 <button
                   onClick={handleBiometricAuth}
                   disabled={isLoading}
-                  className="w-full h-14 rounded-2xl text-base font-semibold bg-gradient-to-r from-blue-600 to-cyan-500 text-white flex items-center justify-center gap-3 shadow-lg hover:shadow-xl transition-all active:scale-[0.98] disabled:opacity-50"
+                  className="w-full h-12 sm:h-14 rounded-xl sm:rounded-2xl text-sm sm:text-base font-semibold bg-gradient-to-r from-blue-600 to-cyan-500 text-white flex items-center justify-center gap-2.5 sm:gap-3 shadow-lg hover:shadow-xl transition-all active:scale-[0.98] disabled:opacity-50"
                 >
                   {biometric.biometryType === 'faceId' || biometric.biometryType === 'face' ? (
-                    <ScanFace className="w-5 h-5" />
+                    <ScanFace className="w-4 sm:w-5 h-4 sm:h-5" />
                   ) : (
-                    <Fingerprint className="w-5 h-5" />
+                    <Fingerprint className="w-4 sm:w-5 h-4 sm:h-5" />
                   )}
                   התחבר עם {biometric.getBiometryLabel()}
                 </button>
@@ -482,9 +482,9 @@ const SignIn: React.FC = () => {
               {/* Phone option */}
               <button
                 onClick={() => setView('phone')}
-                className="w-full h-14 rounded-2xl text-base font-semibold bg-white text-gray-900 flex items-center justify-center gap-3 shadow-lg hover:shadow-xl transition-all active:scale-[0.98]"
+                className="w-full h-12 sm:h-14 rounded-xl sm:rounded-2xl text-sm sm:text-base font-semibold bg-white text-gray-900 flex items-center justify-center gap-2.5 sm:gap-3 shadow-lg hover:shadow-xl transition-all active:scale-[0.98]"
               >
-                <Phone className="w-5 h-5 text-blue-600" />
+                <Phone className="w-4 sm:w-5 h-4 sm:h-5 text-blue-600" />
                 המשך עם מספר טלפון
               </button>
 
@@ -492,9 +492,9 @@ const SignIn: React.FC = () => {
               <button
                 onClick={handleGoogleLogin}
                 disabled={isLoading}
-                className="w-full h-14 rounded-2xl text-base font-semibold bg-white text-gray-900 flex items-center justify-center gap-3 shadow-lg hover:shadow-xl transition-all active:scale-[0.98] disabled:opacity-50"
+                className="w-full h-12 sm:h-14 rounded-xl sm:rounded-2xl text-sm sm:text-base font-semibold bg-white text-gray-900 flex items-center justify-center gap-2.5 sm:gap-3 shadow-lg hover:shadow-xl transition-all active:scale-[0.98] disabled:opacity-50"
               >
-                <svg className="w-5 h-5" viewBox="0 0 24 24">
+                <svg className="w-4 sm:w-5 h-4 sm:h-5" viewBox="0 0 24 24">
                   <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
                   <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
                   <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
@@ -507,9 +507,9 @@ const SignIn: React.FC = () => {
               <button
                 onClick={handleAppleLogin}
                 disabled={isLoading}
-                className="w-full h-14 rounded-2xl text-base font-semibold bg-black text-white flex items-center justify-center gap-3 shadow-lg hover:shadow-xl transition-all active:scale-[0.98] disabled:opacity-50"
+                className="w-full h-12 sm:h-14 rounded-xl sm:rounded-2xl text-sm sm:text-base font-semibold bg-black text-white flex items-center justify-center gap-2.5 sm:gap-3 shadow-lg hover:shadow-xl transition-all active:scale-[0.98] disabled:opacity-50"
               >
-                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                <svg className="w-4 sm:w-5 h-4 sm:h-5" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09l.01-.01zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/>
                 </svg>
                 המשך עם Apple
@@ -518,17 +518,17 @@ const SignIn: React.FC = () => {
               {/* Email option */}
               <button
                 onClick={() => { setView('email'); setIsLogin(false); }}
-                className="w-full h-14 rounded-2xl text-base font-semibold bg-white/10 text-white border-2 border-white/30 flex items-center justify-center gap-3 hover:bg-white/20 transition-all active:scale-[0.98]"
+                className="w-full h-12 sm:h-14 rounded-xl sm:rounded-2xl text-sm sm:text-base font-semibold bg-white/10 text-white border-2 border-white/30 flex items-center justify-center gap-2.5 sm:gap-3 hover:bg-white/20 transition-all active:scale-[0.98]"
               >
-                <Mail className="w-5 h-5" />
+                <Mail className="w-4 sm:w-5 h-4 sm:h-5" />
                 המשך עם אימייל
               </button>
 
               {/* Login link */}
-              <div className="text-center pt-4">
+              <div className="text-center pt-3 sm:pt-4">
                 <button 
                   onClick={() => { setView('email'); setIsLogin(true); }}
-                  className="text-white/80 text-sm hover:text-white transition-colors"
+                  className="text-white/80 text-xs sm:text-sm hover:text-white transition-colors"
                 >
                   כבר יש לך חשבון? <span className="font-semibold text-white underline">התחבר</span>
                 </button>

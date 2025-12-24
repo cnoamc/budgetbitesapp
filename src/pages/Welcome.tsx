@@ -54,18 +54,18 @@ const Welcome: React.FC = () => {
       <div className="absolute bottom-1/3 right-1/4 w-32 h-32 bg-white/10 rounded-full blur-xl" />
 
       {/* Content */}
-      <div className="relative z-10 flex-1 min-h-0 flex flex-col px-6 pt-safe-offset-6">
+      <div className="relative z-10 flex-1 min-h-0 flex flex-col px-5 sm:px-6 pt-safe-offset-4 sm:pt-safe-offset-6">
         {/* App icon section - grows to take available space */}
         <div className="flex-1 flex items-center justify-center">
           <div 
             className={`relative transition-all duration-500 ease-out ${mounted ? 'scale-100 opacity-100' : 'scale-50 opacity-0'} ${zooming ? 'scale-150 opacity-0' : ''}`}
           >
             {/* Glow effect */}
-            <div className="absolute inset-0 w-32 h-32 bg-white/30 rounded-[40px] blur-xl" />
+            <div className="absolute inset-0 w-24 sm:w-32 h-24 sm:h-32 bg-white/30 rounded-[32px] sm:rounded-[40px] blur-xl" />
             
-            {/* Icon */}
+            {/* Icon - responsive size */}
             <div 
-              className="relative w-32 h-32 rounded-[40px] overflow-hidden shadow-2xl ring-4 ring-white/30"
+              className="relative w-24 sm:w-32 h-24 sm:h-32 rounded-[32px] sm:rounded-[40px] overflow-hidden shadow-2xl ring-4 ring-white/30"
             >
               <img alt="BudgetBites" className="w-full h-full object-cover" src={appIcon} />
             </div>
@@ -74,35 +74,35 @@ const Welcome: React.FC = () => {
 
         {/* Bottom section with text and CTA - fixed height, pinned to bottom */}
         <div 
-          className={`shrink-0 pb-safe-offset-8 transition-all duration-700 ${mounted ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'}`}
+          className={`shrink-0 pb-safe-offset-4 transition-all duration-700 ${mounted ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'}`}
           style={{ transitionDelay: '300ms' }}
         >
           {/* App name */}
-          <p className="text-center text-sm font-semibold text-white/70 tracking-widest mb-4 uppercase">
+          <p className="text-center text-xs sm:text-sm font-semibold text-white/70 tracking-widest mb-2 sm:mb-4 uppercase">
             BudgetBites
           </p>
 
-          {/* Main headline */}
-          <h1 className="text-center text-[2.75rem] font-bold text-white mb-2 leading-[1.1]">
+          {/* Main headline - responsive sizing for small screens */}
+          <h1 className="text-center text-3xl sm:text-[2.75rem] font-bold text-white mb-1 sm:mb-2 leading-[1.1]">
             בישול קל.
           </h1>
-          <h2 className="text-center text-[2.75rem] font-bold mb-10 leading-[1.1] text-cyan-200">
+          <h2 className="text-center text-3xl sm:text-[2.75rem] font-bold mb-6 sm:mb-10 leading-[1.1] text-cyan-200">
             חיסכון גדול.
           </h2>
 
-          {/* CTA Button */}
+          {/* CTA Button - slightly smaller on small screens */}
           <Button 
             onClick={handleStart} 
-            className="w-full h-[60px] rounded-2xl text-[17px] font-bold bg-white text-blue-600 hover:bg-white/90 transition-all active:scale-[0.98] shadow-xl"
+            className="w-full h-14 sm:h-[60px] rounded-2xl text-base sm:text-[17px] font-bold bg-white text-blue-600 hover:bg-white/90 transition-all active:scale-[0.98] shadow-xl"
           >
             בואו נתחיל
           </Button>
 
           {/* Login link */}
-          <div className="text-center mt-5 mb-2">
+          <div className="text-center mt-4 sm:mt-5 mb-1 sm:mb-2">
             <button 
               onClick={() => navigate('/signin')} 
-              className="text-[15px] text-white/70 hover:text-white transition-colors"
+              className="text-sm sm:text-[15px] text-white/70 hover:text-white transition-colors"
             >
               כבר יש לך חשבון? <span className="font-semibold text-white">התחבר</span>
             </button>
