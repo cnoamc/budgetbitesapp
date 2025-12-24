@@ -159,7 +159,7 @@ export const Onboarding: React.FC = () => {
   };
 
   return (
-    <div className="fixed inset-0 flex flex-col overflow-hidden" style={{ height: '100dvh' }}>
+    <div className="h-full min-h-0 flex flex-col overflow-hidden">
       {/* Blue gradient background */}
       <div className="absolute inset-0 bg-gradient-to-br from-blue-500 via-blue-600 to-cyan-500" />
       <div aria-hidden="true" className="absolute inset-0 bg-white/5 backdrop-blur-[2px] pointer-events-none" />
@@ -171,10 +171,8 @@ export const Onboarding: React.FC = () => {
       <div className="absolute bottom-1/3 right-1/4 w-32 h-32 bg-white/10 rounded-full blur-xl" />
 
       {/* Content */}
-      <div
-        className="relative z-10 flex-1 min-h-0 flex flex-col max-w-lg mx-auto w-full px-5 pt-safe-offset-4"
-      >
-        {/* Step Content */}
+      <div className="relative z-10 flex-1 min-h-0 flex flex-col max-w-lg mx-auto w-full px-5 pt-safe-offset-4">
+        {/* Step Content - scrollable area */}
         <div
           className="flex-1 min-h-0 overflow-y-auto scroll-touch flex flex-col justify-center animate-fade-in"
           key={currentStepType}
@@ -417,8 +415,8 @@ export const Onboarding: React.FC = () => {
           )}
         </div>
 
-        {/* Navigation - at bottom */}
-        <div className="shrink-0 pt-4 pb-6" style={{ paddingBottom: 'max(1.5rem, env(safe-area-inset-bottom))' }}>
+        {/* Navigation - fixed at bottom, always visible */}
+        <div className="shrink-0 pt-4 pb-safe-offset-6">
           <Button
             onClick={handleNext}
             disabled={!canProceed()}
