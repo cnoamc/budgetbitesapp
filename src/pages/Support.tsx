@@ -36,8 +36,9 @@ export const Support: React.FC = () => {
   ];
 
   return (
-    <div className="h-full min-h-0 bg-background p-4 pt-safe-offset-4 pb-safe-offset-6 overflow-y-auto scroll-touch overscroll-none" dir="rtl">
-      <div className="max-w-2xl mx-auto">
+    <div className="h-full min-h-0 bg-background flex flex-col overflow-hidden" dir="rtl">
+      <div className="flex-1 min-h-0 overflow-y-auto scroll-touch overscroll-none p-4 pt-safe-offset-4 pb-safe-offset-6">
+        <div className="max-w-2xl mx-auto">
         <Button variant="ghost" size="sm" onClick={() => navigate(-1)} className="mb-4">
           <ArrowRight className="w-4 h-4 ml-2" />
           חזרה
@@ -91,10 +92,10 @@ export const Support: React.FC = () => {
           </Accordion>
         </div>
 
-        {/* App Version */}
         <div className="mt-6 text-center text-xs text-muted-foreground">
           <p>BudgetBites גרסה 1.0.0</p>
           <p className="mt-1">© 2024 BudgetBites. כל הזכויות שמורות.</p>
+        </div>
         </div>
       </div>
     </div>
