@@ -71,6 +71,18 @@ const SignIn: React.FC = () => {
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showBiometricPrompt, setShowBiometricPrompt] = useState(false);
+  const [rememberMe, setRememberMe] = useState(() => {
+    return localStorage.getItem('bb_remember_me') === 'true';
+  });
+
+  // Load saved email if remember me was enabled
+  useEffect(() => {
+    const savedEmail = localStorage.getItem('bb_saved_email');
+    if (savedEmail && rememberMe) {
+      setEmail(savedEmail);
+      setIsLogin(true);
+    }
+  }, []);
 
   // Check for password reset mode from URL
   useEffect(() => {
@@ -224,6 +236,15 @@ const SignIn: React.FC = () => {
             toast.error('שגיאה בהתחברות, נסה שוב');
           }
         } else {
+          // Save email if remember me is checked
+          if (rememberMe) {
+            localStorage.setItem('bb_remember_me', 'true');
+            localStorage.setItem('bb_saved_email', email);
+          } else {
+            localStorage.removeItem('bb_remember_me');
+            localStorage.removeItem('bb_saved_email');
+          }
+          
           // Offer to enable biometric for returning users who don't have it enabled
           if (biometric.isAvailable && !biometric.isEnabled) {
             setShowBiometricPrompt(true);
@@ -704,6 +725,19 @@ const SignIn: React.FC = () => {
                       </p>
                     )}
                   </div>
+                  
+                  {/* Remember Me - only show in login mode */}
+                  {isLogin && (
+                    <label className="flex items-center gap-2 cursor-pointer select-none">
+                      <input
+                        type="checkbox"
+                        checked={rememberMe}
+                        onChange={(e) => setRememberMe(e.target.checked)}
+                        className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 focus:ring-offset-0"
+                      />
+                      <span className="text-sm text-gray-600">זכור אותי</span>
+                    </label>
+                  )}
                   
                   <Button
                     type="submit"
