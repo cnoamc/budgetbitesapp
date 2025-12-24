@@ -91,7 +91,7 @@ const LoadingSavings: React.FC = () => {
       <div className="absolute -bottom-32 -left-32 w-96 h-96 bg-cyan-400/20 rounded-full blur-3xl" />
       <div className="absolute top-1/3 right-1/4 w-32 h-32 bg-blue-300/20 rounded-full blur-2xl" />
 
-      <div className="relative z-10 flex-1 min-h-0 overflow-y-auto scroll-touch flex flex-col items-center justify-center px-6 pt-safe pb-safe-offset-6 w-full">
+      <div className="relative z-10 flex-1 min-h-0 overflow-y-auto scroll-touch flex flex-col items-center justify-center px-6 pt-safe-offset-6 pb-safe-offset-6 w-full">
         <div className="w-full max-w-sm">
           {/* App icon with pulse animation */}
           <div className="flex justify-center mb-8">

@@ -425,9 +425,9 @@ const SignIn: React.FC = () => {
       <div className="absolute top-1/3 right-1/4 w-32 h-32 bg-blue-300/20 rounded-full blur-2xl" />
 
       {/* Content */}
-      <div className="relative z-10 flex-1 min-h-0 overflow-y-auto scroll-touch flex flex-col px-5 sm:px-6 pt-safe pb-safe-offset-4 sm:pb-safe-offset-6">
+      <div className="relative z-10 flex-1 min-h-0 overflow-y-auto scroll-touch flex flex-col px-5 sm:px-6 pt-safe-offset-4 pb-safe-offset-4 sm:pb-safe-offset-6">
         {/* Back button */}
-        <div className="pt-3 sm:pt-4 shrink-0">
+        <div className="pt-1 sm:pt-2 shrink-0">
           <button 
             onClick={getBackAction()} 
             className="p-2 -mr-2 rounded-full hover:bg-white/10 transition-colors"
