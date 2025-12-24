@@ -34,7 +34,7 @@ export const NotificationBanner: React.FC = () => {
   if (!visible || !currentNotification) return null;
 
   return (
-    <div className="fixed top-4 left-4 right-4 z-50 animate-slide-down">
+    <div className="fixed left-4 right-4 z-50 animate-slide-down top-safe mt-4"> 
       <div className="max-w-lg mx-auto bg-card/95 backdrop-blur-xl border border-border/50 rounded-2xl p-4 shadow-elevated">
         <div className="flex items-start gap-3">
           {currentNotification.emoji && (

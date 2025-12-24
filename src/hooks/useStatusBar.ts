@@ -13,10 +13,11 @@ interface StatusBarOptions {
 const isNative = Capacitor.isNativePlatform();
 
 export const useStatusBar = (options: StatusBarOptions = {}) => {
-  const { 
-    style = 'default', 
+  const {
+    style = 'default',
     backgroundColor = '#FFFFFF',
-    overlay = false 
+    // Default to overlay=true so the app is truly fullscreen; safe areas are handled via CSS env(safe-area-inset-*)
+    overlay = true,
   } = options;
 
   useEffect(() => {
@@ -25,29 +26,33 @@ export const useStatusBar = (options: StatusBarOptions = {}) => {
     const configureStatusBar = async () => {
       try {
         // Set status bar style (light = dark icons, dark = light icons)
-        const statusBarStyle = style === 'light' 
-          ? Style.Light  // Dark text/icons for light backgrounds
-          : style === 'dark' 
-            ? Style.Dark  // Light text/icons for dark backgrounds
-            : Style.Default;
-        
+        const statusBarStyle =
+          style === 'light'
+            ? Style.Light // Dark text/icons for light backgrounds
+            : style === 'dark'
+              ? Style.Dark // Light text/icons for dark backgrounds
+              : Style.Default;
+
         await StatusBar.setStyle({ style: statusBarStyle });
-        
+
         // Set background color (iOS ignores this but Android uses it)
         await StatusBar.setBackgroundColor({ color: backgroundColor });
-        
+
         // Set overlay mode
-        if (overlay) {
-          await StatusBar.setOverlaysWebView({ overlay: true });
-        } else {
-          await StatusBar.setOverlaysWebView({ overlay: false });
-        }
+        await StatusBar.setOverlaysWebView({ overlay });
       } catch (error) {
         console.warn('StatusBar configuration failed:', error);
       }
     };
 
     configureStatusBar();
+
+    // IMPORTANT: Prevent overlay mode from persisting across screens.
+    // We default overlay=true (fullscreen) and rely on CSS safe-area padding.
+    // Always reset overlay back to true on unmount for consistent behavior.
+    return () => {
+      StatusBar.setOverlaysWebView({ overlay: true }).catch(() => {});
+    };
   }, [style, backgroundColor, overlay]);
 };
 

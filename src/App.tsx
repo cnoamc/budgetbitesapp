@@ -77,23 +77,18 @@ const AnimatedRoutes = () => {
 };
 
 const App = () => {
-  const [showSplash, setShowSplash] = useState(true);
-  const [hasShownSplash, setHasShownSplash] = useState(false);
-
-  useEffect(() => {
-    // Check if splash was already shown this session
-    const splashShown = sessionStorage.getItem('bb_splash_shown');
-    if (splashShown) {
-      setShowSplash(false);
-      setHasShownSplash(true);
-    }
-  }, []);
-
-  const handleSplashComplete = () => {
-    sessionStorage.setItem('bb_splash_shown', 'true');
-    setShowSplash(false);
-    setHasShownSplash(true);
-  };
+  // NOTE: React splash screen disabled - using native iOS splash instead
+  // Keep this code structure for potential future use:
+  // const [showSplash, setShowSplash] = useState(true);
+  // const [hasShownSplash, setHasShownSplash] = useState(false);
+  // useEffect(() => {
+  //   const splashShown = sessionStorage.getItem('bb_splash_shown');
+  //   if (splashShown) { setShowSplash(false); setHasShownSplash(true); }
+  // }, []);
+  // const handleSplashComplete = () => {
+  //   sessionStorage.setItem('bb_splash_shown', 'true');
+  //   setShowSplash(false); setHasShownSplash(true);
+  // };
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -103,28 +98,17 @@ const App = () => {
             <AppProvider>
               <NotificationProvider>
                 <TooltipProvider>
-                  <div 
-                    className="w-full h-full flex flex-col overflow-hidden bg-background"
-                    style={{
-                      position: 'absolute',
-                      top: 0,
-                      left: 0,
-                      right: 0,
-                      bottom: 0,
-                      paddingTop: 'env(safe-area-inset-top)',
-                      paddingBottom: 'env(safe-area-inset-bottom)',
-                      paddingLeft: 'env(safe-area-inset-left)',
-                      paddingRight: 'env(safe-area-inset-right)',
-                    }}
-                  >
+                  <div className="w-full h-full min-h-0 flex flex-col overflow-hidden bg-background animate-fade-in">
                     <Toaster />
                     <Sonner />
                     <NotificationBanner />
+                    {/* React splash disabled - using native iOS splash
                     {showSplash && !hasShownSplash && (
                       <SplashScreen onComplete={handleSplashComplete} minDuration={2000} />
                     )}
+                    */}
                     <BrowserRouter>
-                      <div className="flex-1 overflow-hidden relative">
+                      <div className="flex-1 min-h-0 overflow-hidden relative flex flex-col">
                         <AnimatedRoutes />
                       </div>
                     </BrowserRouter>

@@ -81,16 +81,17 @@ const LoadingSavings: React.FC = () => {
   }, [phase, monthlySavings, yearlySavings]);
 
   return (
-    <div className="h-[100dvh] relative overflow-hidden flex flex-col" dir="rtl">
+    <div className="h-full min-h-0 relative overflow-hidden flex flex-col" dir="rtl">
       {/* Gradient background */}
       <div className="absolute inset-0 bg-gradient-to-br from-blue-500 via-blue-600 to-cyan-500" />
+      <div aria-hidden="true" className="absolute inset-0 bg-white/5 backdrop-blur-[2px] pointer-events-none" />
       
       {/* Decorative circles */}
       <div className="absolute -top-20 -right-20 w-64 h-64 bg-white/10 rounded-full blur-3xl" />
       <div className="absolute -bottom-32 -left-32 w-96 h-96 bg-cyan-400/20 rounded-full blur-3xl" />
       <div className="absolute top-1/3 right-1/4 w-32 h-32 bg-blue-300/20 rounded-full blur-2xl" />
 
-      <div className="relative z-10 flex-1 flex flex-col items-center justify-center px-6 w-full">
+      <div className="relative z-10 flex-1 min-h-0 overflow-y-auto scroll-touch flex flex-col items-center justify-center px-6 pt-safe-offset-6 pb-safe-offset-6 w-full">
         <div className="w-full max-w-sm">
           {/* App icon with pulse animation */}
           <div className="flex justify-center mb-8">

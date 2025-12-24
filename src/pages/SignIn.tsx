@@ -1,21 +1,42 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Mail, Lock, Eye, EyeOff, ArrowRight, Phone } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, ArrowRight, Phone, Fingerprint, ScanFace } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useAuth } from '@/contexts/AuthContext';
 import { useApp } from '@/contexts/AppContext';
 import { useStatusBar } from '@/hooks/useStatusBar';
+import { useBiometricAuth } from '@/hooks/useBiometricAuth';
 import { toast } from 'sonner';
 import { z } from 'zod';
 import confetti from 'canvas-confetti';
 import appIcon from '@/assets/app-icon.png';
 
 const emailSchema = z.string().email('כתובת אימייל לא תקינה');
-const passwordSchema = z.string().min(6, 'הסיסמה חייבת להכיל לפחות 6 תווים');
+const passwordSchema = z.string()
+  .min(8, 'הסיסמה חייבת להכיל לפחות 8 תווים')
+  .regex(/[A-Z]/, 'הסיסמה חייבת להכיל לפחות אות גדולה אחת')
+  .regex(/[a-z]/, 'הסיסמה חייבת להכיל לפחות אות קטנה אחת')
+  .regex(/[0-9]/, 'הסיסמה חייבת להכיל לפחות ספרה אחת');
 const phoneSchema = z.string().regex(/^\+?[0-9]{10,15}$/, 'מספר טלפון לא תקין');
 
-type AuthView = 'options' | 'email' | 'phone' | 'otp';
+type AuthView = 'options' | 'email' | 'phone' | 'otp' | 'forgot' | 'reset';
+
+// Password strength calculation
+const getPasswordStrength = (password: string): { level: 0 | 1 | 2 | 3; label: string; color: string } => {
+  if (!password) return { level: 0, label: '', color: '' };
+  
+  let score = 0;
+  if (password.length >= 8) score++;
+  if (/[A-Z]/.test(password)) score++;
+  if (/[a-z]/.test(password)) score++;
+  if (/[0-9]/.test(password)) score++;
+  if (/[^A-Za-z0-9]/.test(password)) score++;
+  
+  if (score <= 2) return { level: 1, label: 'חלשה', color: 'bg-red-500' };
+  if (score <= 3) return { level: 2, label: 'בינונית', color: 'bg-yellow-500' };
+  return { level: 3, label: 'חזקה', color: 'bg-green-500' };
+};
 
 const triggerConfetti = () => {
   confetti({
@@ -28,8 +49,9 @@ const triggerConfetti = () => {
 
 const SignIn: React.FC = () => {
   const navigate = useNavigate();
-  const { user, signIn, signUp, signInWithGoogle, signInWithPhone, verifyOtp, loading } = useAuth();
+  const { user, signIn, signUp, signInWithGoogle, signInWithApple, signInWithPhone, verifyOtp, resetPassword, updatePassword, loading } = useAuth();
   const { updateProfile } = useApp();
+  const biometric = useBiometricAuth();
   
   // Dark status bar for blue gradient background (light icons)
   useStatusBar({ style: 'dark', backgroundColor: '#3B82F6', overlay: true });
@@ -45,6 +67,52 @@ const SignIn: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<{ email?: string; password?: string; phone?: string; otp?: string }>({});
   const [resendTimer, setResendTimer] = useState(0);
+  const [resetEmailSent, setResetEmailSent] = useState(false);
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [showBiometricPrompt, setShowBiometricPrompt] = useState(false);
+  const [rememberMe, setRememberMe] = useState(() => {
+    return localStorage.getItem('bb_remember_me') === 'true';
+  });
+
+  // Load saved email if remember me was enabled
+  useEffect(() => {
+    const savedEmail = localStorage.getItem('bb_saved_email');
+    if (savedEmail && rememberMe) {
+      setEmail(savedEmail);
+      setIsLogin(true);
+    }
+  }, []);
+
+  // Check for password reset mode from URL
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('reset') === 'true') {
+      setView('reset');
+    }
+  }, []);
+
+  // Auto-trigger biometric auth for returning users
+  useEffect(() => {
+    const attemptBiometricLogin = async () => {
+      if (!biometric.isChecking && biometric.isAvailable && biometric.isEnabled && !user) {
+        const savedEmail = biometric.getSavedEmail();
+        if (savedEmail) {
+          const success = await biometric.authenticate();
+          if (success) {
+            // Show that we're logging them in
+            setEmail(savedEmail);
+            setView('email');
+            setIsLogin(true);
+            // They need to enter password - biometric just confirms identity
+            toast.info(`שלום! הזן את הסיסמה עבור ${savedEmail}`);
+          }
+        }
+      }
+    };
+    
+    attemptBiometricLogin();
+  }, [biometric.isChecking, biometric.isAvailable, biometric.isEnabled, user]);
 
   const getOnboardingData = () => {
     const stored = localStorage.getItem('bb_onboarding_data');
@@ -113,6 +181,27 @@ const SignIn: React.FC = () => {
     return true;
   };
 
+  const handleBiometricAuth = async () => {
+    const savedEmail = biometric.getSavedEmail();
+    if (!savedEmail) {
+      toast.error('לא נמצא חשבון מקושר');
+      return;
+    }
+    
+    setIsLoading(true);
+    try {
+      const success = await biometric.authenticate();
+      if (success) {
+        setEmail(savedEmail);
+        setView('email');
+        setIsLogin(true);
+        toast.info(`הזן את הסיסמה עבור ${savedEmail}`);
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handleEmailSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validateEmailForm()) return;
@@ -132,6 +221,11 @@ const SignIn: React.FC = () => {
           await syncOnboardingData();
           triggerConfetti();
           toast.success('נרשמת בהצלחה! 🎉');
+          // Offer to enable biometric for new signups
+          if (biometric.isAvailable && !biometric.isEnabled) {
+            setShowBiometricPrompt(true);
+            biometric.enableBiometric(email);
+          }
         }
       } else {
         const { error } = await signIn(email, password);
@@ -140,6 +234,21 @@ const SignIn: React.FC = () => {
             toast.error('אימייל או סיסמה שגויים');
           } else {
             toast.error('שגיאה בהתחברות, נסה שוב');
+          }
+        } else {
+          // Save email if remember me is checked
+          if (rememberMe) {
+            localStorage.setItem('bb_remember_me', 'true');
+            localStorage.setItem('bb_saved_email', email);
+          } else {
+            localStorage.removeItem('bb_remember_me');
+            localStorage.removeItem('bb_saved_email');
+          }
+          
+          // Offer to enable biometric for returning users who don't have it enabled
+          if (biometric.isAvailable && !biometric.isEnabled) {
+            setShowBiometricPrompt(true);
+            biometric.enableBiometric(email);
           }
         }
       }
@@ -154,6 +263,18 @@ const SignIn: React.FC = () => {
       const { error } = await signInWithGoogle();
       if (error) {
         toast.error('שגיאה בהתחברות עם Google');
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleAppleLogin = async () => {
+    setIsLoading(true);
+    try {
+      const { error } = await signInWithApple();
+      if (error) {
+        toast.error('שגיאה בהתחברות עם Apple');
       }
     } finally {
       setIsLoading(false);
@@ -219,9 +340,62 @@ const SignIn: React.FC = () => {
     }
   };
 
+  const handleForgotPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    const emailResult = emailSchema.safeParse(email);
+    if (!emailResult.success) {
+      setErrors({ email: emailResult.error.errors[0].message });
+      return;
+    }
+    
+    setIsLoading(true);
+    try {
+      const { error } = await resetPassword(email);
+      if (error) {
+        toast.error('שגיאה בשליחת המייל. נסה שוב.');
+      } else {
+        setResetEmailSent(true);
+        toast.success('נשלח אליך מייל לאיפוס הסיסמה');
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleUpdatePassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    const passwordResult = passwordSchema.safeParse(newPassword);
+    if (!passwordResult.success) {
+      setErrors({ password: passwordResult.error.errors[0].message });
+      return;
+    }
+    
+    if (newPassword !== confirmPassword) {
+      setErrors({ password: 'הסיסמאות לא תואמות' });
+      return;
+    }
+    
+    setIsLoading(true);
+    try {
+      const { error } = await updatePassword(newPassword);
+      if (error) {
+        toast.error('שגיאה בעדכון הסיסמה. נסה שוב.');
+      } else {
+        toast.success('הסיסמה עודכנה בהצלחה! 🎉');
+        // Clear URL params and redirect
+        window.history.replaceState({}, '', '/signin');
+        navigate('/home');
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   if (loading) {
     return (
-      <div className="h-[100dvh] flex items-center justify-center bg-gradient-to-br from-blue-500 via-blue-600 to-cyan-500">
+      <div className="h-full flex items-center justify-center bg-gradient-to-br from-blue-500 via-blue-600 to-cyan-500">
         <div className="w-20 h-20 rounded-3xl overflow-hidden shadow-2xl animate-pulse">
           <img src={appIcon} alt="BudgetBites" className="w-full h-full object-cover" />
         </div>
@@ -232,13 +406,18 @@ const SignIn: React.FC = () => {
   const getBackAction = () => {
     if (view === 'otp') return () => setView('phone');
     if (view === 'email' || view === 'phone') return () => setView('options');
+    if (view === 'forgot') return () => { setView('email'); setIsLogin(true); setResetEmailSent(false); };
+    if (view === 'reset') return () => navigate('/');
     return () => navigate('/');
   };
 
+  const passwordStrength = getPasswordStrength(password);
+
   return (
-    <div className="h-[100dvh] relative overflow-hidden flex flex-col" dir="rtl">
+    <div className="h-full min-h-0 relative overflow-hidden flex flex-col" dir="rtl">
       {/* Gradient background */}
       <div className="absolute inset-0 bg-gradient-to-br from-blue-500 via-blue-600 to-cyan-500" />
+      <div aria-hidden="true" className="absolute inset-0 bg-white/5 backdrop-blur-[2px] pointer-events-none" />
       
       {/* Decorative circles */}
       <div className="absolute -top-20 -right-20 w-64 h-64 bg-white/10 rounded-full blur-3xl" />
@@ -246,40 +425,66 @@ const SignIn: React.FC = () => {
       <div className="absolute top-1/3 right-1/4 w-32 h-32 bg-blue-300/20 rounded-full blur-2xl" />
 
       {/* Content */}
-      <div className="relative z-10 flex-1 flex flex-col px-6 pt-safe">
+      <div className="relative z-10 flex-1 min-h-0 overflow-y-auto scroll-touch flex flex-col px-5 sm:px-6 pt-safe-offset-4 pb-safe-offset-4 sm:pb-safe-offset-6">
         {/* Back button */}
-        <div className="pt-4">
+        <div className="pt-1 sm:pt-2 shrink-0">
           <button 
             onClick={getBackAction()} 
             className="p-2 -mr-2 rounded-full hover:bg-white/10 transition-colors"
           >
-            <ArrowRight className="w-6 h-6 text-white" />
+            <ArrowRight className="w-5 sm:w-6 h-5 sm:h-6 text-white" />
           </button>
         </div>
 
-        {/* Header with logo */}
-        <div className="text-center mt-8 mb-8 animate-fade-in">
-          <div className="w-24 h-24 mx-auto mb-4 rounded-3xl overflow-hidden shadow-2xl ring-4 ring-white/20">
+        {/* Header with logo - compact for small screens */}
+        <div className="text-center mt-4 sm:mt-8 mb-5 sm:mb-8 animate-fade-in shrink-0">
+          <div className="w-16 sm:w-24 h-16 sm:h-24 mx-auto mb-3 sm:mb-4 rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl ring-2 sm:ring-4 ring-white/20">
             <img src={appIcon} alt="BudgetBites" className="w-full h-full object-cover" />
           </div>
-          <h1 className="text-3xl font-bold text-white mb-2">
-            {view === 'options' ? 'ברוכים הבאים!' : view === 'otp' ? 'הזן קוד אימות' : view === 'phone' ? 'התחברות עם טלפון' : isLogin ? 'התחברות' : 'יצירת חשבון'}
+          <h1 className="text-2xl sm:text-3xl font-bold text-white mb-1 sm:mb-2">
+            {view === 'options' ? 'ברוכים הבאים!' : 
+             view === 'otp' ? 'הזן קוד אימות' : 
+             view === 'phone' ? 'התחברות עם טלפון' : 
+             view === 'forgot' ? 'שכחת סיסמה?' :
+             view === 'reset' ? 'סיסמה חדשה' :
+             isLogin ? 'התחברות' : 'יצירת חשבון'}
           </h1>
-          <p className="text-white/80 text-base">
-            {view === 'options' ? 'בחר איך להתחבר' : view === 'otp' ? `שלחנו קוד ל-${phone}` : view === 'phone' ? 'נשלח לך קוד אימות ב-SMS' : 'הכנס את הפרטים שלך'}
+          <p className="text-white/80 text-sm sm:text-base">
+            {view === 'options' ? 'בחר איך להתחבר' : 
+             view === 'otp' ? `שלחנו קוד ל-${phone}` : 
+             view === 'phone' ? 'נשלח לך קוד אימות ב-SMS' : 
+             view === 'forgot' ? 'נשלח לך קישור לאיפוס במייל' :
+             view === 'reset' ? 'הזן את הסיסמה החדשה שלך' :
+             'הכנס את הפרטים שלך'}
           </p>
         </div>
 
         {/* Main content area */}
-        <div className="flex-1 flex flex-col max-w-sm mx-auto w-full">
+        <div className="flex-1 min-h-0 flex flex-col max-w-sm mx-auto w-full">
           {view === 'options' && (
-            <div className="space-y-3 animate-fade-in">
+            <div className="space-y-2.5 sm:space-y-3 animate-fade-in">
+              {/* Biometric option - only show if available and enabled */}
+              {biometric.isAvailable && biometric.isEnabled && (
+                <button
+                  onClick={handleBiometricAuth}
+                  disabled={isLoading}
+                  className="w-full h-12 sm:h-14 rounded-xl sm:rounded-2xl text-sm sm:text-base font-semibold bg-gradient-to-r from-blue-600 to-cyan-500 text-white flex items-center justify-center gap-2.5 sm:gap-3 shadow-lg hover:shadow-xl transition-all active:scale-[0.98] disabled:opacity-50"
+                >
+                  {biometric.biometryType === 'faceId' || biometric.biometryType === 'face' ? (
+                    <ScanFace className="w-4 sm:w-5 h-4 sm:h-5" />
+                  ) : (
+                    <Fingerprint className="w-4 sm:w-5 h-4 sm:h-5" />
+                  )}
+                  התחבר עם {biometric.getBiometryLabel()}
+                </button>
+              )}
+
               {/* Phone option */}
               <button
                 onClick={() => setView('phone')}
-                className="w-full h-14 rounded-2xl text-base font-semibold bg-white text-gray-900 flex items-center justify-center gap-3 shadow-lg hover:shadow-xl transition-all active:scale-[0.98]"
+                className="w-full h-12 sm:h-14 rounded-xl sm:rounded-2xl text-sm sm:text-base font-semibold bg-white text-gray-900 flex items-center justify-center gap-2.5 sm:gap-3 shadow-lg hover:shadow-xl transition-all active:scale-[0.98]"
               >
-                <Phone className="w-5 h-5 text-blue-600" />
+                <Phone className="w-4 sm:w-5 h-4 sm:h-5 text-blue-600" />
                 המשך עם מספר טלפון
               </button>
 
@@ -287,9 +492,9 @@ const SignIn: React.FC = () => {
               <button
                 onClick={handleGoogleLogin}
                 disabled={isLoading}
-                className="w-full h-14 rounded-2xl text-base font-semibold bg-white text-gray-900 flex items-center justify-center gap-3 shadow-lg hover:shadow-xl transition-all active:scale-[0.98] disabled:opacity-50"
+                className="w-full h-12 sm:h-14 rounded-xl sm:rounded-2xl text-sm sm:text-base font-semibold bg-white text-gray-900 flex items-center justify-center gap-2.5 sm:gap-3 shadow-lg hover:shadow-xl transition-all active:scale-[0.98] disabled:opacity-50"
               >
-                <svg className="w-5 h-5" viewBox="0 0 24 24">
+                <svg className="w-4 sm:w-5 h-4 sm:h-5" viewBox="0 0 24 24">
                   <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
                   <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
                   <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
@@ -298,211 +503,343 @@ const SignIn: React.FC = () => {
                 המשך עם Google
               </button>
 
-              {/* Divider */}
-              <div className="flex items-center gap-3 py-3">
-                <div className="flex-1 h-px bg-white/30" />
-                <span className="text-sm text-white/70 font-medium">או</span>
-                <div className="flex-1 h-px bg-white/30" />
-              </div>
+              {/* Apple option */}
+              <button
+                onClick={handleAppleLogin}
+                disabled={isLoading}
+                className="w-full h-12 sm:h-14 rounded-xl sm:rounded-2xl text-sm sm:text-base font-semibold bg-black text-white flex items-center justify-center gap-2.5 sm:gap-3 shadow-lg hover:shadow-xl transition-all active:scale-[0.98] disabled:opacity-50"
+              >
+                <svg className="w-4 sm:w-5 h-4 sm:h-5" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09l.01-.01zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/>
+                </svg>
+                המשך עם Apple
+              </button>
 
               {/* Email option */}
               <button
-                onClick={() => setView('email')}
-                className="w-full h-14 rounded-2xl text-base font-semibold bg-white/20 backdrop-blur-sm text-white border-2 border-white/30 flex items-center justify-center gap-3 hover:bg-white/30 transition-all active:scale-[0.98]"
+                onClick={() => { setView('email'); setIsLogin(false); }}
+                className="w-full h-12 sm:h-14 rounded-xl sm:rounded-2xl text-sm sm:text-base font-semibold bg-white/10 text-white border-2 border-white/30 flex items-center justify-center gap-2.5 sm:gap-3 hover:bg-white/20 transition-all active:scale-[0.98]"
               >
-                <Mail className="w-5 h-5" />
+                <Mail className="w-4 sm:w-5 h-4 sm:h-5" />
                 המשך עם אימייל
               </button>
+
+              {/* Login link */}
+              <div className="text-center pt-3 sm:pt-4">
+                <button 
+                  onClick={() => { setView('email'); setIsLogin(true); }}
+                  className="text-white/80 text-xs sm:text-sm hover:text-white transition-colors"
+                >
+                  כבר יש לך חשבון? <span className="font-semibold text-white underline">התחבר</span>
+                </button>
+              </div>
             </div>
+          )}
+
+          {view === 'email' && (
+            <form onSubmit={handleEmailSubmit} className="space-y-4 animate-fade-in">
+              <div className="space-y-2">
+                <div className="relative">
+                  <Mail className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/50" />
+                  <Input
+                    type="email"
+                    placeholder="אימייל"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="h-14 pr-12 rounded-2xl bg-white/10 border-white/30 text-white placeholder:text-white/50 focus:border-white focus:ring-white/30"
+                    dir="ltr"
+                  />
+                </div>
+                {errors.email && <p className="text-red-200 text-sm">{errors.email}</p>}
+              </div>
+
+              <div className="space-y-2">
+                <div className="relative">
+                  <Lock className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/50" />
+                  <Input
+                    type={showPassword ? 'text' : 'password'}
+                    placeholder="סיסמה"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="h-14 pr-12 pl-12 rounded-2xl bg-white/10 border-white/30 text-white placeholder:text-white/50 focus:border-white focus:ring-white/30"
+                    dir="ltr"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute left-4 top-1/2 -translate-y-1/2 text-white/50 hover:text-white"
+                  >
+                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                  </button>
+                </div>
+                {errors.password && <p className="text-red-200 text-sm">{errors.password}</p>}
+                
+                {/* Password strength indicator - only show for signup */}
+                {!isLogin && password && (
+                  <div className="space-y-1">
+                    <div className="flex gap-1">
+                      {[1, 2, 3].map((level) => (
+                        <div 
+                          key={level}
+                          className={`h-1 flex-1 rounded-full transition-colors ${
+                            passwordStrength.level >= level ? passwordStrength.color : 'bg-white/20'
+                          }`}
+                        />
+                      ))}
+                    </div>
+                    <p className="text-xs text-white/70">
+                      חוזק סיסמה: <span className="font-medium">{passwordStrength.label}</span>
+                    </p>
+                  </div>
+                )}
+              </div>
+
+              {/* Remember me & forgot password */}
+              <div className="flex items-center justify-between">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={rememberMe}
+                    onChange={(e) => setRememberMe(e.target.checked)}
+                    className="w-4 h-4 rounded border-white/30 bg-white/10 text-blue-500 focus:ring-white/30"
+                  />
+                  <span className="text-sm text-white/80">זכור אותי</span>
+                </label>
+                {isLogin && (
+                  <button
+                    type="button"
+                    onClick={() => setView('forgot')}
+                    className="text-sm text-white/80 hover:text-white underline"
+                  >
+                    שכחת סיסמה?
+                  </button>
+                )}
+              </div>
+
+              <Button
+                type="submit"
+                disabled={isLoading}
+                className="w-full h-14 rounded-2xl text-base font-bold bg-white text-blue-600 hover:bg-white/90 shadow-xl"
+              >
+                {isLoading ? 'מעבד...' : isLogin ? 'התחבר' : 'הרשמה'}
+              </Button>
+
+              <div className="text-center">
+                <button
+                  type="button"
+                  onClick={() => setIsLogin(!isLogin)}
+                  className="text-white/80 text-sm hover:text-white transition-colors"
+                >
+                  {isLogin ? (
+                    <>אין לך חשבון? <span className="font-semibold text-white underline">הירשם</span></>
+                  ) : (
+                    <>כבר יש לך חשבון? <span className="font-semibold text-white underline">התחבר</span></>
+                  )}
+                </button>
+              </div>
+            </form>
           )}
 
           {view === 'phone' && (
             <form onSubmit={handlePhoneSubmit} className="space-y-4 animate-fade-in">
-              <div className="bg-white rounded-3xl p-6 shadow-2xl">
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-700">מספר טלפון</label>
-                    <div className="relative">
-                      <Phone className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                      <Input
-                        type="tel"
-                        placeholder="+972 50 123 4567"
-                        value={phone}
-                        onChange={(e) => {
-                          setPhone(e.target.value);
-                          setErrors(prev => ({ ...prev, phone: undefined }));
-                        }}
-                        className="h-14 pr-12 rounded-xl border-gray-200 bg-gray-50 text-base text-gray-900 placeholder:text-gray-400"
-                        dir="ltr"
-                      />
-                    </div>
-                    {errors.phone && <p className="text-sm text-red-500">{errors.phone}</p>}
-                  </div>
-                  
-                  <Button
-                    type="submit"
-                    disabled={isLoading}
-                    className="w-full h-14 rounded-xl text-base font-semibold bg-blue-600 hover:bg-blue-700 text-white transition-all"
-                  >
-                    {isLoading ? (
-                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                    ) : (
-                      'שלח קוד אימות'
-                    )}
-                  </Button>
+              <div className="space-y-2">
+                <div className="relative">
+                  <Phone className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/50" />
+                  <Input
+                    type="tel"
+                    placeholder="+972 50 123 4567"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    className="h-14 pr-12 rounded-2xl bg-white/10 border-white/30 text-white placeholder:text-white/50 focus:border-white focus:ring-white/30"
+                    dir="ltr"
+                  />
                 </div>
+                {errors.phone && <p className="text-red-200 text-sm">{errors.phone}</p>}
               </div>
+
+              <Button
+                type="submit"
+                disabled={isLoading}
+                className="w-full h-14 rounded-2xl text-base font-bold bg-white text-blue-600 hover:bg-white/90 shadow-xl"
+              >
+                {isLoading ? 'שולח...' : 'שלח קוד אימות'}
+              </Button>
             </form>
           )}
 
           {view === 'otp' && (
             <form onSubmit={handleOtpSubmit} className="space-y-4 animate-fade-in">
-              <div className="bg-white rounded-3xl p-6 shadow-2xl">
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-700 text-center block">הזן את הקוד שקיבלת</label>
-                    <Input
-                      type="text"
-                      inputMode="numeric"
-                      placeholder="000000"
-                      value={otp}
-                      maxLength={6}
-                      onChange={(e) => {
-                        const value = e.target.value.replace(/\D/g, '');
-                        setOtp(value);
-                        setErrors(prev => ({ ...prev, otp: undefined }));
-                      }}
-                      className="h-16 rounded-xl border-gray-200 bg-gray-50 text-2xl text-center tracking-[0.5em] font-mono text-gray-900"
-                      dir="ltr"
-                    />
-                    {errors.otp && <p className="text-sm text-red-500 text-center">{errors.otp}</p>}
-                  </div>
-                  
-                  <Button
-                    type="submit"
-                    disabled={isLoading || otp.length !== 6}
-                    className="w-full h-14 rounded-xl text-base font-semibold bg-blue-600 hover:bg-blue-700 text-white transition-all disabled:opacity-50"
-                  >
-                    {isLoading ? (
-                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                    ) : (
-                      'אימות'
-                    )}
-                  </Button>
+              <div className="space-y-2">
+                <Input
+                  type="text"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                  maxLength={6}
+                  placeholder="000000"
+                  value={otp}
+                  onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))}
+                  className="h-14 rounded-2xl bg-white/10 border-white/30 text-white placeholder:text-white/50 focus:border-white focus:ring-white/30 text-center text-2xl tracking-[0.5em]"
+                  dir="ltr"
+                />
+                {errors.otp && <p className="text-red-200 text-sm text-center">{errors.otp}</p>}
+              </div>
 
-                  <div className="text-center">
-                    <button
-                      type="button"
-                      onClick={handleResendOtp}
-                      disabled={resendTimer > 0}
-                      className="text-sm text-gray-500 hover:text-gray-700 transition-colors disabled:opacity-50"
-                    >
-                      {resendTimer > 0 ? `שלח שוב בעוד ${resendTimer} שניות` : 'שלח קוד חדש'}
-                    </button>
-                  </div>
-                </div>
+              <Button
+                type="submit"
+                disabled={isLoading || otp.length !== 6}
+                className="w-full h-14 rounded-2xl text-base font-bold bg-white text-blue-600 hover:bg-white/90 shadow-xl disabled:opacity-50"
+              >
+                {isLoading ? 'מאמת...' : 'אימות'}
+              </Button>
+
+              <div className="text-center">
+                <button
+                  type="button"
+                  onClick={handleResendOtp}
+                  disabled={resendTimer > 0}
+                  className="text-white/80 text-sm hover:text-white transition-colors disabled:opacity-50"
+                >
+                  {resendTimer > 0 ? `שלח שוב בעוד ${resendTimer} שניות` : 'לא קיבלת קוד? שלח שוב'}
+                </button>
               </div>
             </form>
           )}
 
-          {view === 'email' && (
-            <form onSubmit={handleEmailSubmit} className="space-y-4 animate-fade-in">
-              <div className="bg-white rounded-3xl p-6 shadow-2xl">
-                {/* Toggle login/signup */}
-                <div className="flex bg-gray-100 rounded-xl p-1 mb-6">
-                  <button
-                    type="button"
-                    onClick={() => setIsLogin(false)}
-                    className={`flex-1 py-2.5 rounded-lg text-sm font-semibold transition-all ${
-                      !isLogin ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500'
-                    }`}
+          {view === 'forgot' && (
+            <div className="animate-fade-in">
+              {resetEmailSent ? (
+                <div className="text-center space-y-4">
+                  <div className="w-16 h-16 mx-auto bg-white/20 rounded-full flex items-center justify-center">
+                    <Mail className="w-8 h-8 text-white" />
+                  </div>
+                  <h3 className="text-xl font-semibold text-white">בדוק את המייל</h3>
+                  <p className="text-white/80">
+                    שלחנו קישור לאיפוס הסיסמה ל-<br />
+                    <span className="font-semibold">{email}</span>
+                  </p>
+                  <Button
+                    onClick={() => { setView('email'); setIsLogin(true); setResetEmailSent(false); }}
+                    className="w-full h-14 rounded-2xl text-base font-bold bg-white text-blue-600 hover:bg-white/90 shadow-xl"
                   >
-                    הרשמה
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setIsLogin(true)}
-                    className={`flex-1 py-2.5 rounded-lg text-sm font-semibold transition-all ${
-                      isLogin ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500'
-                    }`}
-                  >
-                    התחברות
-                  </button>
+                    חזור להתחברות
+                  </Button>
                 </div>
-
-                <div className="space-y-4">
+              ) : (
+                <form onSubmit={handleForgotPassword} className="space-y-4">
                   <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-700">אימייל</label>
                     <div className="relative">
-                      <Mail className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                      <Mail className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/50" />
                       <Input
                         type="email"
-                        placeholder="your@email.com"
+                        placeholder="אימייל"
                         value={email}
-                        onChange={(e) => {
-                          setEmail(e.target.value);
-                          setErrors(prev => ({ ...prev, email: undefined }));
-                        }}
-                        className="h-14 pr-12 rounded-xl border-gray-200 bg-gray-50 text-base text-gray-900 placeholder:text-gray-400"
+                        onChange={(e) => setEmail(e.target.value)}
+                        className="h-14 pr-12 rounded-2xl bg-white/10 border-white/30 text-white placeholder:text-white/50 focus:border-white focus:ring-white/30"
                         dir="ltr"
                       />
                     </div>
-                    {errors.email && <p className="text-sm text-red-500">{errors.email}</p>}
+                    {errors.email && <p className="text-red-200 text-sm">{errors.email}</p>}
                   </div>
 
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-700">סיסמה</label>
-                    <div className="relative">
-                      <Lock className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                      <Input
-                        type={showPassword ? 'text' : 'password'}
-                        placeholder="••••••"
-                        value={password}
-                        onChange={(e) => {
-                          setPassword(e.target.value);
-                          setErrors(prev => ({ ...prev, password: undefined }));
-                        }}
-                        className="h-14 pr-12 pl-12 rounded-xl border-gray-200 bg-gray-50 text-base text-gray-900 placeholder:text-gray-400"
-                        dir="ltr"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowPassword(!showPassword)}
-                        className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                      >
-                        {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                      </button>
-                    </div>
-                    {errors.password && <p className="text-sm text-red-500">{errors.password}</p>}
-                  </div>
-                  
                   <Button
                     type="submit"
                     disabled={isLoading}
-                    className="w-full h-14 rounded-xl text-base font-semibold bg-blue-600 hover:bg-blue-700 text-white transition-all"
+                    className="w-full h-14 rounded-2xl text-base font-bold bg-white text-blue-600 hover:bg-white/90 shadow-xl"
                   >
-                    {isLoading ? (
-                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                    ) : (
-                      isLogin ? 'התחברות' : 'הרשמה'
-                    )}
+                    {isLoading ? 'שולח...' : 'שלח קישור לאיפוס'}
                   </Button>
+                </form>
+              )}
+            </div>
+          )}
+
+          {view === 'reset' && (
+            <form onSubmit={handleUpdatePassword} className="space-y-4 animate-fade-in">
+              <div className="space-y-2">
+                <div className="relative">
+                  <Lock className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/50" />
+                  <Input
+                    type={showPassword ? 'text' : 'password'}
+                    placeholder="סיסמה חדשה"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    className="h-14 pr-12 pl-12 rounded-2xl bg-white/10 border-white/30 text-white placeholder:text-white/50 focus:border-white focus:ring-white/30"
+                    dir="ltr"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute left-4 top-1/2 -translate-y-1/2 text-white/50 hover:text-white"
+                  >
+                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                  </button>
                 </div>
               </div>
+
+              <div className="space-y-2">
+                <div className="relative">
+                  <Lock className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/50" />
+                  <Input
+                    type={showPassword ? 'text' : 'password'}
+                    placeholder="אימות סיסמה"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    className="h-14 pr-12 rounded-2xl bg-white/10 border-white/30 text-white placeholder:text-white/50 focus:border-white focus:ring-white/30"
+                    dir="ltr"
+                  />
+                </div>
+                {errors.password && <p className="text-red-200 text-sm">{errors.password}</p>}
+              </div>
+
+              <Button
+                type="submit"
+                disabled={isLoading}
+                className="w-full h-14 rounded-2xl text-base font-bold bg-white text-blue-600 hover:bg-white/90 shadow-xl"
+              >
+                {isLoading ? 'מעדכן...' : 'עדכן סיסמה'}
+              </Button>
             </form>
           )}
         </div>
-
-        {/* Footer */}
-        <div className="pb-safe-offset-4 pt-4 text-center">
-          <p className="text-white/60 text-xs">
-            בהמשך ההרשמה אתה מסכים ל
-            <button onClick={() => navigate('/terms')} className="text-white/80 underline mx-1">תנאי השימוש</button>
-            ול
-            <button onClick={() => navigate('/privacy')} className="text-white/80 underline mx-1">מדיניות הפרטיות</button>
-          </p>
-        </div>
       </div>
+
+      {/* Biometric prompt modal */}
+      {showBiometricPrompt && (
+        <div className="absolute inset-0 bg-black/50 flex items-center justify-center p-6 z-50">
+          <div className="bg-white rounded-3xl p-6 max-w-sm w-full text-center">
+            <div className="w-16 h-16 mx-auto bg-blue-100 rounded-full flex items-center justify-center mb-4">
+              {biometric.biometryType === 'faceId' || biometric.biometryType === 'face' ? (
+                <ScanFace className="w-8 h-8 text-blue-600" />
+              ) : (
+                <Fingerprint className="w-8 h-8 text-blue-600" />
+              )}
+            </div>
+            <h3 className="text-xl font-bold text-gray-900 mb-2">
+              התחבר מהר יותר בפעם הבאה
+            </h3>
+            <p className="text-gray-600 mb-6">
+              הפעל {biometric.getBiometryLabel()} להתחברות מהירה ומאובטחת
+            </p>
+            <div className="space-y-3">
+              <Button
+                onClick={() => setShowBiometricPrompt(false)}
+                className="w-full h-12 rounded-xl"
+              >
+                מעולה!
+              </Button>
+              <button
+                onClick={() => {
+                  biometric.disableBiometric();
+                  setShowBiometricPrompt(false);
+                }}
+                className="w-full text-gray-500 text-sm"
+              >
+                אולי אחר כך
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

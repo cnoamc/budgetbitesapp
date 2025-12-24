@@ -4,6 +4,7 @@ import { ArrowRight, ArrowLeft, Check, Send } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ChatMessage } from '@/components/ChatMessage';
+import ScreenLayout from '@/components/layout/ScreenLayout';
 import { getRecipeById } from '@/lib/recipes';
 import { useApp } from '@/contexts/AppContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -40,9 +41,11 @@ export const CookingAssistant: React.FC = () => {
 
   if (!recipe) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p>המתכון לא נמצא</p>
-      </div>
+      <ScreenLayout>
+        <div className="h-full flex items-center justify-center">
+          <p>המתכון לא נמצא</p>
+        </div>
+      </ScreenLayout>
     );
   }
 
@@ -68,8 +71,6 @@ export const CookingAssistant: React.FC = () => {
       
       setChatHistory([...newChatHistory, { role: 'assistant', content: aiResponse }]);
       setMessages(prev => [...prev, { text: aiResponse, isBot: true }]);
-      
-      // Play message sound when bot responds
       soundManager.playMessageSound();
       
     } catch (error: any) {
@@ -83,7 +84,6 @@ export const CookingAssistant: React.FC = () => {
         toast.error('שגיאה בתקשורת עם העוזר');
       }
       
-      // Fallback response
       const fallbackResponses = [
         'מעולה! ממשיכים 💪',
         'נהדר! אתה מתקדם יפה! 🌟',
@@ -106,10 +106,8 @@ export const CookingAssistant: React.FC = () => {
       const newStep = currentStep + 1;
       setCurrentStep(newStep);
       
-      // Check if this is the last step
       const isLastStep = newStep >= recipe.steps.length;
       
-      // Build the AI prompt that includes the step
       const prompt = currentStep === 0 
         ? `המשתמש מוכן להתחיל. הנה השלב הראשון: "${stepInstruction}". תן הסבר קצר ועידוד.`
         : isLastStep
@@ -139,7 +137,6 @@ export const CookingAssistant: React.FC = () => {
         setChatHistory([...newChatHistory, { role: 'assistant', content: aiResponse }]);
         setMessages(prev => [...prev, { text: aiResponse, isBot: true }]);
         
-        // Play sound effect
         if (isLastStep) {
           soundManager.playSuccessSound();
         } else {
@@ -148,7 +145,6 @@ export const CookingAssistant: React.FC = () => {
         
       } catch (error: any) {
         console.error('AI error:', error);
-        // Fallback: show just the step instruction
         setMessages(prev => [...prev, { text: stepInstruction, isBot: true }]);
       } finally {
         setIsLoading(false);
@@ -175,9 +171,9 @@ export const CookingAssistant: React.FC = () => {
   const progress = (currentStep / recipe.steps.length) * 100;
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <ScreenLayout scrollable={false} contentClassName="flex flex-col">
       {/* Header */}
-      <div className="bg-card border-b border-border/50 p-4 sticky top-0 z-10">
+      <div className="bg-card border-b border-border/50 px-4 pb-4 pt-safe-offset-4 shrink-0">
         <div className="flex items-center gap-3 mb-3">
           <button
             onClick={() => navigate(-1)}
@@ -204,7 +200,7 @@ export const CookingAssistant: React.FC = () => {
       </div>
 
       {/* Chat Messages */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+      <div className="flex-1 min-h-0 overflow-y-auto scroll-touch overscroll-none p-4 space-y-4">
         {messages.map((msg, index) => (
           <ChatMessage
             key={index}
@@ -230,7 +226,7 @@ export const CookingAssistant: React.FC = () => {
       </div>
 
       {/* Input Area */}
-      <div className="p-4 border-t border-border/50 bg-card space-y-3">
+      <div className="p-4 pb-safe-offset-4 border-t border-border/50 bg-card space-y-3 shrink-0">
         {/* Question Input */}
         <form onSubmit={handleSendMessage} className="flex gap-2">
           <Input
@@ -258,7 +254,7 @@ export const CookingAssistant: React.FC = () => {
           </Button>
         )}
       </div>
-    </div>
+    </ScreenLayout>
   );
 };
 

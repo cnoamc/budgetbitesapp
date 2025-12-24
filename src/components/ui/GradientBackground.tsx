@@ -12,10 +12,18 @@ export const GradientBackground: React.FC<GradientBackgroundProps> = ({
   className = ''
 }) => {
   return (
-    <div className={`min-h-screen relative overflow-hidden ${className}`}>
+    <div className={`h-full min-h-0 relative overflow-hidden flex flex-col ${className}`}>
       {/* Base gradient */}
-      <div className={`absolute inset-0 ${variant === 'minimal' ? 'bg-background' : variant === 'fresh' ? 'gradient-bg-fresh' : 'gradient-bg-warm'}`} />
-      
+      <div
+        className={`absolute inset-0 ${
+          variant === 'minimal'
+            ? 'bg-background'
+            : variant === 'fresh'
+              ? 'gradient-bg-fresh'
+              : 'gradient-bg-warm'
+        }`}
+      />
+
       {/* Decorative blurred bubbles */}
       {variant !== 'minimal' && (
         <>
@@ -25,9 +33,9 @@ export const GradientBackground: React.FC<GradientBackgroundProps> = ({
           <div className="bubble bubble-primary w-40 h-40 bottom-20 left-20 opacity-30" />
         </>
       )}
-      
+
       {/* Content */}
-      <div className="relative z-10">
+      <div className="relative z-10 h-full min-h-0">
         {children}
       </div>
     </div>

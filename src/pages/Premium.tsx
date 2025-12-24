@@ -43,7 +43,7 @@ const Premium: React.FC = () => {
 
   if (authLoading || subLoading) {
     return (
-      <div className="h-[100dvh] flex items-center justify-center bg-gradient-to-br from-blue-500 via-blue-600 to-cyan-500">
+      <div className="h-full flex items-center justify-center bg-gradient-to-br from-blue-500 via-blue-600 to-cyan-500">
         <div className="w-10 h-10 rounded-full border-2 border-white/30 border-t-white animate-spin" />
       </div>
     );
@@ -60,9 +60,10 @@ const Premium: React.FC = () => {
   ];
 
   return (
-    <div className="h-[100dvh] flex flex-col overflow-hidden relative" dir="rtl">
+    <div className="h-full min-h-0 flex flex-col overflow-hidden relative" dir="rtl">
       {/* Blue gradient background - matching Welcome page */}
       <div className="absolute inset-0 bg-gradient-to-br from-blue-500 via-blue-600 to-cyan-500" />
+      <div aria-hidden="true" className="absolute inset-0 bg-white/5 backdrop-blur-[2px] pointer-events-none" />
       
       {/* Decorative circles - matching Welcome page */}
       <div className="absolute -top-20 -right-20 w-64 h-64 bg-white/10 rounded-full blur-3xl" />
@@ -71,9 +72,9 @@ const Premium: React.FC = () => {
       <div className="absolute bottom-1/3 right-1/4 w-32 h-32 bg-white/10 rounded-full blur-xl" />
       
       {/* Content */}
-      <div className="relative z-10 flex flex-col h-full">
+      <div className="relative z-10 flex flex-col h-full min-h-0">
         {/* Header */}
-        <div className="pt-14 pb-6 px-6 text-center">
+        <div className="px-6 pb-6 text-center pt-safe-offset-10">
           <motion.div
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
@@ -102,8 +103,8 @@ const Premium: React.FC = () => {
         </div>
 
         {/* Features List */}
-        <div className="flex-1 px-6 overflow-auto">
-          <motion.div 
+        <div className="flex-1 min-h-0 px-6 overflow-auto scroll-touch">
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
@@ -160,7 +161,7 @@ const Premium: React.FC = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.7 }}
-          className="p-6 pb-10"
+          className="px-6 pt-6 pb-safe-offset-6"
         >
           <Button
             onClick={handleStartTrial}
