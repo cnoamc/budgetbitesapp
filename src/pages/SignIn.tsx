@@ -21,6 +21,22 @@ const phoneSchema = z.string().regex(/^\+?[0-9]{10,15}$/, 'מספר טלפון �
 
 type AuthView = 'options' | 'email' | 'phone' | 'otp';
 
+// Password strength calculation
+const getPasswordStrength = (password: string): { level: 0 | 1 | 2 | 3; label: string; color: string } => {
+  if (!password) return { level: 0, label: '', color: '' };
+  
+  let score = 0;
+  if (password.length >= 8) score++;
+  if (/[A-Z]/.test(password)) score++;
+  if (/[a-z]/.test(password)) score++;
+  if (/[0-9]/.test(password)) score++;
+  if (/[^A-Za-z0-9]/.test(password)) score++;
+  
+  if (score <= 2) return { level: 1, label: 'חלשה', color: 'bg-red-500' };
+  if (score <= 3) return { level: 2, label: 'בינונית', color: 'bg-yellow-500' };
+  return { level: 3, label: 'חזקה', color: 'bg-green-500' };
+};
+
 const triggerConfetti = () => {
   confetti({
     particleCount: 100,
@@ -479,7 +495,37 @@ const SignIn: React.FC = () => {
                       </button>
                     </div>
                     {errors.password && <p className="text-sm text-red-500">{errors.password}</p>}
-                    {!isLogin && !errors.password && (
+                    {!isLogin && password && (
+                      <div className="mt-2 space-y-1.5">
+                        {/* Strength bar */}
+                        <div className="flex gap-1">
+                          {[1, 2, 3].map((level) => (
+                            <div
+                              key={level}
+                              className={`h-1.5 flex-1 rounded-full transition-all duration-300 ${
+                                getPasswordStrength(password).level >= level
+                                  ? getPasswordStrength(password).color
+                                  : 'bg-gray-200'
+                              }`}
+                            />
+                          ))}
+                        </div>
+                        {/* Strength label */}
+                        <div className="flex justify-between items-center">
+                          <p className="text-xs text-gray-500">
+                            לפחות 8 תווים, אות גדולה, אות קטנה וספרה
+                          </p>
+                          <span className={`text-xs font-medium ${
+                            getPasswordStrength(password).level === 1 ? 'text-red-500' :
+                            getPasswordStrength(password).level === 2 ? 'text-yellow-600' :
+                            'text-green-600'
+                          }`}>
+                            {getPasswordStrength(password).label}
+                          </span>
+                        </div>
+                      </div>
+                    )}
+                    {!isLogin && !password && (
                       <p className="text-xs text-gray-500 mt-1">
                         לפחות 8 תווים, אות גדולה, אות קטנה וספרה
                       </p>
