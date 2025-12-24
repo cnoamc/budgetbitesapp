@@ -12,7 +12,11 @@ import confetti from 'canvas-confetti';
 import appIcon from '@/assets/app-icon.png';
 
 const emailSchema = z.string().email('כתובת אימייל לא תקינה');
-const passwordSchema = z.string().min(6, 'הסיסמה חייבת להכיל לפחות 6 תווים');
+const passwordSchema = z.string()
+  .min(8, 'הסיסמה חייבת להכיל לפחות 8 תווים')
+  .regex(/[A-Z]/, 'הסיסמה חייבת להכיל לפחות אות גדולה אחת')
+  .regex(/[a-z]/, 'הסיסמה חייבת להכיל לפחות אות קטנה אחת')
+  .regex(/[0-9]/, 'הסיסמה חייבת להכיל לפחות ספרה אחת');
 const phoneSchema = z.string().regex(/^\+?[0-9]{10,15}$/, 'מספר טלפון לא תקין');
 
 type AuthView = 'options' | 'email' | 'phone' | 'otp';
@@ -475,6 +479,11 @@ const SignIn: React.FC = () => {
                       </button>
                     </div>
                     {errors.password && <p className="text-sm text-red-500">{errors.password}</p>}
+                    {!isLogin && !errors.password && (
+                      <p className="text-xs text-gray-500 mt-1">
+                        לפחות 8 תווים, אות גדולה, אות קטנה וספרה
+                      </p>
+                    )}
                   </div>
                   
                   <Button
