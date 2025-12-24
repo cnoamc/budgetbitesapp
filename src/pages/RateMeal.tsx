@@ -40,7 +40,7 @@ export const RateMeal: React.FC = () => {
   };
 
   return (
-    <div className="h-full bg-background p-6 pt-6 pb-6 overflow-y-auto overscroll-none">
+    <div className="h-full bg-background p-6 pt-safe-offset-6 pb-safe-offset-6 overflow-y-auto overscroll-none">
       <div className="max-w-lg mx-auto">
         {/* Celebration */}
         <div className="text-center mb-8 animate-scale-in">
