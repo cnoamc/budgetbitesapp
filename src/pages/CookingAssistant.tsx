@@ -177,7 +177,7 @@ export const CookingAssistant: React.FC = () => {
   return (
     <div className="h-full bg-background flex flex-col overflow-hidden">
       {/* Header */}
-      <div className="bg-card border-b border-border/50 p-4 pt-4 sticky top-0 z-10">
+      <div className="bg-card border-b border-border/50 px-4 pb-4 pt-safe-offset-4 sticky top-0 z-10">
         <div className="flex items-center gap-3 mb-3">
           <button
             onClick={() => navigate(-1)}

@@ -74,10 +74,7 @@ const Premium: React.FC = () => {
       {/* Content */}
       <div className="relative z-10 flex flex-col h-full">
         {/* Header */}
-        <div
-          className="pb-6 px-6 text-center"
-          style={{ paddingTop: 'calc(env(safe-area-inset-top) + 2.5rem)' }}
-        >
+        <div className="px-6 pb-6 text-center pt-safe-offset-10">
           <motion.div
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
@@ -164,8 +161,7 @@ const Premium: React.FC = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.7 }}
-          className="p-6"
-          style={{ paddingBottom: 'calc(env(safe-area-inset-bottom) + 1.5rem)' }}
+          className="px-6 pt-6 pb-safe-offset-6"
         >
           <Button
             onClick={handleStartTrial}

@@ -129,7 +129,7 @@ export const RecipeDetail: React.FC = () => {
       </div>
 
       {/* CTA */}
-      <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-t from-background via-background to-transparent" style={{ padding: '1.5rem', paddingBottom: 'calc(env(safe-area-inset-bottom) + 0.75rem)' }}>
+      <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-t from-background via-background to-transparent px-6 pt-6 pb-safe-offset-3">
         <div className="max-w-lg mx-auto">
           <Button
             onClick={() => navigate(`/cook/${recipe.id}`)}
