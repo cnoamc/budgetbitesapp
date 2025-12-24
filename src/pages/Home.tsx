@@ -173,7 +173,7 @@ export const Home: React.FC = () => {
     <GradientBackground variant="warm">
       <div className="h-full flex flex-col overflow-hidden">
         {/* Header - Compact */}
-        <div className="px-4 pt-3 pb-2">
+        <div className="px-4 pt-12 pb-2">
           <div className="flex items-center gap-3" dir="rtl">
             <div className="w-10 h-10 rounded-xl overflow-hidden shadow-glow shrink-0">
               <img 
