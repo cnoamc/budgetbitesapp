@@ -173,7 +173,7 @@ export const Profile: React.FC = () => {
   };
 
   return (
-    <ScreenLayout hasBottomNav contentClassName="p-4 flex flex-col">
+    <ScreenLayout hasBottomNav contentClassName="p-4 pt-safe-offset-4 flex flex-col">
       {/* Trial Reminder Banner */}
       {isTrialActive && (
         <TrialReminderBanner

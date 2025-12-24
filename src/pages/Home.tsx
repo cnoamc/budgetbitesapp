@@ -159,9 +159,9 @@ export const Home: React.FC = () => {
   }, [progress.totalSavings]);
 
   return (
-    <ScreenLayout gradient hasBottomNav contentClassName="px-4 flex flex-col gap-3">
+    <ScreenLayout gradient hasBottomNav contentClassName="px-4 pt-safe-offset-4 flex flex-col gap-3">
       {/* Header */}
-      <div className="flex items-center gap-3 pt-4 pb-3" dir="rtl">
+      <div className="flex items-center gap-3 pb-3" dir="rtl">
         <div className="w-12 h-12 rounded-2xl overflow-hidden shadow-elevated shrink-0 border-2 border-background">
           <img 
             src={photoUrl || appLogo} 

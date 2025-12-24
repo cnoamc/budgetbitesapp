@@ -155,7 +155,7 @@ export const Progress: React.FC = () => {
   }, [streak]);
 
   return (
-    <ScreenLayout gradient hasBottomNav contentClassName="p-4 space-y-4">
+    <ScreenLayout gradient hasBottomNav contentClassName="p-4 pt-safe-offset-4 space-y-4">
       <div className="flex items-center justify-between mb-2">
         <h1 className="text-2xl font-bold">ההתקדמות שלי</h1>
         <div className="w-10 h-10 bg-black/5 rounded-xl flex items-center justify-center">
