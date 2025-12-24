@@ -84,6 +84,7 @@ const LoadingSavings: React.FC = () => {
     <div className="h-full relative overflow-hidden flex flex-col" dir="rtl">
       {/* Gradient background */}
       <div className="absolute inset-0 bg-gradient-to-br from-blue-500 via-blue-600 to-cyan-500" />
+      <div aria-hidden="true" className="absolute inset-0 bg-white/5 backdrop-blur-[2px] pointer-events-none" />
       
       {/* Decorative circles */}
       <div className="absolute -top-20 -right-20 w-64 h-64 bg-white/10 rounded-full blur-3xl" />

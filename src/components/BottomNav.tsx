@@ -44,15 +44,12 @@ export const BottomNav: React.FC = () => {
       <nav>
         <div 
           ref={navRef}
-          className="relative inline-flex justify-center items-center py-2 px-2 rounded-full backdrop-blur-xl bg-neutral-200/60 dark:bg-neutral-900/70 border border-neutral-300/40 dark:border-white/10"
-          style={{
-            boxShadow: '0 8px 32px -8px rgba(0, 0, 0, 0.18), inset 0 1px 2px rgba(0, 0, 0, 0.06), inset 0 -1px 1px rgba(255, 255, 255, 0.1)'
-          }}
+          className="relative inline-flex justify-center items-center py-2 px-2 rounded-full backdrop-blur-xl bg-secondary/80 dark:bg-card/80 border border-border/50 dark:border-border/30 shadow-elevated"
         >
           {/* Animated indicator */}
           {activeIndex >= 0 && (
             <motion.div
-              className="absolute top-1 bottom-1 rounded-full bg-black/5 dark:bg-white/10"
+              className="absolute top-1 bottom-1 rounded-full bg-primary/10 dark:bg-primary/20"
               initial={false}
               animate={{
                 left: indicatorStyle.left,

@@ -27,7 +27,7 @@ export const RecipeDetail: React.FC = () => {
   }
 
   return (
-    <div className="h-full bg-background overflow-y-auto overscroll-none pb-8">
+    <div className="h-full bg-background overflow-y-auto overscroll-none" style={{ paddingBottom: 'calc(env(safe-area-inset-bottom) + 6rem)' }}>
       {/* Header */}
       <div className="relative">
         <div className="h-56 bg-secondary flex items-center justify-center overflow-hidden">
@@ -129,7 +129,7 @@ export const RecipeDetail: React.FC = () => {
       </div>
 
       {/* CTA */}
-      <div className="fixed bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-background via-background to-transparent">
+      <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-t from-background via-background to-transparent" style={{ padding: '1.5rem', paddingBottom: 'calc(env(safe-area-inset-bottom) + 0.75rem)' }}>
         <div className="max-w-lg mx-auto">
           <Button
             onClick={() => navigate(`/cook/${recipe.id}`)}
