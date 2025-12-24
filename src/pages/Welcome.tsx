@@ -42,7 +42,7 @@ const Welcome: React.FC = () => {
   }
 
   return (
-    <div className="fixed inset-0 flex flex-col overflow-hidden" style={{ height: '100dvh' }} dir="rtl">
+    <div className="h-full min-h-0 flex flex-col overflow-hidden" dir="rtl">
       {/* Gradient background */}
       <div className="absolute inset-0 bg-gradient-to-br from-blue-500 via-blue-600 to-cyan-500" />
       <div aria-hidden="true" className="absolute inset-0 bg-white/5 backdrop-blur-[2px] pointer-events-none" />
@@ -55,8 +55,8 @@ const Welcome: React.FC = () => {
 
       {/* Content */}
       <div className="relative z-10 flex-1 min-h-0 flex flex-col px-6 pt-safe-offset-4">
-        {/* App icon section */}
-        <div className="flex items-center justify-center py-8">
+        {/* App icon section - grows to take available space */}
+        <div className="flex-1 flex items-center justify-center">
           <div 
             className={`relative transition-all duration-500 ease-out ${mounted ? 'scale-100 opacity-100' : 'scale-50 opacity-0'} ${zooming ? 'scale-150 opacity-0' : ''}`}
           >
@@ -72,10 +72,10 @@ const Welcome: React.FC = () => {
           </div>
         </div>
 
-        {/* Bottom section with text and CTA */}
+        {/* Bottom section with text and CTA - fixed height, pinned to bottom */}
         <div 
-          className={`shrink-0 transition-all duration-700 ${mounted ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'}`} 
-          style={{ transitionDelay: '300ms', paddingBottom: 'max(1.5rem, env(safe-area-inset-bottom))' }}
+          className={`shrink-0 pb-safe-offset-6 transition-all duration-700 ${mounted ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'}`} 
+          style={{ transitionDelay: '300ms' }}
         >
           {/* App name */}
           <p className="text-center text-sm font-semibold text-white/70 tracking-widest mb-4 uppercase">
