@@ -36,7 +36,7 @@ export const Support: React.FC = () => {
   ];
 
   return (
-    <div className="h-full bg-background p-4 overflow-y-auto overscroll-none" dir="rtl">
+    <div className="h-full min-h-0 bg-background p-4 pt-safe-offset-4 pb-safe-offset-6 overflow-y-auto scroll-touch overscroll-none" dir="rtl">
       <div className="max-w-2xl mx-auto">
         <Button variant="ghost" size="sm" onClick={() => navigate(-1)} className="mb-4">
           <ArrowRight className="w-4 h-4 ml-2" />
