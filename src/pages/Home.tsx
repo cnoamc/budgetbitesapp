@@ -172,24 +172,24 @@ export const Home: React.FC = () => {
   return (
     <GradientBackground variant="warm">
       <div className="h-full flex flex-col overflow-hidden">
-        {/* Header - Compact with safe area top padding */}
-        <div className="px-4 pt-safe-offset-4 pb-2">
-          <div className="flex items-center justify-center gap-3" dir="rtl">
-            <div className="w-12 h-12 rounded-xl overflow-hidden shadow-glow shrink-0">
+        {/* Header - Compact */}
+        <div className="px-4 pt-3 pb-2">
+          <div className="flex items-center gap-3" dir="rtl">
+            <div className="w-10 h-10 rounded-xl overflow-hidden shadow-glow shrink-0">
               <img 
                 src={photoUrl || appLogo} 
                 alt="Profile" 
                 className="w-full h-full object-cover" 
               />
             </div>
-            <div className="text-center">
+            <div className="flex-1">
               <h1 className="text-lg font-bold">{greeting} {displayName} 👋</h1>
               <p className="text-xs text-muted-foreground">מה נבשל היום?</p>
             </div>
           </div>
         </div>
 
-        <div className="px-4 flex-1 w-full max-w-md mx-auto flex flex-col gap-3 pb-4 overflow-y-auto">
+        <div className="px-4 flex-1 w-full flex flex-col gap-3 pb-4">
           {/* Daily Cooking Tip */}
           <div className="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/20 dark:to-orange-950/20 rounded-xl p-3 border border-amber-200/50 dark:border-amber-800/30">
             <p className="text-xs text-center">
