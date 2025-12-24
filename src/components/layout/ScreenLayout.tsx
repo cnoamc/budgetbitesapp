@@ -48,7 +48,7 @@ const ScreenLayout: React.FC<ScreenLayoutProps> = ({
     <div className={cn('h-full min-h-0 flex flex-col overflow-hidden', className)}>
       {/* Header */}
       {header && (
-        <header className="flex-shrink-0 pt-safe px-4 pb-3">
+        <header className="flex-shrink-0 pt-safe-offset-4 px-4 pb-3">
           <div className="flex items-center justify-between h-12">
             {header.showBack !== false ? (
               <button
@@ -79,7 +79,7 @@ const ScreenLayout: React.FC<ScreenLayoutProps> = ({
           'flex-1 min-h-0',
           scrollable && 'overflow-y-auto overscroll-none scroll-touch',
           !scrollable && 'overflow-hidden',
-          !header && 'pt-safe',
+          !header && 'pt-safe-offset-4',
           hasBottomNav ? 'pb-safe-offset-20' : 'pb-safe',
           contentClassName
         )}

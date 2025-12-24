@@ -173,7 +173,7 @@ export const CookingAssistant: React.FC = () => {
   return (
     <ScreenLayout scrollable={false} contentClassName="flex flex-col">
       {/* Header */}
-      <div className="bg-card border-b border-border/50 px-4 pb-4 pt-4 shrink-0">
+      <div className="bg-card border-b border-border/50 px-4 pb-4 pt-safe-offset-4 shrink-0">
         <div className="flex items-center gap-3 mb-3">
           <button
             onClick={() => navigate(-1)}

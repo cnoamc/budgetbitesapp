@@ -44,7 +44,7 @@ export const RecipeDetail: React.FC = () => {
           </div>
           <button
             onClick={() => navigate(-1)}
-            className="absolute right-4 top-safe mt-2 w-10 h-10 bg-card/90 backdrop-blur rounded-full flex items-center justify-center shadow-card"
+            className="absolute right-4 top-safe-offset-4 w-10 h-10 bg-card/90 backdrop-blur rounded-full flex items-center justify-center shadow-card"
           >
             <ArrowRight className="w-5 h-5" />
           </button>
