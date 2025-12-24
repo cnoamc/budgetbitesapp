@@ -159,7 +159,7 @@ export const Onboarding: React.FC = () => {
   };
 
   return (
-    <div className="h-full min-h-0 flex flex-col overflow-hidden relative">
+    <div className="fixed inset-0 flex flex-col overflow-hidden" style={{ height: '100dvh' }}>
       {/* Blue gradient background */}
       <div className="absolute inset-0 bg-gradient-to-br from-blue-500 via-blue-600 to-cyan-500" />
       <div aria-hidden="true" className="absolute inset-0 bg-white/5 backdrop-blur-[2px] pointer-events-none" />
@@ -172,7 +172,7 @@ export const Onboarding: React.FC = () => {
 
       {/* Content */}
       <div
-        className="relative z-10 flex-1 min-h-0 flex flex-col max-w-lg mx-auto w-full px-5 pt-safe"
+        className="relative z-10 flex-1 min-h-0 flex flex-col max-w-lg mx-auto w-full px-5 pt-safe-offset-4"
       >
         {/* Step Content */}
         <div
@@ -418,7 +418,7 @@ export const Onboarding: React.FC = () => {
         </div>
 
         {/* Navigation - at bottom */}
-        <div className="pt-4 pb-safe-offset-6">
+        <div className="shrink-0 pt-4 pb-6" style={{ paddingBottom: 'max(1.5rem, env(safe-area-inset-bottom))' }}>
           <Button
             onClick={handleNext}
             disabled={!canProceed()}
