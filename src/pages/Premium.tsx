@@ -60,7 +60,7 @@ const Premium: React.FC = () => {
   ];
 
   return (
-    <div className="h-full flex flex-col overflow-hidden relative" dir="rtl">
+    <div className="h-full min-h-0 flex flex-col overflow-hidden relative" dir="rtl">
       {/* Blue gradient background - matching Welcome page */}
       <div className="absolute inset-0 bg-gradient-to-br from-blue-500 via-blue-600 to-cyan-500" />
       <div aria-hidden="true" className="absolute inset-0 bg-white/5 backdrop-blur-[2px] pointer-events-none" />
@@ -72,7 +72,7 @@ const Premium: React.FC = () => {
       <div className="absolute bottom-1/3 right-1/4 w-32 h-32 bg-white/10 rounded-full blur-xl" />
       
       {/* Content */}
-      <div className="relative z-10 flex flex-col h-full">
+      <div className="relative z-10 flex flex-col h-full min-h-0">
         {/* Header */}
         <div className="px-6 pb-6 text-center pt-safe-offset-10">
           <motion.div
@@ -103,8 +103,8 @@ const Premium: React.FC = () => {
         </div>
 
         {/* Features List */}
-        <div className="flex-1 px-6 overflow-auto">
-          <motion.div 
+        <div className="flex-1 min-h-0 px-6 overflow-auto scroll-touch">
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}

@@ -41,7 +41,7 @@ export const Recipes: React.FC = () => {
 
   return (
     <GradientBackground variant="minimal">
-      <div className="h-full flex flex-col overflow-hidden">
+      <div className="h-full min-h-0 flex flex-col overflow-hidden">
         {/* Header */}
         <div className="p-4 pt-safe-offset-4 pb-3 shrink-0">
           <div className="flex items-center justify-between mb-6">
@@ -99,7 +99,7 @@ export const Recipes: React.FC = () => {
         </div>
 
         {/* Recipe List */}
-        <div className="flex-1 overflow-y-auto px-4 pb-24 space-y-3 overscroll-none">
+        <div className="flex-1 min-h-0 overflow-y-auto scroll-touch px-4 pb-24 space-y-3 overscroll-none">
           {filteredRecipes.map((recipe, index) => (
             <div 
               key={recipe.id} 

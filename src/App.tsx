@@ -98,7 +98,7 @@ const App = () => {
             <AppProvider>
               <NotificationProvider>
                 <TooltipProvider>
-                  <div className="absolute inset-0 w-full h-full flex flex-col overflow-hidden bg-background animate-fade-in">
+                  <div className="w-full h-full min-h-0 flex flex-col overflow-hidden bg-background animate-fade-in">
                     <Toaster />
                     <Sonner />
                     <NotificationBanner />
@@ -108,7 +108,7 @@ const App = () => {
                     )}
                     */}
                     <BrowserRouter>
-                      <div className="flex-1 overflow-hidden relative">
+                      <div className="flex-1 min-h-0 overflow-hidden relative">
                         <AnimatedRoutes />
                       </div>
                     </BrowserRouter>

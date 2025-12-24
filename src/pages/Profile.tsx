@@ -176,8 +176,8 @@ export const Profile: React.FC = () => {
   };
 
   return (
-    <div className="h-full bg-background flex flex-col overflow-hidden">
-      <div className="flex-1 p-4 pt-safe-offset-4 pb-safe-offset-20 flex flex-col overflow-y-auto overscroll-none">
+    <div className="h-full min-h-0 bg-background flex flex-col overflow-hidden">
+      <div className="flex-1 min-h-0 p-4 pt-safe-offset-4 pb-safe-offset-20 flex flex-col overflow-y-auto scroll-touch overscroll-none">
         {/* Trial Reminder Banner */}
         {isTrialActive && (
           <TrialReminderBanner

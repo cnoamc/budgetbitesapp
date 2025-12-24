@@ -174,8 +174,8 @@ export const Progress: React.FC = () => {
 
   return (
     <GradientBackground variant="warm">
-      <div className="min-h-full flex flex-col">
-        <div className="flex-1 overflow-y-auto p-4 pt-safe-offset-4 pb-safe-offset-20">
+      <div className="min-h-full min-h-0 flex flex-col">
+        <div className="flex-1 min-h-0 overflow-y-auto scroll-touch p-4 pt-safe-offset-4 pb-safe-offset-20">
           <div className="flex items-center justify-between mb-6">
             <h1 className="text-2xl font-bold">ההתקדמות שלי</h1>
             <div className="w-10 h-10 bg-black/5 rounded-xl flex items-center justify-center">
