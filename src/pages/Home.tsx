@@ -171,7 +171,7 @@ export const Home: React.FC = () => {
 
   return (
     <GradientBackground variant="warm">
-      <div className="h-full flex flex-col overflow-hidden">
+      <div className="h-full min-h-0 flex flex-col overflow-hidden">
         {/* Header */}
         <div className="px-4 pt-safe-offset-4 pb-3 bg-gradient-to-b from-background/80 to-transparent">
           <div className="flex items-center gap-3" dir="rtl">
@@ -189,7 +189,7 @@ export const Home: React.FC = () => {
           </div>
         </div>
 
-        <div className="px-4 flex-1 w-full flex flex-col gap-3 pb-4">
+        <div className="flex-1 min-h-0 overflow-y-auto overscroll-none scroll-touch px-4 w-full flex flex-col gap-3 pb-safe-offset-20">
           {/* Daily Cooking Tip */}
           <div className="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/20 dark:to-orange-950/20 rounded-xl p-3 border border-amber-200/50 dark:border-amber-800/30">
             <p className="text-xs text-center">

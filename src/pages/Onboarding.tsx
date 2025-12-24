@@ -159,7 +159,7 @@ export const Onboarding: React.FC = () => {
   };
 
   return (
-    <div className="h-full flex flex-col overflow-hidden relative">
+    <div className="h-full min-h-0 flex flex-col overflow-hidden relative">
       {/* Blue gradient background */}
       <div className="absolute inset-0 bg-gradient-to-br from-blue-500 via-blue-600 to-cyan-500" />
       <div aria-hidden="true" className="absolute inset-0 bg-white/5 backdrop-blur-[2px] pointer-events-none" />
@@ -172,7 +172,7 @@ export const Onboarding: React.FC = () => {
 
       {/* Content */}
       <div
-        className="relative z-10 flex-1 flex flex-col max-w-lg mx-auto w-full px-5 pt-safe-offset-6"
+        className="relative z-10 flex-1 min-h-0 flex flex-col max-w-lg mx-auto w-full px-5 pt-safe-offset-6"
       >
         {/* Back button and Progress indicator */}
         <div className="mb-6">
