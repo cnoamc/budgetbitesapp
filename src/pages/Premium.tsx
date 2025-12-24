@@ -63,6 +63,7 @@ const Premium: React.FC = () => {
     <div className="h-full flex flex-col overflow-hidden relative" dir="rtl">
       {/* Blue gradient background - matching Welcome page */}
       <div className="absolute inset-0 bg-gradient-to-br from-blue-500 via-blue-600 to-cyan-500" />
+      <div aria-hidden="true" className="absolute inset-0 bg-white/5 backdrop-blur-[2px] pointer-events-none" />
       
       {/* Decorative circles - matching Welcome page */}
       <div className="absolute -top-20 -right-20 w-64 h-64 bg-white/10 rounded-full blur-3xl" />
@@ -73,7 +74,10 @@ const Premium: React.FC = () => {
       {/* Content */}
       <div className="relative z-10 flex flex-col h-full">
         {/* Header */}
-        <div className="pt-14 pb-6 px-6 text-center">
+        <div
+          className="pb-6 px-6 text-center"
+          style={{ paddingTop: 'calc(env(safe-area-inset-top) + 2.5rem)' }}
+        >
           <motion.div
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
@@ -160,7 +164,8 @@ const Premium: React.FC = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.7 }}
-          className="p-6 pb-10"
+          className="p-6"
+          style={{ paddingBottom: 'calc(env(safe-area-inset-bottom) + 1.5rem)' }}
         >
           <Button
             onClick={handleStartTrial}
