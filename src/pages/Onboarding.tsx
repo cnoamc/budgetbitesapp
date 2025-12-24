@@ -172,8 +172,7 @@ export const Onboarding: React.FC = () => {
 
       {/* Content */}
       <div
-        className="relative z-10 flex-1 flex flex-col max-w-lg mx-auto w-full px-5"
-        style={{ paddingTop: 'calc(env(safe-area-inset-top) + 1.5rem)' }}
+        className="relative z-10 flex-1 flex flex-col max-w-lg mx-auto w-full px-5 pt-safe-offset-6"
       >
         {/* Back button and Progress indicator */}
         <div className="mb-6">
