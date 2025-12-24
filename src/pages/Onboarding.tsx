@@ -380,46 +380,46 @@ export const Onboarding: React.FC = () => {
               </p>
               <div className="space-y-3 mt-4">
                 <div 
-                  className="p-4 rounded-2xl bg-white/15 backdrop-blur-sm border border-white/20 animate-fade-in opacity-0"
+                  className="p-5 rounded-3xl bg-white/10 backdrop-blur-xl border border-white/20 shadow-[inset_0_1px_1px_rgba(255,255,255,0.2),0_8px_32px_-8px_rgba(0,0,0,0.15)] animate-fade-in opacity-0"
                   style={{ animationDelay: '0.1s', animationFillMode: 'forwards' }}
                 >
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center animate-scale-in" style={{ animationDelay: '0.2s' }}>
-                      <Clock className="w-6 h-6 text-white" />
-                    </div>
+                  <div className="flex items-center gap-4">
                     <div className="flex-1 text-right">
-                      <h3 className="font-semibold text-white">חסוך זמן בתכנון</h3>
-                      <p className="text-xs text-white/70">מתכונים מהירים עם רשימת קניות אוטומטית</p>
+                      <h3 className="font-bold text-white text-base">חסוך זמן בתכנון</h3>
+                      <p className="text-sm text-white/70 mt-0.5">מתכונים מהירים עם רשימת קניות אוטומטית</p>
+                    </div>
+                    <div className="w-14 h-14 bg-white/15 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-inner animate-scale-in" style={{ animationDelay: '0.2s' }}>
+                      <Clock className="w-7 h-7 text-white" />
                     </div>
                   </div>
                 </div>
                 
                 <div 
-                  className="p-4 rounded-2xl bg-white/15 backdrop-blur-sm border border-white/20 animate-fade-in opacity-0"
+                  className="p-5 rounded-3xl bg-white/10 backdrop-blur-xl border border-white/20 shadow-[inset_0_1px_1px_rgba(255,255,255,0.2),0_8px_32px_-8px_rgba(0,0,0,0.15)] animate-fade-in opacity-0"
                   style={{ animationDelay: '0.3s', animationFillMode: 'forwards' }}
                 >
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center animate-scale-in" style={{ animationDelay: '0.4s' }}>
-                      <Trophy className="w-6 h-6 text-white" />
-                    </div>
+                  <div className="flex items-center gap-4">
                     <div className="flex-1 text-right">
-                      <h3 className="font-semibold text-white">אתגרים שבועיים</h3>
-                      <p className="text-xs text-white/70">צבור נקודות והישגים ותתחרה עם חברים</p>
+                      <h3 className="font-bold text-white text-base">אתגרים שבועיים</h3>
+                      <p className="text-sm text-white/70 mt-0.5">צבור נקודות והישגים ותתחרה עם חברים</p>
+                    </div>
+                    <div className="w-14 h-14 bg-white/15 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-inner animate-scale-in" style={{ animationDelay: '0.4s' }}>
+                      <Trophy className="w-7 h-7 text-white" />
                     </div>
                   </div>
                 </div>
                 
                 <div 
-                  className="p-4 rounded-2xl bg-white/15 backdrop-blur-sm border border-white/20 animate-fade-in opacity-0"
+                  className="p-5 rounded-3xl bg-white/10 backdrop-blur-xl border border-white/20 shadow-[inset_0_1px_1px_rgba(255,255,255,0.2),0_8px_32px_-8px_rgba(0,0,0,0.15)] animate-fade-in opacity-0"
                   style={{ animationDelay: '0.5s', animationFillMode: 'forwards' }}
                 >
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center animate-scale-in" style={{ animationDelay: '0.6s' }}>
-                      <Sparkles className="w-6 h-6 text-white" />
-                    </div>
+                  <div className="flex items-center gap-4">
                     <div className="flex-1 text-right">
-                      <h3 className="font-semibold text-white">מתכונים בלעדיים</h3>
-                      <p className="text-xs text-white/70">גישה למתכונים מקצועיים וטכניקות מתקדמות</p>
+                      <h3 className="font-bold text-white text-base">מתכונים בלעדיים</h3>
+                      <p className="text-sm text-white/70 mt-0.5">גישה למתכונים מקצועיים וטכניקות מתקדמות</p>
+                    </div>
+                    <div className="w-14 h-14 bg-white/15 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-inner animate-scale-in" style={{ animationDelay: '0.6s' }}>
+                      <Sparkles className="w-7 h-7 text-white" />
                     </div>
                   </div>
                 </div>
