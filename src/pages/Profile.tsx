@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Settings, RefreshCw, MapPin, LogOut, Pencil, Camera, X, Bell, Moon, Crown, FileText, HelpCircle, Shield, User } from 'lucide-react';
+import { Settings, RefreshCw, MapPin, LogOut, Pencil, Camera, X, Bell, Moon, Crown, FileText, HelpCircle, Shield, User, Fingerprint, ScanFace } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import appLogo from '@/assets/app-logo.png';
 import { Button } from '@/components/ui/button';
@@ -14,6 +14,7 @@ import { useNotifications } from '@/contexts/NotificationContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useSubscription } from '@/contexts/SubscriptionContext';
 import { useStatusBar } from '@/hooks/useStatusBar';
+import { useBiometricAuth } from '@/hooks/useBiometricAuth';
 import { NotificationSettings } from '@/components/NotificationSettings';
 import { toast } from 'sonner';
 import {
@@ -42,6 +43,7 @@ export const Profile: React.FC = () => {
   const { unreadCount } = useNotifications();
   const { resolvedMode, setMode } = useTheme();
   const { daysLeftInTrial, isTrialActive, subscription, toggleCancelReminder } = useSubscription();
+  const biometric = useBiometricAuth();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Light status bar for light background (dark icons)
@@ -255,7 +257,7 @@ export const Profile: React.FC = () => {
               <span className="text-sm text-muted-foreground">{profile.weeklyOrders} פעמים</span>
             </div>
             
-            <div className="flex items-center justify-between py-1.5">
+            <div className="flex items-center justify-between py-1.5 border-b border-border/50">
               <div className="flex items-center gap-2">
                 <Moon className="w-4 h-4 text-muted-foreground" />
                 <span className="text-sm">מצב כהה</span>
@@ -265,6 +267,34 @@ export const Profile: React.FC = () => {
                 onCheckedChange={(checked) => setMode(checked ? 'dark' : 'light')}
               />
             </div>
+
+            {/* Biometric Toggle - only show if available on device */}
+            {biometric.isAvailable && (
+              <div className="flex items-center justify-between py-1.5">
+                <div className="flex items-center gap-2">
+                  {biometric.biometryType === 'faceId' || biometric.biometryType === 'face' ? (
+                    <ScanFace className="w-4 h-4 text-muted-foreground" />
+                  ) : (
+                    <Fingerprint className="w-4 h-4 text-muted-foreground" />
+                  )}
+                  <span className="text-sm">התחברות עם {biometric.getBiometryLabel()}</span>
+                </div>
+                <Switch
+                  checked={biometric.isEnabled}
+                  onCheckedChange={(checked) => {
+                    if (checked) {
+                      if (user?.email) {
+                        biometric.enableBiometric(user.email);
+                        toast.success(`${biometric.getBiometryLabel()} הופעל`);
+                      }
+                    } else {
+                      biometric.disableBiometric();
+                      toast.success(`${biometric.getBiometryLabel()} כובה`);
+                    }
+                  }}
+                />
+              </div>
+            )}
           </div>
         </div>
 
