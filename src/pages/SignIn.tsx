@@ -19,7 +19,7 @@ const passwordSchema = z.string()
   .regex(/[0-9]/, 'הסיסמה חייבת להכיל לפחות ספרה אחת');
 const phoneSchema = z.string().regex(/^\+?[0-9]{10,15}$/, 'מספר טלפון לא תקין');
 
-type AuthView = 'options' | 'email' | 'phone' | 'otp';
+type AuthView = 'options' | 'email' | 'phone' | 'otp' | 'forgot' | 'reset';
 
 // Password strength calculation
 const getPasswordStrength = (password: string): { level: 0 | 1 | 2 | 3; label: string; color: string } => {
@@ -48,7 +48,7 @@ const triggerConfetti = () => {
 
 const SignIn: React.FC = () => {
   const navigate = useNavigate();
-  const { user, signIn, signUp, signInWithGoogle, signInWithPhone, verifyOtp, loading } = useAuth();
+  const { user, signIn, signUp, signInWithGoogle, signInWithPhone, verifyOtp, resetPassword, updatePassword, loading } = useAuth();
   const { updateProfile } = useApp();
   
   // Dark status bar for blue gradient background (light icons)
@@ -65,6 +65,17 @@ const SignIn: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<{ email?: string; password?: string; phone?: string; otp?: string }>({});
   const [resendTimer, setResendTimer] = useState(0);
+  const [resetEmailSent, setResetEmailSent] = useState(false);
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+
+  // Check for password reset mode from URL
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('reset') === 'true') {
+      setView('reset');
+    }
+  }, []);
 
   const getOnboardingData = () => {
     const stored = localStorage.getItem('bb_onboarding_data');
@@ -239,6 +250,59 @@ const SignIn: React.FC = () => {
     }
   };
 
+  const handleForgotPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    const emailResult = emailSchema.safeParse(email);
+    if (!emailResult.success) {
+      setErrors({ email: emailResult.error.errors[0].message });
+      return;
+    }
+    
+    setIsLoading(true);
+    try {
+      const { error } = await resetPassword(email);
+      if (error) {
+        toast.error('שגיאה בשליחת המייל. נסה שוב.');
+      } else {
+        setResetEmailSent(true);
+        toast.success('נשלח אליך מייל לאיפוס הסיסמה');
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleUpdatePassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    const passwordResult = passwordSchema.safeParse(newPassword);
+    if (!passwordResult.success) {
+      setErrors({ password: passwordResult.error.errors[0].message });
+      return;
+    }
+    
+    if (newPassword !== confirmPassword) {
+      setErrors({ password: 'הסיסמאות לא תואמות' });
+      return;
+    }
+    
+    setIsLoading(true);
+    try {
+      const { error } = await updatePassword(newPassword);
+      if (error) {
+        toast.error('שגיאה בעדכון הסיסמה. נסה שוב.');
+      } else {
+        toast.success('הסיסמה עודכנה בהצלחה! 🎉');
+        // Clear URL params and redirect
+        window.history.replaceState({}, '', '/signin');
+        navigate('/home');
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="h-full flex items-center justify-center bg-gradient-to-br from-blue-500 via-blue-600 to-cyan-500">
@@ -252,6 +316,8 @@ const SignIn: React.FC = () => {
   const getBackAction = () => {
     if (view === 'otp') return () => setView('phone');
     if (view === 'email' || view === 'phone') return () => setView('options');
+    if (view === 'forgot') return () => { setView('email'); setIsLogin(true); setResetEmailSent(false); };
+    if (view === 'reset') return () => navigate('/');
     return () => navigate('/');
   };
 
@@ -284,10 +350,20 @@ const SignIn: React.FC = () => {
             <img src={appIcon} alt="BudgetBites" className="w-full h-full object-cover" />
           </div>
           <h1 className="text-3xl font-bold text-white mb-2">
-            {view === 'options' ? 'ברוכים הבאים!' : view === 'otp' ? 'הזן קוד אימות' : view === 'phone' ? 'התחברות עם טלפון' : isLogin ? 'התחברות' : 'יצירת חשבון'}
+            {view === 'options' ? 'ברוכים הבאים!' : 
+             view === 'otp' ? 'הזן קוד אימות' : 
+             view === 'phone' ? 'התחברות עם טלפון' : 
+             view === 'forgot' ? 'שכחת סיסמה?' :
+             view === 'reset' ? 'סיסמה חדשה' :
+             isLogin ? 'התחברות' : 'יצירת חשבון'}
           </h1>
           <p className="text-white/80 text-base">
-            {view === 'options' ? 'בחר איך להתחבר' : view === 'otp' ? `שלחנו קוד ל-${phone}` : view === 'phone' ? 'נשלח לך קוד אימות ב-SMS' : 'הכנס את הפרטים שלך'}
+            {view === 'options' ? 'בחר איך להתחבר' : 
+             view === 'otp' ? `שלחנו קוד ל-${phone}` : 
+             view === 'phone' ? 'נשלח לך קוד אימות ב-SMS' : 
+             view === 'forgot' ? 'נשלח לך קישור לאיפוס במייל' :
+             view === 'reset' ? 'הזן את הסיסמה החדשה שלך' :
+             'הכנס את הפרטים שלך'}
           </p>
         </div>
 
@@ -541,6 +617,177 @@ const SignIn: React.FC = () => {
                       <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
                     ) : (
                       isLogin ? 'התחברות' : 'הרשמה'
+                    )}
+                  </Button>
+
+                  {/* Forgot password link - only show in login mode */}
+                  {isLogin && (
+                    <button
+                      type="button"
+                      onClick={() => setView('forgot')}
+                      className="w-full text-center text-sm text-blue-600 hover:text-blue-700 transition-colors mt-2"
+                    >
+                      שכחת סיסמה?
+                    </button>
+                  )}
+                </div>
+              </div>
+            </form>
+          )}
+
+          {/* Forgot Password View */}
+          {view === 'forgot' && (
+            <div className="animate-fade-in">
+              <div className="bg-white rounded-3xl p-6 shadow-2xl">
+                {resetEmailSent ? (
+                  <div className="text-center space-y-4">
+                    <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto">
+                      <Mail className="w-8 h-8 text-green-600" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-gray-900">בדוק את המייל שלך</h3>
+                    <p className="text-sm text-gray-600">
+                      שלחנו לך קישור לאיפוס הסיסמה אל<br />
+                      <span className="font-medium text-gray-900">{email}</span>
+                    </p>
+                    <Button
+                      onClick={() => { setView('email'); setIsLogin(true); setResetEmailSent(false); }}
+                      className="w-full h-14 rounded-xl text-base font-semibold bg-blue-600 hover:bg-blue-700 text-white"
+                    >
+                      חזור להתחברות
+                    </Button>
+                  </div>
+                ) : (
+                  <form onSubmit={handleForgotPassword} className="space-y-4">
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium text-gray-700">כתובת האימייל שלך</label>
+                      <div className="relative">
+                        <Mail className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                        <Input
+                          type="email"
+                          placeholder="your@email.com"
+                          value={email}
+                          onChange={(e) => {
+                            setEmail(e.target.value);
+                            setErrors(prev => ({ ...prev, email: undefined }));
+                          }}
+                          className="h-14 pr-12 rounded-xl border-gray-200 bg-gray-50 text-base text-gray-900 placeholder:text-gray-400"
+                          dir="ltr"
+                        />
+                      </div>
+                      {errors.email && <p className="text-sm text-red-500">{errors.email}</p>}
+                    </div>
+                    
+                    <Button
+                      type="submit"
+                      disabled={isLoading}
+                      className="w-full h-14 rounded-xl text-base font-semibold bg-blue-600 hover:bg-blue-700 text-white transition-all"
+                    >
+                      {isLoading ? (
+                        <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      ) : (
+                        'שלח קישור לאיפוס'
+                      )}
+                    </Button>
+
+                    <button
+                      type="button"
+                      onClick={() => { setView('email'); setIsLogin(true); }}
+                      className="w-full text-center text-sm text-gray-500 hover:text-gray-700 transition-colors"
+                    >
+                      חזור להתחברות
+                    </button>
+                  </form>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Reset Password View */}
+          {view === 'reset' && (
+            <form onSubmit={handleUpdatePassword} className="animate-fade-in">
+              <div className="bg-white rounded-3xl p-6 shadow-2xl">
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-gray-700">סיסמה חדשה</label>
+                    <div className="relative">
+                      <Lock className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                      <Input
+                        type={showPassword ? 'text' : 'password'}
+                        placeholder="••••••••"
+                        value={newPassword}
+                        onChange={(e) => {
+                          setNewPassword(e.target.value);
+                          setErrors(prev => ({ ...prev, password: undefined }));
+                        }}
+                        className="h-14 pr-12 pl-12 rounded-xl border-gray-200 bg-gray-50 text-base text-gray-900 placeholder:text-gray-400"
+                        dir="ltr"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                      >
+                        {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                      </button>
+                    </div>
+                    {errors.password && <p className="text-sm text-red-500">{errors.password}</p>}
+                    {newPassword && (
+                      <div className="mt-2 space-y-1.5">
+                        <div className="flex gap-1">
+                          {[1, 2, 3].map((level) => (
+                            <div
+                              key={level}
+                              className={`h-1.5 flex-1 rounded-full transition-all duration-300 ${
+                                getPasswordStrength(newPassword).level >= level
+                                  ? getPasswordStrength(newPassword).color
+                                  : 'bg-gray-200'
+                              }`}
+                            />
+                          ))}
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <p className="text-xs text-gray-500">
+                            לפחות 8 תווים, אות גדולה, אות קטנה וספרה
+                          </p>
+                          <span className={`text-xs font-medium ${
+                            getPasswordStrength(newPassword).level === 1 ? 'text-red-500' :
+                            getPasswordStrength(newPassword).level === 2 ? 'text-yellow-600' :
+                            'text-green-600'
+                          }`}>
+                            {getPasswordStrength(newPassword).label}
+                          </span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-gray-700">אישור סיסמה</label>
+                    <div className="relative">
+                      <Lock className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                      <Input
+                        type={showPassword ? 'text' : 'password'}
+                        placeholder="••••••••"
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        className="h-14 pr-12 rounded-xl border-gray-200 bg-gray-50 text-base text-gray-900 placeholder:text-gray-400"
+                        dir="ltr"
+                      />
+                    </div>
+                    {confirmPassword && newPassword !== confirmPassword && (
+                      <p className="text-sm text-red-500">הסיסמאות לא תואמות</p>
+                    )}
+                  </div>
+                  
+                  <Button
+                    type="submit"
+                    disabled={isLoading || !newPassword || newPassword !== confirmPassword}
+                    className="w-full h-14 rounded-xl text-base font-semibold bg-blue-600 hover:bg-blue-700 text-white transition-all disabled:opacity-50"
+                  >
+                    {isLoading ? (
+                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    ) : (
+                      'עדכן סיסמה'
                     )}
                   </Button>
                 </div>
