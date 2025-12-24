@@ -22,9 +22,9 @@ export const Savings: React.FC = () => {
   ];
 
   return (
-    <ScreenLayout gradient scrollable={false} className="relative">
+    <ScreenLayout gradient scrollable={false}>
       <div className="h-full flex flex-col">
-        <div className="flex-1 min-h-0 overflow-y-auto scroll-touch p-6 pb-40">
+        <div className="flex-1 min-h-0 overflow-y-auto scroll-touch p-6 pb-6">
           <div className="max-w-lg mx-auto">
             {/* Hero Section */}
             <div className="text-center mb-8 pt-4 animate-scale-in">
@@ -152,7 +152,7 @@ export const Savings: React.FC = () => {
         </div>
 
         {/* CTA */}
-        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-background via-background/95 to-transparent px-6 pt-6 pb-safe-offset-3">
+        <div className="shrink-0 bg-gradient-to-t from-background via-background/95 to-transparent px-6 pt-6 pb-safe-offset-3">
           <div className="max-w-lg mx-auto">
             <Button
               onClick={() => navigate('/recipes')}
