@@ -172,10 +172,13 @@ export const Home: React.FC = () => {
   return (
     <GradientBackground variant="warm">
       <div className="h-full flex flex-col overflow-hidden">
-        {/* Header - Compact with safe area */}
-        <div className="px-4 pb-2" style={{ paddingTop: 'calc(env(safe-area-inset-top) + 0.75rem)' }}>
+        {/* Header with safe area */}
+        <div 
+          className="px-4 pb-3 bg-gradient-to-b from-background/80 to-transparent"
+          style={{ paddingTop: 'calc(env(safe-area-inset-top) + 1rem)' }}
+        >
           <div className="flex items-center gap-3" dir="rtl">
-            <div className="w-10 h-10 rounded-xl overflow-hidden shadow-glow shrink-0">
+            <div className="w-12 h-12 rounded-2xl overflow-hidden shadow-elevated shrink-0 border-2 border-background">
               <img 
                 src={photoUrl || appLogo} 
                 alt="Profile" 
@@ -183,8 +186,8 @@ export const Home: React.FC = () => {
               />
             </div>
             <div className="flex-1">
-              <h1 className="text-lg font-bold">{greeting} {displayName} 👋</h1>
-              <p className="text-xs text-muted-foreground">מה נבשל היום?</p>
+              <h1 className="text-xl font-bold">{greeting} {displayName} 👋</h1>
+              <p className="text-sm text-muted-foreground">מה נבשל היום?</p>
             </div>
           </div>
         </div>
