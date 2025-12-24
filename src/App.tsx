@@ -77,23 +77,18 @@ const AnimatedRoutes = () => {
 };
 
 const App = () => {
-  const [showSplash, setShowSplash] = useState(true);
-  const [hasShownSplash, setHasShownSplash] = useState(false);
-
-  useEffect(() => {
-    // Check if splash was already shown this session
-    const splashShown = sessionStorage.getItem('bb_splash_shown');
-    if (splashShown) {
-      setShowSplash(false);
-      setHasShownSplash(true);
-    }
-  }, []);
-
-  const handleSplashComplete = () => {
-    sessionStorage.setItem('bb_splash_shown', 'true');
-    setShowSplash(false);
-    setHasShownSplash(true);
-  };
+  // NOTE: React splash screen disabled - using native iOS splash instead
+  // Keep this code structure for potential future use:
+  // const [showSplash, setShowSplash] = useState(true);
+  // const [hasShownSplash, setHasShownSplash] = useState(false);
+  // useEffect(() => {
+  //   const splashShown = sessionStorage.getItem('bb_splash_shown');
+  //   if (splashShown) { setShowSplash(false); setHasShownSplash(true); }
+  // }, []);
+  // const handleSplashComplete = () => {
+  //   sessionStorage.setItem('bb_splash_shown', 'true');
+  //   setShowSplash(false); setHasShownSplash(true);
+  // };
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -107,9 +102,11 @@ const App = () => {
                     <Toaster />
                     <Sonner />
                     <NotificationBanner />
+                    {/* React splash disabled - using native iOS splash
                     {showSplash && !hasShownSplash && (
                       <SplashScreen onComplete={handleSplashComplete} minDuration={2000} />
                     )}
+                    */}
                     <BrowserRouter>
                       <div className="flex-1 overflow-hidden relative">
                         <AnimatedRoutes />
