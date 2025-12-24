@@ -54,10 +54,9 @@ const Welcome: React.FC = () => {
       <div className="absolute bottom-1/3 right-1/4 w-32 h-32 bg-white/10 rounded-full blur-xl" />
 
       {/* Content */}
-      <div className="relative z-10 flex-1 min-h-0 overflow-y-auto scroll-touch flex flex-col px-6">
-        
+      <div className="relative z-10 flex-1 min-h-0 overflow-y-auto scroll-touch flex flex-col px-6 pt-safe pb-safe-offset-6">
         {/* App icon section */}
-        <div className="flex-1 flex items-center justify-center pt-safe">
+        <div className="flex items-center justify-center py-8">
           <div 
             className={`relative transition-all duration-500 ease-out ${mounted ? 'scale-100 opacity-100' : 'scale-50 opacity-0'} ${zooming ? 'scale-150 opacity-0' : ''}`}
           >
@@ -75,7 +74,7 @@ const Welcome: React.FC = () => {
 
         {/* Bottom section with text and CTA */}
         <div 
-          className={`pb-safe-offset-4 pt-4 transition-all duration-700 ${mounted ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'}`} 
+          className={`pt-2 transition-all duration-700 ${mounted ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'}`} 
           style={{ transitionDelay: '300ms' }}
         >
           {/* App name */}

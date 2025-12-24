@@ -172,34 +172,13 @@ export const Onboarding: React.FC = () => {
 
       {/* Content */}
       <div
-        className="relative z-10 flex-1 min-h-0 flex flex-col max-w-lg mx-auto w-full px-5 pt-safe-offset-6"
+        className="relative z-10 flex-1 min-h-0 flex flex-col max-w-lg mx-auto w-full px-5 pt-safe"
       >
-        {/* Back button and Progress indicator */}
-        <div className="mb-6">
-          <div className="flex items-center gap-3 mb-3">
-            <button 
-              onClick={handleBack}
-              className="p-2 -mr-2 rounded-full hover:bg-white/10 transition-colors"
-            >
-              <ArrowRight className="w-5 h-5 text-white/70" />
-            </button>
-            <div className="flex-1">
-              <div className="flex items-center justify-between mb-1">
-                <span className="text-xs text-white/70">שלב {displayStep} מתוך {totalSteps}</span>
-                <span className="text-xs font-medium text-white">{Math.round((displayStep / totalSteps) * 100)}%</span>
-              </div>
-              <div className="h-1.5 bg-white/20 rounded-full overflow-hidden">
-                <div 
-                  className="h-full bg-white rounded-full transition-all duration-500 ease-out"
-                  style={{ width: `${(displayStep / totalSteps) * 100}%` }}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-
         {/* Step Content */}
-        <div className="flex-1 flex flex-col justify-center animate-fade-in" key={currentStepType}>
+        <div
+          className="flex-1 min-h-0 overflow-y-auto scroll-touch flex flex-col justify-center animate-fade-in"
+          key={currentStepType}
+        >
           
           {/* Step 1: Goal Selection */}
           {currentStepType === 'goal' && (
@@ -439,7 +418,7 @@ export const Onboarding: React.FC = () => {
         </div>
 
         {/* Navigation - at bottom */}
-        <div className="py-5">
+        <div className="pt-4 pb-safe-offset-6">
           <Button
             onClick={handleNext}
             disabled={!canProceed()}
