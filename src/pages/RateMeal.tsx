@@ -40,81 +40,85 @@ export const RateMeal: React.FC = () => {
   };
 
   return (
-    <div className="h-full min-h-0 bg-background p-6 pt-safe-offset-6 pb-safe-offset-6 overflow-y-auto scroll-touch overscroll-none">
-      <div className="max-w-lg mx-auto">
-        {/* Celebration */}
-        <div className="text-center mb-8 animate-scale-in">
-          <div className="text-6xl mb-4">🎉</div>
-          <h1 className="text-2xl font-bold mb-2">כל הכבוד!</h1>
-          <p className="text-muted-foreground">
-            הכנת {recipe.name} וחסכת ₪{savings}!
-          </p>
-        </div>
-
-        {/* Savings Highlight */}
-        <div className="bg-savings-light rounded-2xl p-5 mb-8 flex items-center justify-between animate-slide-up">
-          <div>
-            <p className="text-sm text-muted-foreground mb-1">חסכת בארוחה הזו</p>
-            <p className="text-3xl font-bold text-savings">₪{savings}</p>
-          </div>
-          <div className="w-14 h-14 bg-savings rounded-xl flex items-center justify-center">
-            <TrendingUp className="w-7 h-7 text-accent-foreground" />
-          </div>
-        </div>
-
-        {/* Rating Form */}
-        <div className="space-y-6">
-          {/* Taste */}
-          <div className="bg-card rounded-2xl p-5 shadow-card border border-border/50 animate-slide-up" style={{ animationDelay: '0.1s' }}>
-            <h3 className="font-medium mb-3">איך היה הטעם?</h3>
-            <StarRating
-              rating={tasteRating}
-              onRate={setTasteRating}
-              size="lg"
-            />
-          </div>
-
-          {/* Difficulty */}
-          <div className="bg-card rounded-2xl p-5 shadow-card border border-border/50 animate-slide-up" style={{ animationDelay: '0.2s' }}>
-            <h3 className="font-medium mb-3">כמה קל היה להכין?</h3>
-            <StarRating
-              rating={difficultyRating}
-              onRate={setDifficultyRating}
-              size="lg"
-            />
-            <p className="text-sm text-muted-foreground mt-2">
-              (5 = מאוד קל, 1 = קשה)
+    <div className="h-full min-h-0 bg-background flex flex-col overflow-hidden" dir="rtl">
+      <div className="flex-1 min-h-0 overflow-y-auto scroll-touch overscroll-none p-6 pt-safe-offset-6">
+        <div className="max-w-lg mx-auto">
+          {/* Celebration */}
+          <div className="text-center mb-8 animate-scale-in">
+            <div className="text-6xl mb-4">🎉</div>
+            <h1 className="text-2xl font-bold mb-2">כל הכבוד!</h1>
+            <p className="text-muted-foreground">
+              הכנת {recipe.name} וחסכת ₪{savings}!
             </p>
           </div>
 
-          {/* Would Make Again */}
-          <div className="bg-card rounded-2xl p-5 shadow-card border border-border/50 animate-slide-up" style={{ animationDelay: '0.3s' }}>
-            <h3 className="font-medium mb-3">תכין שוב?</h3>
-            <div className="flex gap-3">
-              <Button
-                variant={wouldMakeAgain === true ? 'default' : 'outline'}
+          {/* Savings Highlight */}
+          <div className="bg-savings-light rounded-2xl p-5 mb-8 flex items-center justify-between animate-slide-up">
+            <div>
+              <p className="text-sm text-muted-foreground mb-1">חסכת בארוחה הזו</p>
+              <p className="text-3xl font-bold text-savings">₪{savings}</p>
+            </div>
+            <div className="w-14 h-14 bg-savings rounded-xl flex items-center justify-center">
+              <TrendingUp className="w-7 h-7 text-accent-foreground" />
+            </div>
+          </div>
+
+          {/* Rating Form */}
+          <div className="space-y-6">
+            {/* Taste */}
+            <div className="bg-card rounded-2xl p-5 shadow-card border border-border/50 animate-slide-up" style={{ animationDelay: '0.1s' }}>
+              <h3 className="font-medium mb-3">איך היה הטעם?</h3>
+              <StarRating
+                rating={tasteRating}
+                onRate={setTasteRating}
                 size="lg"
-                className="flex-1"
-                onClick={() => setWouldMakeAgain(true)}
-              >
-                <Check className="w-5 h-5" />
-                בטח!
-              </Button>
-              <Button
-                variant={wouldMakeAgain === false ? 'destructive' : 'outline'}
+              />
+            </div>
+
+            {/* Difficulty */}
+            <div className="bg-card rounded-2xl p-5 shadow-card border border-border/50 animate-slide-up" style={{ animationDelay: '0.2s' }}>
+              <h3 className="font-medium mb-3">כמה קל היה להכין?</h3>
+              <StarRating
+                rating={difficultyRating}
+                onRate={setDifficultyRating}
                 size="lg"
-                className="flex-1"
-                onClick={() => setWouldMakeAgain(false)}
-              >
-                <X className="w-5 h-5" />
-                לא בטוח
-              </Button>
+              />
+              <p className="text-sm text-muted-foreground mt-2">
+                (5 = מאוד קל, 1 = קשה)
+              </p>
+            </div>
+
+            {/* Would Make Again */}
+            <div className="bg-card rounded-2xl p-5 shadow-card border border-border/50 animate-slide-up" style={{ animationDelay: '0.3s' }}>
+              <h3 className="font-medium mb-3">תכין שוב?</h3>
+              <div className="flex gap-3">
+                <Button
+                  variant={wouldMakeAgain === true ? 'default' : 'outline'}
+                  size="lg"
+                  className="flex-1"
+                  onClick={() => setWouldMakeAgain(true)}
+                >
+                  <Check className="w-5 h-5" />
+                  בטח!
+                </Button>
+                <Button
+                  variant={wouldMakeAgain === false ? 'destructive' : 'outline'}
+                  size="lg"
+                  className="flex-1"
+                  onClick={() => setWouldMakeAgain(false)}
+                >
+                  <X className="w-5 h-5" />
+                  לא בטוח
+                </Button>
+              </div>
             </div>
           </div>
         </div>
+      </div>
 
-        {/* Submit */}
-        <div className="mt-8">
+      {/* Submit */}
+      <div className="shrink-0 px-6 pt-4 pb-safe-offset-6 bg-background">
+        <div className="max-w-lg mx-auto">
           <Button
             onClick={handleSubmit}
             disabled={!canSubmit}

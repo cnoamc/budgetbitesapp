@@ -171,7 +171,7 @@ export const Onboarding: React.FC = () => {
       <div className="absolute bottom-1/3 right-1/4 w-32 h-32 bg-white/10 rounded-full blur-xl" />
 
       {/* Content */}
-      <div className="relative z-10 flex-1 min-h-0 flex flex-col max-w-lg mx-auto w-full px-5 pt-safe-offset-4">
+      <div className="relative z-10 flex-1 min-h-0 flex flex-col max-w-lg mx-auto w-full px-5 pt-safe-offset-6">
         {/* Step Content - scrollable area */}
         <div
           className="flex-1 min-h-0 overflow-y-auto scroll-touch flex flex-col justify-center animate-fade-in"
@@ -416,7 +416,7 @@ export const Onboarding: React.FC = () => {
         </div>
 
         {/* Navigation - fixed at bottom, always visible */}
-        <div className="shrink-0 pt-4 pb-safe-offset-6">
+        <div className="shrink-0 pt-4 pb-safe-offset-8">
           <Button
             onClick={handleNext}
             disabled={!canProceed()}
