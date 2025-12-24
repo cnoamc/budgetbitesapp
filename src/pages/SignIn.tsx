@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Mail, Lock, Eye, EyeOff, ArrowRight, Phone } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, ArrowRight, Phone, Fingerprint, ScanFace } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useAuth } from '@/contexts/AuthContext';
 import { useApp } from '@/contexts/AppContext';
 import { useStatusBar } from '@/hooks/useStatusBar';
+import { useBiometricAuth } from '@/hooks/useBiometricAuth';
 import { toast } from 'sonner';
 import { z } from 'zod';
 import confetti from 'canvas-confetti';
@@ -50,6 +51,7 @@ const SignIn: React.FC = () => {
   const navigate = useNavigate();
   const { user, signIn, signUp, signInWithGoogle, signInWithPhone, verifyOtp, resetPassword, updatePassword, loading } = useAuth();
   const { updateProfile } = useApp();
+  const biometric = useBiometricAuth();
   
   // Dark status bar for blue gradient background (light icons)
   useStatusBar({ style: 'dark', backgroundColor: '#3B82F6', overlay: true });
@@ -68,6 +70,7 @@ const SignIn: React.FC = () => {
   const [resetEmailSent, setResetEmailSent] = useState(false);
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [showBiometricPrompt, setShowBiometricPrompt] = useState(false);
 
   // Check for password reset mode from URL
   useEffect(() => {
@@ -76,6 +79,28 @@ const SignIn: React.FC = () => {
       setView('reset');
     }
   }, []);
+
+  // Auto-trigger biometric auth for returning users
+  useEffect(() => {
+    const attemptBiometricLogin = async () => {
+      if (!biometric.isChecking && biometric.isAvailable && biometric.isEnabled && !user) {
+        const savedEmail = biometric.getSavedEmail();
+        if (savedEmail) {
+          const success = await biometric.authenticate();
+          if (success) {
+            // Show that we're logging them in
+            setEmail(savedEmail);
+            setView('email');
+            setIsLogin(true);
+            // They need to enter password - biometric just confirms identity
+            toast.info(`שלום! הזן את הסיסמה עבור ${savedEmail}`);
+          }
+        }
+      }
+    };
+    
+    attemptBiometricLogin();
+  }, [biometric.isChecking, biometric.isAvailable, biometric.isEnabled, user]);
 
   const getOnboardingData = () => {
     const stored = localStorage.getItem('bb_onboarding_data');
@@ -144,6 +169,27 @@ const SignIn: React.FC = () => {
     return true;
   };
 
+  const handleBiometricAuth = async () => {
+    const savedEmail = biometric.getSavedEmail();
+    if (!savedEmail) {
+      toast.error('לא נמצא חשבון מקושר');
+      return;
+    }
+    
+    setIsLoading(true);
+    try {
+      const success = await biometric.authenticate();
+      if (success) {
+        setEmail(savedEmail);
+        setView('email');
+        setIsLogin(true);
+        toast.info(`הזן את הסיסמה עבור ${savedEmail}`);
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handleEmailSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validateEmailForm()) return;
@@ -163,6 +209,11 @@ const SignIn: React.FC = () => {
           await syncOnboardingData();
           triggerConfetti();
           toast.success('נרשמת בהצלחה! 🎉');
+          // Offer to enable biometric for new signups
+          if (biometric.isAvailable && !biometric.isEnabled) {
+            setShowBiometricPrompt(true);
+            biometric.enableBiometric(email);
+          }
         }
       } else {
         const { error } = await signIn(email, password);
@@ -171,6 +222,12 @@ const SignIn: React.FC = () => {
             toast.error('אימייל או סיסמה שגויים');
           } else {
             toast.error('שגיאה בהתחברות, נסה שוב');
+          }
+        } else {
+          // Offer to enable biometric for returning users who don't have it enabled
+          if (biometric.isAvailable && !biometric.isEnabled) {
+            setShowBiometricPrompt(true);
+            biometric.enableBiometric(email);
           }
         }
       }
@@ -371,6 +428,22 @@ const SignIn: React.FC = () => {
         <div className="flex-1 flex flex-col max-w-sm mx-auto w-full">
           {view === 'options' && (
             <div className="space-y-3 animate-fade-in">
+              {/* Biometric option - only show if available and enabled */}
+              {biometric.isAvailable && biometric.isEnabled && (
+                <button
+                  onClick={handleBiometricAuth}
+                  disabled={isLoading}
+                  className="w-full h-14 rounded-2xl text-base font-semibold bg-gradient-to-r from-blue-600 to-cyan-500 text-white flex items-center justify-center gap-3 shadow-lg hover:shadow-xl transition-all active:scale-[0.98] disabled:opacity-50"
+                >
+                  {biometric.biometryType === 'faceId' || biometric.biometryType === 'face' ? (
+                    <ScanFace className="w-5 h-5" />
+                  ) : (
+                    <Fingerprint className="w-5 h-5" />
+                  )}
+                  התחבר עם {biometric.getBiometryLabel()}
+                </button>
+              )}
+
               {/* Phone option */}
               <button
                 onClick={() => setView('phone')}
@@ -806,6 +879,47 @@ const SignIn: React.FC = () => {
           </p>
         </div>
       </div>
+
+      {/* Biometric Enable Prompt */}
+      {showBiometricPrompt && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/50 backdrop-blur-sm animate-fade-in">
+          <div className="bg-white rounded-3xl p-6 shadow-2xl max-w-sm w-full text-center" dir="rtl">
+            <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              {biometric.biometryType === 'faceId' || biometric.biometryType === 'face' ? (
+                <ScanFace className="w-8 h-8 text-blue-600" />
+              ) : (
+                <Fingerprint className="w-8 h-8 text-blue-600" />
+              )}
+            </div>
+            <h3 className="text-lg font-bold text-gray-900 mb-2">
+              התחברות מהירה עם {biometric.getBiometryLabel()}
+            </h3>
+            <p className="text-sm text-gray-600 mb-6">
+              בפעם הבאה תוכל להתחבר במהירות באמצעות {biometric.getBiometryLabel()} במקום להקליד סיסמה
+            </p>
+            <div className="space-y-3">
+              <Button
+                onClick={() => {
+                  toast.success(`${biometric.getBiometryLabel()} הופעל בהצלחה`);
+                  setShowBiometricPrompt(false);
+                }}
+                className="w-full h-12 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold"
+              >
+                מעולה!
+              </Button>
+              <button
+                onClick={() => {
+                  biometric.disableBiometric();
+                  setShowBiometricPrompt(false);
+                }}
+                className="w-full text-sm text-gray-500 hover:text-gray-700"
+              >
+                לא תודה
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
