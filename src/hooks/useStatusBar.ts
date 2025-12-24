@@ -13,10 +13,11 @@ interface StatusBarOptions {
 const isNative = Capacitor.isNativePlatform();
 
 export const useStatusBar = (options: StatusBarOptions = {}) => {
-  const { 
-    style = 'default', 
+  const {
+    style = 'default',
     backgroundColor = '#FFFFFF',
-    overlay = false 
+    // Default to overlay=true so the app is truly fullscreen; safe areas are handled via CSS env(safe-area-inset-*)
+    overlay = true,
   } = options;
 
   useEffect(() => {
@@ -47,10 +48,10 @@ export const useStatusBar = (options: StatusBarOptions = {}) => {
     configureStatusBar();
 
     // IMPORTANT: Prevent overlay mode from persisting across screens.
-    // If a screen sets overlay=true (e.g., Welcome), the next screen may not call useStatusBar,
-    // so we always reset overlay back to false on unmount.
+    // We default overlay=true (fullscreen) and rely on CSS safe-area padding.
+    // Always reset overlay back to true on unmount for consistent behavior.
     return () => {
-      StatusBar.setOverlaysWebView({ overlay: false }).catch(() => {});
+      StatusBar.setOverlaysWebView({ overlay: true }).catch(() => {});
     };
   }, [style, backgroundColor, overlay]);
 };

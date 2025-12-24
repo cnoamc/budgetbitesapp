@@ -45,7 +45,7 @@ export const Profile: React.FC = () => {
   const biometric = useBiometricAuth();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  useStatusBar({ style: 'light', backgroundColor: '#FFFFFF', overlay: false });
+  useStatusBar({ style: 'light', backgroundColor: '#FFFFFF' });
 
   const [isEditingName, setIsEditingName] = useState(false);
   const [isNotificationSettingsOpen, setIsNotificationSettingsOpen] = useState(false);

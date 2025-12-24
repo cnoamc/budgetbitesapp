@@ -5,7 +5,7 @@ const config: CapacitorConfig = {
   appName: "BudgetBites",
   webDir: "dist",
   ios: {
-    contentInset: "automatic",
+    contentInset: "never",
     preferredContentMode: "mobile",
     backgroundColor: "#0F172A",
   },
@@ -19,6 +19,7 @@ const config: CapacitorConfig = {
       splashImmersive: true,
     },
     StatusBar: {
+      overlaysWebView: true,
       style: "dark",
       backgroundColor: "#0F172A",
     },
