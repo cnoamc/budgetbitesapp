@@ -25,29 +25,33 @@ export const useStatusBar = (options: StatusBarOptions = {}) => {
     const configureStatusBar = async () => {
       try {
         // Set status bar style (light = dark icons, dark = light icons)
-        const statusBarStyle = style === 'light' 
-          ? Style.Light  // Dark text/icons for light backgrounds
-          : style === 'dark' 
-            ? Style.Dark  // Light text/icons for dark backgrounds
-            : Style.Default;
-        
+        const statusBarStyle =
+          style === 'light'
+            ? Style.Light // Dark text/icons for light backgrounds
+            : style === 'dark'
+              ? Style.Dark // Light text/icons for dark backgrounds
+              : Style.Default;
+
         await StatusBar.setStyle({ style: statusBarStyle });
-        
+
         // Set background color (iOS ignores this but Android uses it)
         await StatusBar.setBackgroundColor({ color: backgroundColor });
-        
+
         // Set overlay mode
-        if (overlay) {
-          await StatusBar.setOverlaysWebView({ overlay: true });
-        } else {
-          await StatusBar.setOverlaysWebView({ overlay: false });
-        }
+        await StatusBar.setOverlaysWebView({ overlay });
       } catch (error) {
         console.warn('StatusBar configuration failed:', error);
       }
     };
 
     configureStatusBar();
+
+    // IMPORTANT: Prevent overlay mode from persisting across screens.
+    // If a screen sets overlay=true (e.g., Welcome), the next screen may not call useStatusBar,
+    // so we always reset overlay back to false on unmount.
+    return () => {
+      StatusBar.setOverlaysWebView({ overlay: false }).catch(() => {});
+    };
   }, [style, backgroundColor, overlay]);
 };
 
