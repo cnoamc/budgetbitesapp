@@ -104,7 +104,7 @@ export const Home: React.FC = () => {
   const { subscription, loading: subLoading, hasStartedTrial } = useSubscription();
   const greeting = getTimeBasedGreeting();
 
-  useStatusBar({ style: 'light', backgroundColor: '#FFFFFF', overlay: false });
+  useStatusBar({ style: 'light', backgroundColor: '#FFFFFF' });
 
   const [countdown, setCountdown] = useState(getTimeUntilMidnight());
   

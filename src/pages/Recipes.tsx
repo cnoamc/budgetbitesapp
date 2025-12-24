@@ -20,7 +20,7 @@ export const Recipes: React.FC = () => {
   const { favorites, toggleFavorite, isFavorite } = useFavorites();
   const { photoUrl } = useApp();
 
-  useStatusBar({ style: 'light', backgroundColor: '#FFFFFF', overlay: false });
+  useStatusBar({ style: 'light', backgroundColor: '#FFFFFF' });
 
   const filteredRecipes = recipes.filter(recipe => {
     let matchesCategory = false;

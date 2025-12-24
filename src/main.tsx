@@ -9,9 +9,9 @@ import "./index.css";
 const initializeCapacitor = async () => {
   if (Capacitor.isNativePlatform()) {
     try {
-      // Configure status bar for iOS
+      // Configure status bar for fullscreen (we handle safe areas via CSS)
+      await StatusBar.setOverlaysWebView({ overlay: true });
       await StatusBar.setStyle({ style: Style.Dark });
-      await StatusBar.setBackgroundColor({ color: '#0F172A' });
     } catch (error) {
       console.debug('StatusBar not available:', error);
     }
