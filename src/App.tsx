@@ -98,7 +98,7 @@ const App = () => {
             <AppProvider>
               <NotificationProvider>
                 <TooltipProvider>
-                  <div className="absolute inset-0 w-full h-full flex flex-col overflow-hidden bg-background animate-fade-in safe-area-container">
+                  <div className="absolute inset-0 w-full h-full flex flex-col overflow-hidden bg-background animate-fade-in">
                     <Toaster />
                     <Sonner />
                     <NotificationBanner />

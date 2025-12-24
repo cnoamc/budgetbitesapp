@@ -230,7 +230,7 @@ export const CookingAssistant: React.FC = () => {
       </div>
 
       {/* Input Area */}
-      <div className="p-4 pb-4 border-t border-border/50 bg-card space-y-3">
+      <div className="p-4 pb-safe-offset-4 border-t border-border/50 bg-card space-y-3">
         {/* Question Input */}
         <form onSubmit={handleSendMessage} className="flex gap-2">
           <Input
