@@ -162,6 +162,7 @@ export const Onboarding: React.FC = () => {
     <div className="h-full flex flex-col overflow-hidden relative">
       {/* Blue gradient background */}
       <div className="absolute inset-0 bg-gradient-to-br from-blue-500 via-blue-600 to-cyan-500" />
+      <div aria-hidden="true" className="absolute inset-0 bg-white/5 backdrop-blur-[2px] pointer-events-none" />
       
       {/* Decorative circles */}
       <div className="absolute -top-20 -right-20 w-64 h-64 bg-white/10 rounded-full blur-3xl" />
@@ -170,7 +171,10 @@ export const Onboarding: React.FC = () => {
       <div className="absolute bottom-1/3 right-1/4 w-32 h-32 bg-white/10 rounded-full blur-xl" />
 
       {/* Content */}
-      <div className="relative z-10 flex-1 flex flex-col max-w-lg mx-auto w-full px-5 pt-6">
+      <div
+        className="relative z-10 flex-1 flex flex-col max-w-lg mx-auto w-full px-5"
+        style={{ paddingTop: 'calc(env(safe-area-inset-top) + 1.5rem)' }}
+      >
         {/* Back button and Progress indicator */}
         <div className="mb-6">
           <div className="flex items-center gap-3 mb-3">
