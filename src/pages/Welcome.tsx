@@ -86,9 +86,9 @@ const Welcome: React.FC = () => {
           <h1 className="text-center text-[2.75rem] font-bold text-white mb-2 leading-[1.1]">
             בישול קל.
           </h1>
-          <h1 className="text-center text-[2.75rem] font-bold mb-10 leading-[1.1] text-cyan-200">
+          <h2 className="text-center text-[2.75rem] font-bold mb-10 leading-[1.1] text-cyan-200">
             חיסכון גדול.
-          </h1>
+          </h2>
 
           {/* CTA Button */}
           <Button 
