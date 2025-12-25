@@ -33,7 +33,7 @@ const skillLabels = ['אפס', 'מתחיל', 'בסיסי', 'לא רע', 'שף'];
 
 export const Onboarding: React.FC = () => {
   const navigate = useNavigate();
-  const { updateProfile, completeOnboarding } = useApp();
+  const { updateProfile } = useApp();
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     goal: null as Goal,
@@ -77,25 +77,27 @@ export const Onboarding: React.FC = () => {
   };
 
   const handleNext = () => {
-    if (step < totalSteps) {
-      setStep(step + 1);
-    } else {
-      const finalData = {
-        ...formData,
-        monthlySpending: formData.monthlySpending || 1000,
-        weeklyOrders: formData.weeklyOrders || 2,
-        preferredFood: formData.preferredFood.length ? formData.preferredFood : ['home'],
-      };
-      localStorage.setItem('bb_onboarding_data', JSON.stringify(finalData));
-      updateProfile(finalData);
-      completeOnboarding();
-      
-      if (formData.goal === 'recipes' || formData.goal === 'improve') {
-        navigate('/signin');
-      } else {
-        navigate('/loading');
-      }
+    // Move through steps until we reach the final "done" step.
+    if (step < flowSteps.length) {
+      setStep((s) => s + 1);
+      return;
     }
+
+    // Finalize onboarding on the done step.
+    const finalData = {
+      ...formData,
+      monthlySpending: formData.monthlySpending || 1000,
+      weeklyOrders: formData.weeklyOrders || 2,
+      preferredFood: formData.preferredFood.length ? formData.preferredFood : ['home'],
+    };
+
+    localStorage.setItem('bb_onboarding_data', JSON.stringify(finalData));
+
+    // Don’t block navigation on network / DB writes (more reliable on native mobile).
+    void updateProfile({ ...finalData, onboardingComplete: true });
+
+    // After onboarding, always go to sign-in.
+    setTimeout(() => navigate('/signin', { replace: true }), 0);
   };
 
   const canProceed = () => {
@@ -419,6 +421,7 @@ export const Onboarding: React.FC = () => {
         {/* Navigation - fixed at bottom, always visible */}
         <div className="shrink-0 pt-3 sm:pt-4 pb-safe-offset-4 sm:pb-safe-offset-8">
           <Button
+            type="button"
             onClick={handleNext}
             disabled={!canProceed()}
             className="w-full h-14 sm:h-[60px] rounded-2xl text-base sm:text-lg bg-white text-blue-600 hover:bg-white/90 font-bold shadow-xl"
