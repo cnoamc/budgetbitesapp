@@ -106,6 +106,7 @@ export const Onboarding: React.FC = () => {
       case 'orders': return formData.weeklyOrders > 0;
       case 'food': return formData.preferredFood.length > 0;
       case 'benefits': return true;
+      case 'done': return true;
       default: return false;
     }
   };
