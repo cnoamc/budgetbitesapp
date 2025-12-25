@@ -97,7 +97,16 @@ export const Onboarding: React.FC = () => {
     void updateProfile({ ...finalData, onboardingComplete: true });
 
     // After onboarding, always go to sign-in.
-    setTimeout(() => navigate('/signin', { replace: true }), 0);
+    setTimeout(() => {
+      navigate('/signin', { replace: true });
+
+      // Extra safety for native mobile WebViews: if routing doesn't update, force it.
+      setTimeout(() => {
+        if (window.location.pathname === '/onboarding') {
+          window.location.assign('/signin');
+        }
+      }, 350);
+    }, 0);
   };
 
   const canProceed = () => {

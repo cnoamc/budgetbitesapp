@@ -515,24 +515,23 @@ const SignIn: React.FC = () => {
                 המשך עם Apple
               </button>
 
-              {/* Email option */}
+              {/* Email login */}
+              <button
+                onClick={() => { setView('email'); setIsLogin(true); }}
+                className="w-full h-12 sm:h-14 rounded-xl sm:rounded-2xl text-sm sm:text-base font-semibold bg-white/10 text-white border-2 border-white/30 flex items-center justify-center gap-2.5 sm:gap-3 hover:bg-white/20 transition-all active:scale-[0.98]"
+              >
+                <Mail className="w-4 sm:w-5 h-4 sm:h-5" />
+                התחברות עם אימייל
+              </button>
+
+              {/* Email signup */}
               <button
                 onClick={() => { setView('email'); setIsLogin(false); }}
                 className="w-full h-12 sm:h-14 rounded-xl sm:rounded-2xl text-sm sm:text-base font-semibold bg-white/10 text-white border-2 border-white/30 flex items-center justify-center gap-2.5 sm:gap-3 hover:bg-white/20 transition-all active:scale-[0.98]"
               >
                 <Mail className="w-4 sm:w-5 h-4 sm:h-5" />
-                המשך עם אימייל
+                הרשמה עם אימייל
               </button>
-
-              {/* Login link */}
-              <div className="text-center pt-3 sm:pt-4">
-                <button 
-                  onClick={() => { setView('email'); setIsLogin(true); }}
-                  className="text-white/80 text-xs sm:text-sm hover:text-white transition-colors"
-                >
-                  כבר יש לך חשבון? <span className="font-semibold text-white underline">התחבר</span>
-                </button>
-              </div>
             </div>
           )}
 
@@ -624,19 +623,6 @@ const SignIn: React.FC = () => {
                 {isLoading ? 'מעבד...' : isLogin ? 'התחבר' : 'הרשמה'}
               </Button>
 
-              <div className="text-center">
-                <button
-                  type="button"
-                  onClick={() => setIsLogin(!isLogin)}
-                  className="text-white/80 text-sm hover:text-white transition-colors"
-                >
-                  {isLogin ? (
-                    <>אין לך חשבון? <span className="font-semibold text-white underline">הירשם</span></>
-                  ) : (
-                    <>כבר יש לך חשבון? <span className="font-semibold text-white underline">התחבר</span></>
-                  )}
-                </button>
-              </div>
             </form>
           )}
 
