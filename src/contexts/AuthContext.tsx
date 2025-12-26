@@ -26,23 +26,48 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Set up auth state listener FIRST
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        setSession(session);
-        setUser(session?.user ?? null);
-        setLoading(false);
-      }
-    );
+    let isMounted = true;
 
-    // THEN check for existing session
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    // Set up auth state listener FIRST
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      if (!isMounted) return;
       setSession(session);
       setUser(session?.user ?? null);
       setLoading(false);
     });
 
-    return () => subscription.unsubscribe();
+    // Safety: never let auth init block the UI forever (helps native WebViews)
+    const failSafe = window.setTimeout(() => {
+      if (!isMounted) return;
+      setLoading(false);
+    }, 6000);
+
+    // THEN check for existing session
+    (async () => {
+      try {
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
+        if (!isMounted) return;
+        setSession(session);
+        setUser(session?.user ?? null);
+      } catch (error) {
+        // On native mobile, network/cookie issues can cause getSession to time out/reject.
+        // We still want the app to render so the user can sign in.
+        console.warn('Auth getSession failed:', error);
+      } finally {
+        if (isMounted) setLoading(false);
+        window.clearTimeout(failSafe);
+      }
+    })();
+
+    return () => {
+      isMounted = false;
+      window.clearTimeout(failSafe);
+      subscription.unsubscribe();
+    };
   }, []);
 
   const signUp = async (email: string, password: string) => {
