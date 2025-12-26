@@ -96,17 +96,8 @@ export const Onboarding: React.FC = () => {
     // Don’t block navigation on network / DB writes (more reliable on native mobile).
     void updateProfile({ ...finalData, onboardingComplete: true });
 
-    // After onboarding, always go to sign-in.
-    setTimeout(() => {
-      navigate('/signin', { replace: true });
-
-      // Extra safety for native mobile WebViews: if routing doesn't update, force it.
-      setTimeout(() => {
-        if (window.location.pathname === '/onboarding') {
-          window.location.assign('/signin');
-        }
-      }, 350);
-    }, 0);
+    // Navigate immediately to sign-in (no timeouts for better native WebView support)
+    navigate('/signin', { replace: true });
   };
 
   const canProceed = () => {
