@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
+import { FixedScreenLayout } from '@/components/layouts';
 import { useAuth } from '@/contexts/AuthContext';
 import { useSubscription } from '@/contexts/SubscriptionContext';
 import { toast } from 'sonner';
@@ -43,12 +44,9 @@ const Premium: React.FC = () => {
 
   if (authLoading || subLoading) {
     return (
-      <div 
-        className="h-[100dvh] flex items-center justify-center"
-        style={{ background: 'linear-gradient(180deg, #2196F3 0%, #00BCD4 100%)' }}
-      >
+      <FixedScreenLayout className="items-center justify-center" style={{ background: 'linear-gradient(180deg, #2196F3 0%, #00BCD4 100%)' }}>
         <div className="w-10 h-10 rounded-full border-2 border-white/30 border-t-white animate-spin" />
-      </div>
+      </FixedScreenLayout>
     );
   }
 
@@ -63,7 +61,7 @@ const Premium: React.FC = () => {
   ];
 
   return (
-    <div className="h-[100dvh] relative overflow-hidden flex flex-col" dir="rtl">
+    <FixedScreenLayout>
       {/* Blue gradient background */}
       <div 
         className="fixed inset-0" 
@@ -73,7 +71,7 @@ const Premium: React.FC = () => {
       {/* Content */}
       <div className="relative z-10 flex-1 flex flex-col">
         {/* Header */}
-        <div className="pt-14 pb-8 px-6 text-center">
+        <div className="pt-10 pb-6 px-6 text-center">
           <motion.div
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
@@ -81,7 +79,7 @@ const Premium: React.FC = () => {
             className="relative inline-block"
           >
             <div 
-              className="w-20 h-20 rounded-[24px] overflow-hidden mx-auto"
+              className="w-16 h-16 rounded-[20px] overflow-hidden mx-auto"
               style={{ boxShadow: '0 12px 40px -10px rgba(0, 0, 0, 0.3)' }}
             >
               <img src={appIcon} alt="BudgetBites" className="w-full h-full object-cover" />
@@ -93,20 +91,20 @@ const Premium: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
           >
-            <h1 className="text-[28px] font-bold mt-5 text-white tracking-tight">נסה חודש חינם</h1>
-            <p className="text-white/70 text-[15px] mt-1.5">אחר כך ₪4.99 לחודש</p>
+            <h1 className="text-2xl font-bold mt-4 text-white tracking-tight">נסה חודש חינם</h1>
+            <p className="text-white/70 text-sm mt-1">אחר כך ₪4.99 לחודש</p>
           </motion.div>
         </div>
 
         {/* Features List */}
-        <div className="flex-1 px-6">
+        <div className="flex-1 px-6 overflow-y-auto">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="bg-white/15 backdrop-blur-sm rounded-2xl p-5 border border-white/20"
+            className="bg-white/15 backdrop-blur-sm rounded-2xl p-4 border border-white/20"
           >
-            <div className="space-y-4">
+            <div className="space-y-3">
               {features.map((feature, index) => (
                 <motion.div
                   key={feature}
@@ -118,7 +116,7 @@ const Premium: React.FC = () => {
                   <div className="w-5 h-5 rounded-full bg-white flex items-center justify-center flex-shrink-0">
                     <Check className="w-3 h-3 text-[#2196F3]" strokeWidth={3} />
                   </div>
-                  <span className="text-[15px] text-white">{feature}</span>
+                  <span className="text-sm text-white">{feature}</span>
                 </motion.div>
               ))}
             </div>
@@ -129,25 +127,25 @@ const Premium: React.FC = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6 }}
-            className="mt-5 flex items-center justify-between text-center px-2"
+            className="mt-4 flex items-center justify-between text-center px-2"
           >
             <div className="flex-1">
-              <div className="text-[13px] font-semibold text-white">היום 🎉</div>
-              <p className="text-[11px] text-white/60 mt-0.5">גישה מלאה</p>
+              <div className="text-xs font-semibold text-white">היום 🎉</div>
+              <p className="text-[10px] text-white/60 mt-0.5">גישה מלאה</p>
             </div>
             <div className="flex-1 flex justify-center">
-              <div className="w-16 h-[1px] bg-white/30 self-center" />
+              <div className="w-12 h-[1px] bg-white/30 self-center" />
             </div>
             <div className="flex-1">
-              <div className="text-[13px] font-semibold text-white">יום 29 📩</div>
-              <p className="text-[11px] text-white/60 mt-0.5">נזכיר לך</p>
+              <div className="text-xs font-semibold text-white">יום 29 📩</div>
+              <p className="text-[10px] text-white/60 mt-0.5">נזכיר לך</p>
             </div>
             <div className="flex-1 flex justify-center">
-              <div className="w-16 h-[1px] bg-white/30 self-center" />
+              <div className="w-12 h-[1px] bg-white/30 self-center" />
             </div>
             <div className="flex-1">
-              <div className="text-[13px] font-semibold text-white">יום 30 💳</div>
-              <p className="text-[11px] text-white/60 mt-0.5">₪4.99/חודש</p>
+              <div className="text-xs font-semibold text-white">יום 30 💳</div>
+              <p className="text-[10px] text-white/60 mt-0.5">₪4.99/חודש</p>
             </div>
           </motion.div>
         </div>
@@ -157,12 +155,12 @@ const Premium: React.FC = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.7 }}
-          className="p-6 pb-10"
+          className="p-6 pb-8"
         >
           <Button
             onClick={handleStartTrial}
             disabled={isStarting}
-            className="w-full h-[54px] rounded-full text-[17px] font-semibold bg-white text-[#2196F3] hover:bg-white/95 active:scale-[0.98] transition-transform relative overflow-hidden"
+            className="w-full h-[52px] rounded-full text-base font-semibold bg-white text-[#2196F3] hover:bg-white/95 active:scale-[0.98] transition-transform relative overflow-hidden"
             style={{ boxShadow: '0 8px 24px -8px rgba(0, 0, 0, 0.2)' }}
           >
             {isStarting ? (
@@ -173,12 +171,12 @@ const Premium: React.FC = () => {
           </Button>
 
           {/* Trust badge */}
-          <div className="flex items-center justify-center gap-1.5 mt-4">
-            <span className="text-[13px] text-white/70">🔒 ללא תשלום עכשיו • בטל בכל עת 💚</span>
+          <div className="flex items-center justify-center gap-1.5 mt-3">
+            <span className="text-xs text-white/70">🔒 ללא תשלום עכשיו • בטל בכל עת 💚</span>
           </div>
         </motion.div>
       </div>
-    </div>
+    </FixedScreenLayout>
   );
 };
 

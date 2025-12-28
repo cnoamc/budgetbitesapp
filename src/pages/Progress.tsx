@@ -174,7 +174,8 @@ export const Progress: React.FC = () => {
 
   return (
     <GradientBackground variant="warm">
-      <div className="min-h-screen pb-28">
+      <div className="h-[100dvh] flex flex-col overflow-hidden">
+        <div className="flex-1 overflow-y-auto pb-24">
         <div className="p-6 pt-8">
           <div className="flex items-center justify-between mb-6">
             <h1 className="text-2xl font-bold">ההתקדמות שלי</h1>
@@ -456,6 +457,7 @@ export const Progress: React.FC = () => {
             </div>
           </DialogContent>
         </Dialog>
+        </div>
       </div>
     </GradientBackground>
   );
