@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Capacitor } from '@capacitor/core';
 import { Mail, Apple, User, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -19,14 +20,15 @@ export const AuthBottomSheet: React.FC<AuthBottomSheetProps> = ({
   onLoginClick,
 }) => {
   const [termsAccepted, setTermsAccepted] = useState(false);
+  const isNative = Capacitor.isNativePlatform();
 
   return (
     <div 
-      className="mt-auto animate-slide-up"
+      className={`mt-auto ${isNative ? '' : 'animate-slide-up'}`}
       style={{
         background: 'rgba(255, 255, 255, 0.85)',
-        backdropFilter: 'blur(20px)',
-        WebkitBackdropFilter: 'blur(20px)',
+        backdropFilter: isNative ? undefined : 'blur(20px)',
+        WebkitBackdropFilter: isNative ? undefined : 'blur(20px)',
         borderRadius: '28px 28px 0 0',
         boxShadow: '0 -8px 40px -12px rgba(0, 0, 0, 0.08), 0 -4px 20px -8px rgba(0, 0, 0, 0.04)',
       }}

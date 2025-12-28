@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Capacitor } from '@capacitor/core';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 import { useStatusBar } from '@/hooks/useStatusBar';
@@ -10,6 +11,7 @@ const Welcome: React.FC = () => {
   const { user, loading } = useAuth();
   const [mounted, setMounted] = useState(false);
   const [zooming, setZooming] = useState(false);
+  const isNative = Capacitor.isNativePlatform();
 
   // Dark status bar for blue gradient background (light icons)
   useStatusBar({ style: 'dark', backgroundColor: '#3B82F6', overlay: true });
@@ -33,7 +35,7 @@ const Welcome: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="h-full min-h-0 flex items-center justify-center bg-gradient-to-br from-blue-500 via-blue-600 to-cyan-500">
+      <div className="w-full min-h-[100svh] flex items-center justify-center bg-gradient-to-br from-blue-500 via-blue-600 to-cyan-500">
         <div className="w-24 h-24 rounded-3xl overflow-hidden shadow-2xl animate-pulse ring-4 ring-white/20">
           <img src={appIcon} alt="BudgetBites" className="w-full h-full object-cover" />
         </div>
@@ -42,15 +44,23 @@ const Welcome: React.FC = () => {
   }
 
   return (
-    <div className="h-full min-h-0 flex flex-col overflow-hidden bg-gradient-to-br from-blue-500 via-blue-600 to-cyan-500" dir="rtl">
-      {/* Background overlay */}
-      <div aria-hidden="true" className="absolute inset-0 bg-white/5 backdrop-blur-[2px] pointer-events-none" />
-      
-      {/* Decorative circles */}
-      <div className="absolute -top-20 -right-20 w-64 h-64 bg-white/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute -bottom-32 -left-32 w-96 h-96 bg-cyan-400/20 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute top-1/4 left-1/4 w-48 h-48 bg-blue-300/15 rounded-full blur-2xl pointer-events-none" />
-      <div className="absolute bottom-1/3 right-1/4 w-32 h-32 bg-white/10 rounded-full blur-xl pointer-events-none" />
+    <div className="relative flex flex-col overflow-hidden w-full min-h-[100svh] bg-gradient-to-br from-blue-500 via-blue-600 to-cyan-500" dir="rtl">
+      {/* Background overlay (avoid backdrop-filter on native iOS for stability) */}
+      {isNative ? (
+        <div aria-hidden="true" className="absolute inset-0 bg-white/5 pointer-events-none" />
+      ) : (
+        <div aria-hidden="true" className="absolute inset-0 bg-white/5 backdrop-blur-[2px] pointer-events-none" />
+      )}
+
+      {/* Decorative circles (skip heavy blur on native iOS) */}
+      {!isNative && (
+        <>
+          <div className="absolute -top-20 -right-20 w-64 h-64 bg-white/10 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute -bottom-32 -left-32 w-96 h-96 bg-cyan-400/20 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute top-1/4 left-1/4 w-48 h-48 bg-blue-300/15 rounded-full blur-2xl pointer-events-none" />
+          <div className="absolute bottom-1/3 right-1/4 w-32 h-32 bg-white/10 rounded-full blur-xl pointer-events-none" />
+        </>
+      )}
 
       {/* Content - use pt-safe and pb-safe to stay inside safe areas */}
       <div className="relative z-10 flex-1 min-h-0 flex flex-col px-5 sm:px-6 pt-safe pb-safe">
