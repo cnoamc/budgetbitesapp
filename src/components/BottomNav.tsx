@@ -40,11 +40,11 @@ export const BottomNav: React.FC = () => {
   };
 
   return (
-    <div className="fixed left-0 right-0 z-50 flex justify-center bottom-safe">
-      <nav>
+    <div className="fixed left-0 right-0 z-50 flex justify-center px-4 pb-safe-offset-2 pointer-events-none" style={{ bottom: 0 }}>
+      <nav className="pointer-events-auto">
         <div 
           ref={navRef}
-          className="relative inline-flex justify-center items-center py-2 px-2 rounded-full backdrop-blur-xl bg-secondary/80 dark:bg-card/80 border border-border/50 dark:border-border/30 shadow-elevated"
+          className="relative inline-flex justify-center items-center py-2 px-2 rounded-full backdrop-blur-xl bg-secondary/90 dark:bg-card/90 border border-border/50 dark:border-border/30 shadow-elevated"
         >
           {/* Animated indicator */}
           {activeIndex >= 0 && (
