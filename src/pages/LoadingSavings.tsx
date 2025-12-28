@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Unlock, TrendingUp, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import appIcon from '@/assets/app-icon.png';
+import appLogo from '@/assets/app-logo.png';
 
 const getSavingsContext = (yearlySavings: number): string => {
   if (yearlySavings < 1500) return 'מספיק לארוחה חגיגית או בילוי קטן 🎉';
@@ -48,6 +48,7 @@ const LoadingSavings: React.FC = () => {
   const savingsProgress = Math.min((yearlySavings / 20000) * 100, 100);
 
   useEffect(() => {
+    // Phase 1: Loading animation (1.5s)
     const loadingTimer = setTimeout(() => {
       setPhase('reveal');
     }, 1500);
@@ -57,8 +58,10 @@ const LoadingSavings: React.FC = () => {
 
   useEffect(() => {
     if (phase === 'reveal') {
+      // Start progress bar animation
       setTimeout(() => setProgressAnimated(true), 200);
       
+      // Count up animation for numbers
       const duration = 1200;
       const steps = 30;
       const monthlyIncrement = monthlySavings / steps;
@@ -72,6 +75,7 @@ const LoadingSavings: React.FC = () => {
         
         if (step >= steps) {
           clearInterval(interval);
+          // Show the CTA button after counting finishes
           setTimeout(() => setShowButton(true), 500);
         }
       }, duration / steps);
@@ -81,37 +85,47 @@ const LoadingSavings: React.FC = () => {
   }, [phase, monthlySavings, yearlySavings]);
 
   return (
-    <div className="h-full min-h-0 relative overflow-hidden flex flex-col" dir="rtl">
-      {/* Gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-500 via-blue-600 to-cyan-500" />
-      <div aria-hidden="true" className="absolute inset-0 bg-white/5 backdrop-blur-[2px] pointer-events-none" />
+    <div className="h-[100dvh] relative overflow-hidden flex flex-col" dir="rtl">
+      {/* Background */}
+      <div 
+        className="absolute inset-0" 
+        style={{ background: 'linear-gradient(165deg, #F7F8FF 0%, #FFF2E9 45%, #ECFFF4 100%)' }} 
+      />
       
-      {/* Decorative circles */}
-      <div className="absolute -top-20 -right-20 w-64 h-64 bg-white/10 rounded-full blur-3xl" />
-      <div className="absolute -bottom-32 -left-32 w-96 h-96 bg-cyan-400/20 rounded-full blur-3xl" />
-      <div className="absolute top-1/3 right-1/4 w-32 h-32 bg-blue-300/20 rounded-full blur-2xl" />
+      {/* Blurred blobs */}
+      <div 
+        className="absolute w-72 h-72 rounded-full blur-3xl opacity-25" 
+        style={{ background: '#FFB088', top: '-10%', right: '-15%' }} 
+      />
+      <div 
+        className="absolute w-56 h-56 rounded-full blur-3xl opacity-20" 
+        style={{ background: '#88DDAA', bottom: '20%', left: '-10%' }} 
+      />
 
-      <div className="relative z-10 flex-1 min-h-0 overflow-y-auto scroll-touch flex flex-col items-center justify-center px-6 pt-safe-offset-6 pb-safe-offset-6 w-full">
+      <div className="relative z-10 flex-1 flex flex-col items-center justify-center px-6 w-full">
         <div className="w-full max-w-sm">
-          {/* App icon with pulse animation */}
+          {/* Chef icon with pulse animation */}
           <div className="flex justify-center mb-8">
             <div 
-              className={`w-24 h-24 rounded-3xl overflow-hidden shadow-2xl ring-4 ring-white/20 transition-all duration-700 ${
+              className={`w-20 h-20 rounded-3xl overflow-hidden shadow-2xl transition-all duration-700 ${
                 phase === 'loading' ? 'animate-pulse scale-100' : 'scale-110'
               }`}
+              style={{ 
+                boxShadow: '0 25px 80px -15px rgba(255, 107, 149, 0.35), 0 10px 30px -10px rgba(0,0,0,0.1)'
+              }}
             >
-              <img src={appIcon} alt="BudgetBites" className="w-full h-full object-cover" />
+              <img src={appLogo} alt="BudgetBites" className="w-full h-full object-cover" />
             </div>
           </div>
 
           {phase === 'loading' && (
             <div className="text-center animate-fade-in">
-              <h2 className="text-xl font-bold text-white mb-2">מחשבים את החיסכון שלך...</h2>
-              <div className="flex justify-center gap-1.5 mt-4">
+              <h2 className="text-xl font-bold text-gray-900 mb-2">מחשבים את החיסכון שלך...</h2>
+              <div className="flex justify-center gap-1 mt-4">
                 {[0, 1, 2].map((i) => (
                   <div
                     key={i}
-                    className="w-3 h-3 rounded-full bg-white animate-bounce"
+                    className="w-3 h-3 rounded-full bg-gray-900 animate-bounce"
                     style={{ animationDelay: `${i * 0.15}s` }}
                   />
                 ))}
@@ -120,20 +134,27 @@ const LoadingSavings: React.FC = () => {
           )}
 
           {phase === 'reveal' && (
-            <div className="w-full p-6 rounded-3xl bg-white shadow-2xl animate-scale-in">
+            <div 
+              className="w-full p-6 rounded-3xl animate-scale-in"
+              style={{
+                background: 'rgba(255, 255, 255, 0.8)',
+                backdropFilter: 'blur(16px)',
+                boxShadow: '0 8px 32px -8px rgba(0, 0, 0, 0.12)'
+              }}
+            >
               {/* Header */}
               <div className="flex items-center justify-center gap-2 mb-5">
-                <Unlock className="w-5 h-5 text-blue-600" />
+                <Unlock className="w-5 h-5 text-gray-900" />
                 <p className="text-base font-semibold text-gray-900">החיסכון שמחכה לך</p>
               </div>
 
               {/* Progress bar */}
-              <div className="relative h-3 bg-gray-100 rounded-full overflow-hidden mb-5">
+              <div className="relative h-3 bg-muted/50 rounded-full overflow-hidden mb-5">
                 <div 
                   className="absolute inset-y-0 right-0 rounded-full transition-all duration-1000 ease-out"
                   style={{ 
                     width: progressAnimated ? `${savingsProgress}%` : '0%',
-                    background: 'linear-gradient(90deg, #3B82F6 0%, #22C55E 100%)'
+                    background: 'linear-gradient(90deg, #1D1D1F 0%, #27AE60 100%)'
                   }}
                 />
               </div>
@@ -142,7 +163,7 @@ const LoadingSavings: React.FC = () => {
               <div className="flex justify-between items-start mb-4">
                 <div className="text-center flex-1">
                   <div className="flex items-center justify-center gap-1 mb-1">
-                    <TrendingUp className="w-3.5 h-3.5 text-blue-600" />
+                    <TrendingUp className="w-3.5 h-3.5 text-gray-900" />
                     <p className="text-xs text-gray-500">חודשי</p>
                   </div>
                   <p className="text-3xl font-bold text-gray-900">₪{countedMonthly.toLocaleString()}</p>
@@ -162,7 +183,10 @@ const LoadingSavings: React.FC = () => {
               {/* Percentage badge */}
               {savingsPercentage > 0 && (
                 <div className="flex justify-center mb-3">
-                  <div className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500">
+                  <div 
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full"
+                    style={{ background: 'linear-gradient(135deg, #FF6B95 0%, #FF9A56 100%)' }}
+                  >
                     <span className="text-white text-sm font-bold">{savingsPercentage}%</span>
                     <span className="text-white/90 text-xs">חיסכון מההוצאה הנוכחית</span>
                   </div>
@@ -170,18 +194,26 @@ const LoadingSavings: React.FC = () => {
               )}
 
               {/* Context message */}
-              <div className="text-center py-2.5 px-4 rounded-xl bg-green-50">
+              <div 
+                className="text-center py-2.5 px-4 rounded-xl"
+                style={{ background: 'rgba(39, 174, 96, 0.1)' }}
+              >
                 <p className="text-sm text-gray-700">{getSavingsContext(yearlySavings)}</p>
               </div>
             </div>
           )}
 
-          {/* CTA Button */}
+          {/* CTA Button - shows after counting animation */}
           {showButton && (
             <div className="mt-6 animate-fade-in">
               <Button
                 onClick={() => navigate('/signin')}
-                className="w-full h-14 rounded-2xl text-base font-semibold bg-white text-blue-600 hover:bg-white/90 transition-all active:scale-[0.98] shadow-xl"
+                className="w-full h-14 rounded-2xl text-base font-semibold transition-all active:scale-[0.98]"
+                style={{
+                  background: '#1D1D1F',
+                  color: 'white',
+                  boxShadow: '0 8px 30px -6px rgba(0, 0, 0, 0.3)'
+                }}
               >
                 לחסוך עוד היום
                 <ArrowLeft className="w-5 h-5 mr-2" />

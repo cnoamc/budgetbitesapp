@@ -1,32 +1,30 @@
 import { createRoot } from "react-dom/client";
 import { Capacitor } from '@capacitor/core';
+import { StatusBar, Style } from '@capacitor/status-bar';
+import { SplashScreen } from '@capacitor/splash-screen';
 import App from "./App.tsx";
 import "./index.css";
 
-// Initialize Capacitor plugins safely
+// Initialize Capacitor plugins for native platforms
 const initializeCapacitor = async () => {
-  if (!Capacitor.isNativePlatform()) return;
+  if (Capacitor.isNativePlatform()) {
+    try {
+      // Configure status bar for iOS
+      await StatusBar.setStyle({ style: Style.Dark });
+      await StatusBar.setBackgroundColor({ color: '#0F172A' });
+    } catch (error) {
+      console.debug('StatusBar not available:', error);
+    }
 
-  // Dynamically import plugins only on native to avoid web errors
-  try {
-    const { StatusBar, Style } = await import('@capacitor/status-bar');
-    await StatusBar.setOverlaysWebView({ overlay: true });
-    await StatusBar.setStyle({ style: Style.Light }); // Light icons on dark/blue background
-  } catch (e) {
-    console.debug('[Capacitor] StatusBar unavailable');
-  }
-
-  try {
-    const { SplashScreen } = await import('@capacitor/splash-screen');
-    // Small delay ensures the WebView is fully ready
-    setTimeout(() => SplashScreen.hide(), 100);
-  } catch (e) {
-    console.debug('[Capacitor] SplashScreen unavailable');
+    try {
+      // Hide splash screen after app is ready
+      await SplashScreen.hide();
+    } catch (error) {
+      console.debug('SplashScreen not available:', error);
+    }
   }
 };
 
-// Render app immediately, don't block on Capacitor init
-createRoot(document.getElementById("root")!).render(<App />);
-
-// Initialize Capacitor after render
+// Initialize and render
 initializeCapacitor();
+createRoot(document.getElementById("root")!).render(<App />);

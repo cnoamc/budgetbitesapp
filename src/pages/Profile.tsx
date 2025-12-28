@@ -1,11 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Settings, RefreshCw, MapPin, LogOut, Pencil, Camera, X, Bell, Moon, Crown, FileText, HelpCircle, Shield, User, Fingerprint, ScanFace, CheckCircle, AlertCircle, Mail } from 'lucide-react';
+import { Settings, RefreshCw, MapPin, LogOut, Pencil, Camera, X, Bell, Moon, Crown, FileText, HelpCircle, Shield, User } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import appLogo from '@/assets/app-logo.png';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
-import ScreenLayout from '@/components/layout/ScreenLayout';
+
 import { SyncIndicator } from '@/components/SyncIndicator';
 import { TrialReminderBanner } from '@/components/PremiumPaywall';
 import { useApp } from '@/contexts/AppContext';
@@ -13,8 +13,6 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useNotifications } from '@/contexts/NotificationContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useSubscription } from '@/contexts/SubscriptionContext';
-import { useStatusBar } from '@/hooks/useStatusBar';
-import { useBiometricAuth } from '@/hooks/useBiometricAuth';
 import { NotificationSettings } from '@/components/NotificationSettings';
 import { toast } from 'sonner';
 import {
@@ -23,6 +21,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
+  DialogDescription,
 } from '@/components/ui/dialog';
 import {
   AlertDialog,
@@ -38,22 +37,17 @@ import {
 export const Profile: React.FC = () => {
   const navigate = useNavigate();
   const { profile, progress, displayName, photoUrl, updateDisplayName, updatePhotoUrl, syncing } = useApp();
-  const { user, signOut, resendVerificationEmail } = useAuth();
+  const { user, signOut } = useAuth();
   const { unreadCount } = useNotifications();
   const { resolvedMode, setMode } = useTheme();
   const { daysLeftInTrial, isTrialActive, subscription, toggleCancelReminder } = useSubscription();
-  const biometric = useBiometricAuth();
   const fileInputRef = useRef<HTMLInputElement>(null);
-
-  useStatusBar({ style: 'light', backgroundColor: '#FFFFFF' });
 
   const [isEditingName, setIsEditingName] = useState(false);
   const [isNotificationSettingsOpen, setIsNotificationSettingsOpen] = useState(false);
   const [isSignOutDialogOpen, setIsSignOutDialogOpen] = useState(false);
   const [editedName, setEditedName] = useState(displayName);
-  const [isResendingVerification, setIsResendingVerification] = useState(false);
 
-  const isEmailVerified = user?.email_confirmed_at != null;
   const skillLabels = ['מתחיל', 'בסיסי', 'מתקדם', 'מומחה', 'שף!'];
 
   useEffect(() => {
@@ -67,20 +61,6 @@ export const Profile: React.FC = () => {
       navigate('/signin');
     } catch (error) {
       toast.error('שגיאה בהתנתקות');
-    }
-  };
-
-  const handleResendVerification = async () => {
-    setIsResendingVerification(true);
-    try {
-      const { error } = await resendVerificationEmail();
-      if (error) {
-        toast.error('שגיאה בשליחת המייל. נסה שוב.');
-      } else {
-        toast.success('מייל אימות נשלח בהצלחה!');
-      }
-    } finally {
-      setIsResendingVerification(false);
     }
   };
 
@@ -173,211 +153,158 @@ export const Profile: React.FC = () => {
   };
 
   return (
-    <ScreenLayout hasBottomNav contentClassName="p-4 pt-safe-offset-4 flex flex-col">
-      {/* Trial Reminder Banner */}
-      {isTrialActive && (
-        <TrialReminderBanner
-          daysLeft={daysLeftInTrial}
-          reminderEnabled={subscription?.cancel_reminder_enabled ?? true}
-          onToggleReminder={toggleCancelReminder}
-        />
-      )}
-
-      {/* Profile Header - Compact */}
-      <div className="text-center mb-3">
-        <div className="relative inline-block">
-          <div 
-            className="w-16 h-16 gradient-primary rounded-full mx-auto flex items-center justify-center shadow-glow cursor-pointer overflow-hidden group"
-            onClick={handlePhotoClick}
-          >
-            {photoUrl ? (
-              <img src={photoUrl} alt="Profile" className="w-full h-full object-cover" />
-            ) : (
-              <User className="w-8 h-8 text-primary-foreground" />
-            )}
-            <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity rounded-full">
-              <Camera className="w-5 h-5 text-white" />
-            </div>
-          </div>
-          {photoUrl && (
-            <button
-              onClick={(e) => { e.stopPropagation(); handleRemovePhoto(); }}
-              className="absolute -top-1 -right-1 w-5 h-5 bg-destructive rounded-full flex items-center justify-center shadow-md"
-            >
-              <X className="w-3 h-3 text-destructive-foreground" />
-            </button>
-          )}
-        </div>
-        
-        <input ref={fileInputRef} type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={handleFileChange} />
-
-        <div className="flex items-center justify-center gap-1 mt-2">
-          <h1 className="text-xl font-bold">{displayName}</h1>
-          <button onClick={() => setIsEditingName(true)} className="p-1 hover:bg-muted rounded-full">
-            <Pencil className="w-3 h-3 text-muted-foreground" />
-          </button>
-        </div>
-        
-        <p className="text-sm text-muted-foreground">
-          {skillLabels[progress.skillLevel - 1]} • {progress.totalMealsCooked} ארוחות
-        </p>
-        {user && (
-          <div className="flex flex-col items-center gap-1">
-            <p className="text-xs text-muted-foreground" dir="ltr">{user.email}</p>
-            {isEmailVerified ? (
-              <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs font-medium">
-                <CheckCircle className="w-3 h-3" />
-                מייל מאומת
-              </div>
-            ) : (
-              <div className="flex flex-col items-center gap-1">
-                <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 text-xs font-medium">
-                  <AlertCircle className="w-3 h-3" />
-                  מייל לא מאומת
-                </div>
-                <button
-                  onClick={handleResendVerification}
-                  disabled={isResendingVerification}
-                  className="text-xs text-primary hover:underline disabled:opacity-50 flex items-center gap-1"
-                >
-                  {isResendingVerification ? (
-                    <div className="w-3 h-3 border border-primary border-t-transparent rounded-full animate-spin" />
-                  ) : (
-                    <Mail className="w-3 h-3" />
-                  )}
-                  שלח מייל אימות שוב
-                </button>
-              </div>
-            )}
-          </div>
-        )}
-        
+    <div className="h-screen bg-background flex flex-col overflow-hidden">
+      <div className="flex-1 p-4 pb-28 flex flex-col overflow-y-auto">
+        {/* Trial Reminder Banner */}
         {isTrialActive && (
-          <div className="inline-flex items-center gap-1 mt-1 px-2 py-0.5 rounded-full bg-primary/10 text-primary text-xs font-medium">
-            <Crown className="w-3 h-3" />
-            Premium • תקופת ניסיון
-          </div>
+          <TrialReminderBanner
+            daysLeft={daysLeftInTrial}
+            reminderEnabled={subscription?.cancel_reminder_enabled ?? true}
+            onToggleReminder={toggleCancelReminder}
+          />
         )}
-        
-        <div className="flex justify-center mt-2">
-          <SyncIndicator syncing={syncing} />
-        </div>
-      </div>
 
-      {/* Settings Card - Compact */}
-      <div className="bg-card rounded-xl p-3 shadow-card border border-border/50 mb-3">
-        <h3 className="font-semibold text-sm mb-2 flex items-center gap-2">
-          <Settings className="w-4 h-4" />
-          הגדרות
-        </h3>
-        
-        <div className="space-y-2">
-          <div className="flex items-center justify-between py-1.5 border-b border-border/50">
-            <div className="flex items-center gap-2">
-              <MapPin className="w-4 h-4 text-muted-foreground" />
-              <span className="text-sm">מיקום</span>
-            </div>
-            <span className="text-sm text-muted-foreground">ישראל</span>
-          </div>
-          
-          <div className="flex items-center justify-between py-1.5 border-b border-border/50">
-            <div className="flex items-center gap-2">
-              <div className="w-4 h-4 rounded overflow-hidden">
-                <img src={appLogo} alt="Skill" className="w-full h-full object-cover" />
+        {/* Profile Header - Compact */}
+        <div className="text-center mb-3">
+          <div className="relative inline-block">
+            <div 
+              className="w-16 h-16 gradient-primary rounded-full mx-auto flex items-center justify-center shadow-glow cursor-pointer overflow-hidden group"
+              onClick={handlePhotoClick}
+            >
+              {photoUrl ? (
+                <img src={photoUrl} alt="Profile" className="w-full h-full object-cover" />
+              ) : (
+                <User className="w-8 h-8 text-primary-foreground" />
+              )}
+              <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity rounded-full">
+                <Camera className="w-5 h-5 text-white" />
               </div>
-              <span className="text-sm">רמת מיומנות</span>
             </div>
-            <span className="text-sm text-muted-foreground">{profile.cookingSkill}/5</span>
+            {photoUrl && (
+              <button
+                onClick={(e) => { e.stopPropagation(); handleRemovePhoto(); }}
+                className="absolute -top-1 -right-1 w-5 h-5 bg-destructive rounded-full flex items-center justify-center shadow-md"
+              >
+                <X className="w-3 h-3 text-destructive-foreground" />
+              </button>
+            )}
           </div>
           
-          <div className="flex items-center justify-between py-1.5 border-b border-border/50">
-            <div className="flex items-center gap-2">
-              <span className="text-base">🍔</span>
-              <span className="text-sm">הזמנות שבועיות</span>
-            </div>
-            <span className="text-sm text-muted-foreground">{profile.weeklyOrders} פעמים</span>
-          </div>
-          
-          <div className="flex items-center justify-between py-1.5 border-b border-border/50">
-            <div className="flex items-center gap-2">
-              <Moon className="w-4 h-4 text-muted-foreground" />
-              <span className="text-sm">מצב כהה</span>
-            </div>
-            <Switch
-              checked={resolvedMode === 'dark'}
-              onCheckedChange={(checked) => setMode(checked ? 'dark' : 'light')}
-            />
-          </div>
+          <input ref={fileInputRef} type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={handleFileChange} />
 
-          {biometric.isAvailable && (
+          <div className="flex items-center justify-center gap-1 mt-2">
+            <h1 className="text-xl font-bold">{displayName}</h1>
+            <button onClick={() => setIsEditingName(true)} className="p-1 hover:bg-muted rounded-full">
+              <Pencil className="w-3 h-3 text-muted-foreground" />
+            </button>
+          </div>
+          
+          <p className="text-sm text-muted-foreground">
+            {skillLabels[progress.skillLevel - 1]} • {progress.totalMealsCooked} ארוחות
+          </p>
+          {user && <p className="text-xs text-muted-foreground" dir="ltr">{user.email}</p>}
+          
+          {/* Subscription Badge */}
+          {isTrialActive && (
+            <div className="inline-flex items-center gap-1 mt-1 px-2 py-0.5 rounded-full bg-primary/10 text-primary text-xs font-medium">
+              <Crown className="w-3 h-3" />
+              Premium • תקופת ניסיון
+            </div>
+          )}
+          
+          <div className="flex justify-center mt-2">
+            <SyncIndicator syncing={syncing} />
+          </div>
+        </div>
+
+        {/* Settings Card - Compact */}
+        <div className="bg-card rounded-xl p-3 shadow-card border border-border/50 mb-3">
+          <h3 className="font-semibold text-sm mb-2 flex items-center gap-2">
+            <Settings className="w-4 h-4" />
+            הגדרות
+          </h3>
+          
+          <div className="space-y-2">
+            <div className="flex items-center justify-between py-1.5 border-b border-border/50">
+              <div className="flex items-center gap-2">
+                <MapPin className="w-4 h-4 text-muted-foreground" />
+                <span className="text-sm">מיקום</span>
+              </div>
+              <span className="text-sm text-muted-foreground">ישראל</span>
+            </div>
+            
+            <div className="flex items-center justify-between py-1.5 border-b border-border/50">
+              <div className="flex items-center gap-2">
+                <div className="w-4 h-4 rounded overflow-hidden">
+                  <img src={appLogo} alt="Skill" className="w-full h-full object-cover" />
+                </div>
+                <span className="text-sm">רמת מיומנות</span>
+              </div>
+              <span className="text-sm text-muted-foreground">{profile.cookingSkill}/5</span>
+            </div>
+            
+            <div className="flex items-center justify-between py-1.5 border-b border-border/50">
+              <div className="flex items-center gap-2">
+                <span className="text-base">🍔</span>
+                <span className="text-sm">הזמנות שבועיות</span>
+              </div>
+              <span className="text-sm text-muted-foreground">{profile.weeklyOrders} פעמים</span>
+            </div>
+            
             <div className="flex items-center justify-between py-1.5">
               <div className="flex items-center gap-2">
-                {biometric.biometryType === 'faceId' || biometric.biometryType === 'face' ? (
-                  <ScanFace className="w-4 h-4 text-muted-foreground" />
-                ) : (
-                  <Fingerprint className="w-4 h-4 text-muted-foreground" />
-                )}
-                <span className="text-sm">התחברות עם {biometric.getBiometryLabel()}</span>
+                <Moon className="w-4 h-4 text-muted-foreground" />
+                <span className="text-sm">מצב כהה</span>
               </div>
               <Switch
-                checked={biometric.isEnabled}
-                onCheckedChange={(checked) => {
-                  if (checked) {
-                    if (user?.email) {
-                      biometric.enableBiometric(user.email);
-                      toast.success(`${biometric.getBiometryLabel()} הופעל`);
-                    }
-                  } else {
-                    biometric.disableBiometric();
-                    toast.success(`${biometric.getBiometryLabel()} כובה`);
-                  }
-                }}
+                checked={resolvedMode === 'dark'}
+                onCheckedChange={(checked) => setMode(checked ? 'dark' : 'light')}
               />
             </div>
-          )}
+          </div>
         </div>
-      </div>
 
-      {/* Actions - Compact */}
-      <div className="space-y-2">
-        <Button variant="outline" size="sm" className="w-full justify-start h-10" onClick={() => setIsNotificationSettingsOpen(true)}>
-          <Bell className="w-4 h-4" />
-          הגדרות התראות
-          {unreadCount > 0 && (
-            <span className="mr-auto bg-primary text-primary-foreground text-xs px-1.5 py-0.5 rounded-full">{unreadCount}</span>
-          )}
-        </Button>
-        
-        <Button variant="outline" size="sm" className="w-full justify-start h-10" onClick={handleRestartOnboarding}>
-          <RefreshCw className="w-4 h-4" />
-          מילוי שאלון מחדש
-        </Button>
-        
-        <Button variant="ghost" size="sm" className="w-full justify-start h-10 text-destructive hover:text-destructive hover:bg-destructive/10" onClick={() => setIsSignOutDialogOpen(true)}>
-          <LogOut className="w-4 h-4" />
-          התנתק
-        </Button>
-      </div>
+        {/* Actions - Compact */}
+        <div className="space-y-2">
+          <Button variant="outline" size="sm" className="w-full justify-start h-10" onClick={() => setIsNotificationSettingsOpen(true)}>
+            <Bell className="w-4 h-4" />
+            הגדרות התראות
+            {unreadCount > 0 && (
+              <span className="mr-auto bg-primary text-primary-foreground text-xs px-1.5 py-0.5 rounded-full">{unreadCount}</span>
+            )}
+          </Button>
+          
+          <Button variant="outline" size="sm" className="w-full justify-start h-10" onClick={handleRestartOnboarding}>
+            <RefreshCw className="w-4 h-4" />
+            מילוי שאלון מחדש
+          </Button>
+          
+          <Button variant="ghost" size="sm" className="w-full justify-start h-10 text-destructive hover:text-destructive hover:bg-destructive/10" onClick={() => setIsSignOutDialogOpen(true)}>
+            <LogOut className="w-4 h-4" />
+            התנתק
+          </Button>
+        </div>
 
-      {/* Legal Links */}
-      <div className="flex justify-center gap-4 text-xs text-muted-foreground mt-2">
-        <button onClick={() => navigate('/privacy')} className="hover:underline flex items-center gap-1">
-          <Shield className="w-3 h-3" />
-          פרטיות
-        </button>
-        <button onClick={() => navigate('/terms')} className="hover:underline flex items-center gap-1">
-          <FileText className="w-3 h-3" />
-          תנאי שימוש
-        </button>
-        <button onClick={() => navigate('/support')} className="hover:underline flex items-center gap-1">
-          <HelpCircle className="w-3 h-3" />
-          תמיכה
-        </button>
-      </div>
+        {/* Legal Links */}
+        <div className="flex justify-center gap-4 text-xs text-muted-foreground mt-2">
+          <button onClick={() => navigate('/privacy')} className="hover:underline flex items-center gap-1">
+            <Shield className="w-3 h-3" />
+            פרטיות
+          </button>
+          <button onClick={() => navigate('/terms')} className="hover:underline flex items-center gap-1">
+            <FileText className="w-3 h-3" />
+            תנאי שימוש
+          </button>
+          <button onClick={() => navigate('/support')} className="hover:underline flex items-center gap-1">
+            <HelpCircle className="w-3 h-3" />
+            תמיכה
+          </button>
+        </div>
 
-      {/* App Info */}
-      <div className="mt-auto pt-2 text-center text-xs text-muted-foreground">
-        <p>BudgetBites v1.0 • נבנה באהבה 🧡</p>
+        {/* App Info */}
+        <div className="mt-auto pt-2 text-center text-xs text-muted-foreground">
+          <p>BudgetBites v1.0 • נבנה באהבה 🧡</p>
+        </div>
       </div>
 
       {/* Dialogs */}
@@ -412,11 +339,12 @@ export const Profile: React.FC = () => {
         <DialogContent className="max-w-md max-h-[80vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>הגדרות התראות</DialogTitle>
+            <DialogDescription>בחר אילו התראות לקבל ומתי</DialogDescription>
           </DialogHeader>
           <NotificationSettings />
         </DialogContent>
       </Dialog>
-    </ScreenLayout>
+    </div>
   );
 };
 

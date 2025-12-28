@@ -142,7 +142,6 @@
 @layer base {
   * {
     @apply border-border;
-    box-sizing: border-box;
   }
 
   html {
@@ -150,30 +149,6 @@
     font-family: 'Rubik', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    height: 100%;
-  }
-
-  body {
-    @apply bg-background text-foreground antialiased;
-    width: 100%;
-    height: 100%;
-    min-height: 100vh;
-    min-height: 100svh;
-    min-height: 100dvh;
-    margin: 0;
-    padding: 0;
-    /* App uses internal scroll containers per-screen (iOS friendly) */
-    overflow: hidden;
-  }
-
-  #root {
-    width: 100%;
-    height: 100%;
-    min-height: 100dvh;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    /* Safe areas handled inside app */
   }
 
   /* Smooth theme transition */
@@ -183,69 +158,9 @@
   html.theme-transition *::after {
     transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease !important;
   }
-}
 
-/* Safe area utility classes */
-@layer utilities {
-  .pt-safe {
-    padding-top: env(safe-area-inset-top, 0px);
-  }
-
-  .pt-safe-offset-4 {
-    padding-top: calc(env(safe-area-inset-top, 0px) + 1rem);
-  }
-
-  .pt-safe-offset-6 {
-    padding-top: calc(env(safe-area-inset-top, 0px) + 1.5rem);
-  }
-
-  .pt-safe-offset-10 {
-    padding-top: calc(env(safe-area-inset-top, 0px) + 2.5rem);
-  }
-
-  .pb-safe {
-    padding-bottom: env(safe-area-inset-bottom, 0px);
-  }
-
-  .pb-safe-offset-3 {
-    padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 0.75rem);
-  }
-
-  .pb-safe-offset-4 {
-    padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 1rem);
-  }
-
-  .pb-safe-offset-6 {
-    padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 1.5rem);
-  }
-
-  .pb-safe-offset-8 {
-    padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 2rem);
-  }
-
-  .pb-safe-offset-20 {
-    padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 5rem);
-  }
-
-  .mb-safe {
-    margin-bottom: env(safe-area-inset-bottom, 0px);
-  }
-
-  .top-safe {
-    top: env(safe-area-inset-top, 0px);
-  }
-
-  .bottom-safe {
-    bottom: env(safe-area-inset-bottom, 0px);
-  }
-
-  .bottom-safe-offset-2 {
-    bottom: calc(env(safe-area-inset-bottom, 0px) + 0.5rem);
-  }
-
-  /* iOS momentum scrolling for internal scroll containers */
-  .scroll-touch {
-    -webkit-overflow-scrolling: touch;
+  body {
+    @apply bg-background text-foreground antialiased;
   }
 }
 

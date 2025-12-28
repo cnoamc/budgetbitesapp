@@ -33,16 +33,16 @@ const applyFixedTheme = () => {
 };
 
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [mode, setModeState] = useState<ThemeMode>('system');
-  const [resolvedMode, setResolvedMode] = useState<'light' | 'dark'>('light');
-
-  // Hydrate from localStorage after mount
-  useEffect(() => {
+  const [mode, setModeState] = useState<ThemeMode>(() => {
     const stored = localStorage.getItem(THEME_MODE_KEY);
-    if (stored === 'dark' || stored === 'light' || stored === 'system') {
-      setModeState(stored);
-    }
-  }, []);
+    if (stored === 'dark' || stored === 'light' || stored === 'system') return stored;
+    return 'system'; // Default to system
+  });
+
+  const [resolvedMode, setResolvedMode] = useState<'light' | 'dark'>(() => {
+    if (mode === 'system') return getSystemTheme();
+    return mode === 'dark' ? 'dark' : 'light';
+  });
 
   useEffect(() => {
     applyFixedTheme();

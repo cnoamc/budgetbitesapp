@@ -4,7 +4,6 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
-import { Capacitor } from '@capacitor/core';
 import { AnimatePresence } from "framer-motion";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { AppProvider } from "@/contexts/AppContext";
@@ -48,14 +47,10 @@ const PersistentBottomNav = () => {
 
 const AnimatedRoutes = () => {
   const location = useLocation();
-  const isNative = Capacitor.isNativePlatform();
-  
-  // On native iOS, use 'sync' mode to prevent exit animations from blocking taps
-  const animationMode = isNative ? 'sync' : 'wait';
   
   return (
     <>
-      <AnimatePresence mode={animationMode}>
+      <AnimatePresence mode="wait">
         <Routes location={location} key={location.pathname}>
           <Route path="/" element={<PageTransition><Welcome /></PageTransition>} />
           <Route path="/loading" element={<PageTransition><LoadingSavings /></PageTransition>} />
@@ -82,7 +77,23 @@ const AnimatedRoutes = () => {
 };
 
 const App = () => {
-  // NOTE: React splash screen disabled - using native iOS splash instead
+  const [showSplash, setShowSplash] = useState(true);
+  const [hasShownSplash, setHasShownSplash] = useState(false);
+
+  useEffect(() => {
+    // Check if splash was already shown this session
+    const splashShown = sessionStorage.getItem('bb_splash_shown');
+    if (splashShown) {
+      setShowSplash(false);
+      setHasShownSplash(true);
+    }
+  }, []);
+
+  const handleSplashComplete = () => {
+    sessionStorage.setItem('bb_splash_shown', 'true');
+    setShowSplash(false);
+    setHasShownSplash(true);
+  };
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -92,16 +103,15 @@ const App = () => {
             <AppProvider>
               <NotificationProvider>
                 <TooltipProvider>
-                  <div className="w-full h-full min-h-0 flex flex-col overflow-hidden bg-background animate-fade-in">
-                    <Toaster />
-                    <Sonner />
-                    <NotificationBanner />
-                    <BrowserRouter>
-                      <div className="flex-1 min-h-0 overflow-hidden relative flex flex-col">
-                        <AnimatedRoutes />
-                      </div>
-                    </BrowserRouter>
-                  </div>
+                  <Toaster />
+                  <Sonner />
+                  <NotificationBanner />
+                  {showSplash && !hasShownSplash && (
+                    <SplashScreen onComplete={handleSplashComplete} minDuration={2000} />
+                  )}
+                  <BrowserRouter>
+                    <AnimatedRoutes />
+                  </BrowserRouter>
                 </TooltipProvider>
               </NotificationProvider>
             </AppProvider>

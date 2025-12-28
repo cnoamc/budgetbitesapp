@@ -1,6 +1,5 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Capacitor } from '@capacitor/core';
 
 interface PageTransitionProps {
   children: React.ReactNode;
@@ -25,18 +24,6 @@ const pageTransition = {
 };
 
 export const PageTransition: React.FC<PageTransitionProps> = ({ children }) => {
-  const isNative = Capacitor.isNativePlatform();
-
-  // On native iOS WebViews, opacity transitions can get stuck and block taps.
-  // Disable fade animation on native for reliability.
-  if (isNative) {
-    return (
-      <div className="w-full h-full min-h-0 flex flex-col" style={{ pointerEvents: 'auto' }}>
-        {children}
-      </div>
-    );
-  }
-
   return (
     <motion.div
       initial="initial"
@@ -44,8 +31,7 @@ export const PageTransition: React.FC<PageTransitionProps> = ({ children }) => {
       exit="exit"
       variants={pageVariants}
       transition={pageTransition}
-      className="w-full h-full min-h-0 flex flex-col"
-      style={{ pointerEvents: 'auto' }}
+      className="min-h-screen"
     >
       {children}
     </motion.div>

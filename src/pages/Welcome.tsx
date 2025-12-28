@@ -1,125 +1,147 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Capacitor } from '@capacitor/core';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
-import { useStatusBar } from '@/hooks/useStatusBar';
-import appIcon from '@/assets/app-icon.png';
-
+import splashScreen from '@/assets/splash-screen.png';
+const FOOD_EMOJIS = ['🍔', '🍕', '🍝', '🥗', '🍜', '🥘', '🍳', '🥙', '🌮', '🍲', '🥪', '🍱', '🧆', '🥐', '🍰'];
+interface FloatingEmoji {
+  emoji: string;
+  x: number;
+  y: number;
+  size: number;
+  opacity: number;
+  rotation: number;
+}
 const Welcome: React.FC = () => {
   const navigate = useNavigate();
-  const { user, loading } = useAuth();
+  const {
+    user,
+    loading
+  } = useAuth();
   const [mounted, setMounted] = useState(false);
   const [zooming, setZooming] = useState(false);
-  const isNative = Capacitor.isNativePlatform();
 
-  // Dark status bar for blue gradient background (light icons)
-  useStatusBar({ style: 'dark', backgroundColor: '#3B82F6', overlay: true });
-
+  // Generate random floating emojis
+  const floatingEmojis = useMemo<FloatingEmoji[]>(() => {
+    const emojis: FloatingEmoji[] = [];
+    for (let i = 0; i < 25; i++) {
+      emojis.push({
+        emoji: FOOD_EMOJIS[Math.floor(Math.random() * FOOD_EMOJIS.length)],
+        x: Math.random() * 100,
+        y: Math.random() * 100,
+        size: 28 + Math.random() * 28,
+        opacity: 0.25 + Math.random() * 0.25,
+        rotation: Math.random() * 360
+      });
+    }
+    return emojis;
+  }, []);
   useEffect(() => {
     setMounted(true);
   }, []);
 
+  // If already logged in, redirect to home
   useEffect(() => {
     if (user && !loading) {
-      navigate('/home', { replace: true });
+      navigate('/home', {
+        replace: true
+      });
     }
   }, [user, loading, navigate]);
-
   const handleStart = () => {
     setZooming(true);
     setTimeout(() => {
       navigate('/onboarding');
     }, 400);
   };
-
   if (loading) {
-    return (
-      <div className="w-full min-h-[100svh] flex items-center justify-center bg-gradient-to-br from-blue-500 via-blue-600 to-cyan-500">
-        <div className="w-24 h-24 rounded-3xl overflow-hidden shadow-2xl animate-pulse ring-4 ring-white/20">
-          <img src={appIcon} alt="BudgetBites" className="w-full h-full object-cover" />
+    return <div className="min-h-screen flex items-center justify-center" style={{
+      background: 'linear-gradient(180deg, #F8F9FF 0%, #FFE8F0 50%, #F0FFF6 100%)'
+    }}>
+        <div className="w-20 h-20 rounded-3xl overflow-hidden shadow-2xl animate-pulse">
+          <img src={splashScreen} alt="BudgetBites" className="w-full h-full object-cover" />
         </div>
-      </div>
-    );
+      </div>;
   }
+  return <div className="min-h-screen min-h-[100dvh] relative overflow-hidden flex flex-col" dir="rtl">
+      {/* Soft gradient background */}
+      <div className="fixed inset-0" style={{
+      background: 'linear-gradient(180deg, #F8F9FF 0%, #FFE8F0 50%, #F0FFF6 100%)'
+    }} />
 
-  return (
-    <div className="relative flex flex-col overflow-hidden w-full min-h-[100svh] bg-gradient-to-br from-blue-500 via-blue-600 to-cyan-500" dir="rtl">
-      {/* Background overlay (avoid backdrop-filter on native iOS for stability) */}
-      {isNative ? (
-        <div aria-hidden="true" className="absolute inset-0 bg-white/5 pointer-events-none" />
-      ) : (
-        <div aria-hidden="true" className="absolute inset-0 bg-white/5 backdrop-blur-[2px] pointer-events-none" />
-      )}
+      {/* Floating emoji wallpaper */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        {floatingEmojis.map((item, index) => <span key={index} className="absolute select-none drop-shadow-lg" style={{
+        left: `${item.x}%`,
+        top: `${item.y}%`,
+        fontSize: `${item.size}px`,
+        opacity: item.opacity,
+        transform: `rotate(${item.rotation}deg)`,
+        filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.15))'
+      }}>
+            {item.emoji}
+          </span>)}
+      </div>
 
-      {/* Decorative circles (skip heavy blur on native iOS) */}
-      {!isNative && (
-        <>
-          <div className="absolute -top-20 -right-20 w-64 h-64 bg-white/10 rounded-full blur-3xl pointer-events-none" />
-          <div className="absolute -bottom-32 -left-32 w-96 h-96 bg-cyan-400/20 rounded-full blur-3xl pointer-events-none" />
-          <div className="absolute top-1/4 left-1/4 w-48 h-48 bg-blue-300/15 rounded-full blur-2xl pointer-events-none" />
-          <div className="absolute bottom-1/3 right-1/4 w-32 h-32 bg-white/10 rounded-full blur-xl pointer-events-none" />
-        </>
-      )}
+      {/* Pink radial glow behind icon */}
+      <div className="fixed w-[500px] h-[500px] rounded-full blur-3xl opacity-50 pointer-events-none" style={{
+      background: 'radial-gradient(circle, rgba(255,182,193,0.6) 0%, transparent 70%)',
+      top: '8%',
+      left: '50%',
+      transform: 'translateX(-50%)'
+    }} />
 
-      {/* Content - use pt-safe and pb-safe to stay inside safe areas */}
-      <div className="relative z-10 flex-1 min-h-0 flex flex-col px-5 sm:px-6 pt-safe pb-safe">
-        {/* App icon section - grows to take available space */}
-        <div className="flex-1 flex items-center justify-center">
-          <div 
-            className={`relative transition-all duration-500 ease-out ${mounted ? 'scale-100 opacity-100' : 'scale-50 opacity-0'} ${zooming ? 'scale-150 opacity-0' : ''}`}
-          >
-            {/* Glow effect */}
-            <div className="absolute inset-0 w-24 sm:w-32 h-24 sm:h-32 bg-white/30 rounded-[32px] sm:rounded-[40px] blur-xl" />
-            
-            {/* Icon - responsive size */}
-            <div 
-              className="relative w-24 sm:w-32 h-24 sm:h-32 rounded-[32px] sm:rounded-[40px] overflow-hidden shadow-2xl ring-4 ring-white/30"
-            >
-              <img alt="BudgetBites" className="w-full h-full object-cover" src={appIcon} />
-            </div>
+      {/* Content */}
+      <div className="relative z-10 flex-1 flex flex-col">
+        
+        {/* Chef icon section - static, no orbits */}
+        <div className="flex-1 flex items-center justify-center pt-8">
+          <div className={`relative w-28 h-28 rounded-[32px] overflow-hidden shadow-2xl transition-all duration-500 ease-out ${mounted ? 'scale-100 opacity-100' : 'scale-50 opacity-0'} ${zooming ? 'scale-150 opacity-0' : ''}`} style={{
+          boxShadow: '0 25px 80px -15px rgba(255, 107, 149, 0.35), 0 10px 30px -10px rgba(0,0,0,0.1)'
+        }}>
+            <img alt="BudgetBites" className="w-full h-full object-contain" src="/favicon.png" />
           </div>
         </div>
 
-        {/* Bottom section with text and CTA - fixed height, pinned to bottom */}
-        <div 
-          className={`shrink-0 pb-4 transition-all duration-700 ${mounted ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'}`}
-          style={{ transitionDelay: '300ms' }}
-        >
+        {/* Bottom section with text and CTA */}
+        <div className={`px-6 pb-10 pt-4 transition-all duration-700 ${mounted ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'}`} style={{
+        transitionDelay: '300ms'
+      }}>
           {/* App name */}
-          <p className="text-center text-xs sm:text-sm font-semibold text-white/70 tracking-widest mb-2 sm:mb-4 uppercase">
+          <p className="text-center text-sm font-medium text-gray-500 tracking-widest mb-4 uppercase">
             BudgetBites
           </p>
 
-          {/* Main headline - responsive sizing for small screens */}
-          <h1 className="text-center text-3xl sm:text-[2.75rem] font-bold text-white mb-1 sm:mb-2 leading-[1.1]">
+          {/* Main headline */}
+          <h1 className="text-center text-[2.5rem] font-bold text-gray-900 mb-1 leading-[1.1]">
             בישול קל.
           </h1>
-          <h2 className="text-center text-3xl sm:text-[2.75rem] font-bold mb-6 sm:mb-10 leading-[1.1] text-cyan-200">
+          <h1 className="text-center text-[2.5rem] font-bold mb-10 leading-[1.1]" style={{
+          background: 'linear-gradient(135deg, #FF6B95 0%, #FF9A56 60%, #FFBA6B 100%)',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+          backgroundClip: 'text'
+        }}>
             חיסכון גדול.
-          </h2>
+          </h1>
 
-          {/* CTA Button - slightly smaller on small screens */}
-          <Button 
-            onClick={handleStart} 
-            className="w-full h-14 sm:h-[60px] rounded-2xl text-base sm:text-[17px] font-bold bg-white text-blue-600 hover:bg-white/90 transition-all active:scale-[0.98] shadow-xl"
-          >
+          {/* CTA Button - triggers zoom then navigates */}
+          <Button onClick={handleStart} className="w-full h-[60px] rounded-2xl text-[17px] font-semibold transition-all active:scale-[0.98]" style={{
+          background: '#1D1D1F',
+          color: 'white',
+          boxShadow: '0 8px 30px -6px rgba(0, 0, 0, 0.3)'
+        }}>
             בואו נתחיל
           </Button>
 
           {/* Login link */}
-          <div className="text-center mt-4 sm:mt-5 mb-1 sm:mb-2">
-            <button 
-              onClick={() => navigate('/signin')} 
-              className="text-sm sm:text-[15px] text-white/70 hover:text-white transition-colors"
-            >
-              כבר יש לך חשבון? <span className="font-semibold text-white">התחבר</span>
+          <div className="text-center mt-5">
+            <button onClick={() => navigate('/signin')} className="text-[15px] text-gray-500 hover:text-gray-900 transition-colors">
+              כבר יש לך חשבון? <span className="font-semibold text-gray-900">התחבר</span>
             </button>
           </div>
         </div>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default Welcome;
