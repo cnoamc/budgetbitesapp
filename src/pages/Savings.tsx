@@ -23,7 +23,8 @@ export const Savings: React.FC = () => {
 
   return (
     <GradientBackground variant="fresh">
-      <div className="min-h-screen p-6 pb-40">
+      <div className="h-[100dvh] flex flex-col overflow-hidden">
+        <div className="flex-1 overflow-y-auto p-6 pb-32">
         <div className="max-w-lg mx-auto">
           {/* Hero Section */}
           <div className="text-center mb-8 pt-4 animate-scale-in">
@@ -148,9 +149,10 @@ export const Savings: React.FC = () => {
             </div>
           </PremiumCard>
         </div>
+        </div>
 
         {/* CTA */}
-        <div className="fixed bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-background via-background/95 to-transparent">
+        <div className="p-6 bg-gradient-to-t from-background via-background/95 to-transparent">
           <div className="max-w-lg mx-auto">
             <Button
               onClick={() => navigate('/recipes')}

@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Clock, Trophy, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { FixedScreenLayout } from '@/components/layouts';
 import { useApp } from '@/contexts/AppContext';
 import { cn } from '@/lib/utils';
 import appIcon from '@/assets/app-icon.png';
@@ -128,14 +129,14 @@ export const Onboarding: React.FC = () => {
   };
 
   return (
-    <div className="h-[100dvh] relative overflow-hidden flex flex-col" dir="rtl">
+    <FixedScreenLayout>
       {/* Blue gradient background */}
       <div 
         className="fixed inset-0" 
         style={{ background: 'linear-gradient(180deg, #2196F3 0%, #00BCD4 100%)' }} 
       />
 
-      <div className="relative z-10 flex-1 flex flex-col max-w-lg mx-auto w-full px-5 pt-6">
+      <div className="relative z-10 flex-1 flex flex-col max-w-lg mx-auto w-full px-5 pt-6 overflow-y-auto">
         {/* Header */}
         <div className="text-center mb-4">
           <div 
@@ -388,7 +389,7 @@ export const Onboarding: React.FC = () => {
           </Button>
         </div>
       </div>
-    </div>
+    </FixedScreenLayout>
   );
 };
 

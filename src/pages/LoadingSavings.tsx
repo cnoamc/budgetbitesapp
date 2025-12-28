@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Unlock, TrendingUp, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { FixedScreenLayout } from '@/components/layouts';
 import appLogo from '@/assets/app-logo.png';
 
 const getSavingsContext = (yearlySavings: number): string => {
@@ -85,7 +86,7 @@ const LoadingSavings: React.FC = () => {
   }, [phase, monthlySavings, yearlySavings]);
 
   return (
-    <div className="h-[100dvh] relative overflow-hidden flex flex-col" dir="rtl">
+    <FixedScreenLayout>
       {/* Background */}
       <div 
         className="absolute inset-0" 
@@ -222,7 +223,7 @@ const LoadingSavings: React.FC = () => {
           )}
         </div>
       </div>
-    </div>
+    </FixedScreenLayout>
   );
 };
 

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
+import { FixedScreenLayout } from '@/components/layouts';
 import appIcon from '@/assets/app-icon.png';
 
 const Welcome: React.FC = () => {
@@ -26,21 +27,16 @@ const Welcome: React.FC = () => {
 
   if (loading) {
     return (
-      <div 
-        className="min-h-screen min-h-[100dvh] flex items-center justify-center"
-        style={{
-          background: 'linear-gradient(180deg, #2196F3 0%, #00BCD4 100%)'
-        }}
-      >
+      <FixedScreenLayout className="items-center justify-center" style={{ background: 'linear-gradient(180deg, #2196F3 0%, #00BCD4 100%)' }}>
         <div className="w-24 h-24 rounded-[28px] overflow-hidden shadow-2xl animate-pulse">
           <img src={appIcon} alt="BudgetBites" className="w-full h-full object-cover" />
         </div>
-      </div>
+      </FixedScreenLayout>
     );
   }
 
   return (
-    <div className="min-h-screen min-h-[100dvh] relative overflow-hidden flex flex-col" dir="rtl">
+    <FixedScreenLayout>
       {/* Blue gradient background */}
       <div 
         className="fixed inset-0" 
@@ -128,7 +124,7 @@ const Welcome: React.FC = () => {
           </div>
         </div>
       </div>
-    </div>
+    </FixedScreenLayout>
   );
 };
 
