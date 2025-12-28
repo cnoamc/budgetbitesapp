@@ -27,45 +27,54 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   useEffect(() => {
     let isMounted = true;
+    let hasResolved = false;
+
+    // Quick failsafe - 2 seconds max wait for auth (native WebViews can be slow)
+    const quickTimeout = window.setTimeout(() => {
+      if (!isMounted || hasResolved) return;
+      console.log('[Auth] Quick timeout - setting loading false');
+      setLoading(false);
+    }, 2000);
 
     // Set up auth state listener FIRST
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((event, session) => {
       if (!isMounted) return;
+      hasResolved = true;
+      window.clearTimeout(quickTimeout);
       setSession(session);
       setUser(session?.user ?? null);
       setLoading(false);
     });
 
-    // Safety: never let auth init block the UI forever (helps native WebViews)
-    const failSafe = window.setTimeout(() => {
-      if (!isMounted) return;
-      setLoading(false);
-    }, 6000);
-
-    // THEN check for existing session
-    (async () => {
+    // THEN check for existing session - wrapped in try/catch for native stability
+    const checkSession = async () => {
       try {
-        const {
-          data: { session },
-        } = await supabase.auth.getSession();
-        if (!isMounted) return;
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!isMounted || hasResolved) return;
+        hasResolved = true;
+        window.clearTimeout(quickTimeout);
         setSession(session);
         setUser(session?.user ?? null);
       } catch (error) {
-        // On native mobile, network/cookie issues can cause getSession to time out/reject.
-        // We still want the app to render so the user can sign in.
-        console.warn('Auth getSession failed:', error);
+        // On native mobile, network/cookie issues can cause getSession to fail
+        // This is OK - user will just need to sign in
+        console.warn('[Auth] getSession error (expected on fresh native app):', error);
       } finally {
-        if (isMounted) setLoading(false);
-        window.clearTimeout(failSafe);
+        if (isMounted && !hasResolved) {
+          hasResolved = true;
+          window.clearTimeout(quickTimeout);
+          setLoading(false);
+        }
       }
-    })();
+    };
+    
+    checkSession();
 
     return () => {
       isMounted = false;
-      window.clearTimeout(failSafe);
+      window.clearTimeout(quickTimeout);
       subscription.unsubscribe();
     };
   }, []);

@@ -393,15 +393,8 @@ const SignIn: React.FC = () => {
     }
   };
 
-  if (loading) {
-    return (
-      <div className="h-full flex items-center justify-center bg-gradient-to-br from-blue-500 via-blue-600 to-cyan-500">
-        <div className="w-20 h-20 rounded-3xl overflow-hidden shadow-2xl animate-pulse">
-          <img src={appIcon} alt="BudgetBites" className="w-full h-full object-cover" />
-        </div>
-      </div>
-    );
-  }
+  // Show brief loading only, then render the form regardless
+  // This prevents the app from getting stuck on native WebViews
 
   const getBackAction = () => {
     if (view === 'otp') return () => setView('phone');
