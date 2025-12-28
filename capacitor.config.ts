@@ -2,29 +2,35 @@ import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
   appId: 'app.lovable.c034698cdde14f42bd36c9d8740a134f',
-  appName: 'budgetbitesapp',
+  appName: 'BudgetBites',
   webDir: 'dist',
-  server: {
-    url: 'https://c034698c-dde1-4f42-bd36-c9d8740a134f.lovableproject.com?forceHideBadge=true',
-    cleartext: true
-  },
   ios: {
     contentInset: 'automatic',
     preferredContentMode: 'mobile',
-    backgroundColor: '#0F172A'
+    backgroundColor: '#1E3A8A',
+    scrollEnabled: true
+  },
+  android: {
+    backgroundColor: '#1E3A8A'
   },
   plugins: {
     SplashScreen: {
-      launchShowDuration: 2000,
+      launchShowDuration: 1500,
       launchAutoHide: true,
-      backgroundColor: '#0F172A',
+      backgroundColor: '#1E3A8A',
       showSpinner: false,
       splashFullScreen: true,
-      splashImmersive: true
+      splashImmersive: true,
+      layoutName: 'launch_screen',
+      useDialog: false
     },
     StatusBar: {
-      style: 'dark',
-      backgroundColor: '#0F172A'
+      style: 'light',
+      backgroundColor: '#1E3A8A'
+    },
+    Keyboard: {
+      resize: 'body',
+      resizeOnFullScreen: true
     }
   }
 };
