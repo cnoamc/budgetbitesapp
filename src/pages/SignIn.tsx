@@ -407,18 +407,17 @@ const SignIn: React.FC = () => {
   const passwordStrength = getPasswordStrength(password);
 
   return (
-    <div className="h-full min-h-0 relative overflow-hidden flex flex-col" dir="rtl">
-      {/* Gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-500 via-blue-600 to-cyan-500" />
+    <div className="h-full min-h-0 relative overflow-hidden flex flex-col bg-gradient-to-br from-blue-500 via-blue-600 to-cyan-500" dir="rtl">
+      {/* Background overlay */}
       <div aria-hidden="true" className="absolute inset-0 bg-white/5 backdrop-blur-[2px] pointer-events-none" />
       
       {/* Decorative circles */}
-      <div className="absolute -top-20 -right-20 w-64 h-64 bg-white/10 rounded-full blur-3xl" />
-      <div className="absolute -bottom-32 -left-32 w-96 h-96 bg-cyan-400/20 rounded-full blur-3xl" />
-      <div className="absolute top-1/3 right-1/4 w-32 h-32 bg-blue-300/20 rounded-full blur-2xl" />
+      <div className="absolute -top-20 -right-20 w-64 h-64 bg-white/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute -bottom-32 -left-32 w-96 h-96 bg-cyan-400/20 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-1/3 right-1/4 w-32 h-32 bg-blue-300/20 rounded-full blur-2xl pointer-events-none" />
 
-      {/* Content */}
-      <div className="relative z-10 flex-1 min-h-0 overflow-y-auto scroll-touch flex flex-col px-5 sm:px-6 pt-safe-offset-4 pb-safe-offset-4 sm:pb-safe-offset-6">
+      {/* Content - use pt-safe and pb-safe directly to avoid gaps */}
+      <div className="relative z-10 flex-1 min-h-0 overflow-y-auto scroll-touch flex flex-col px-5 sm:px-6 pt-safe pb-safe">
         {/* Back button */}
         <div className="pt-1 sm:pt-2 shrink-0">
           <button 
