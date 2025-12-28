@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Capacitor } from '@capacitor/core';
 import { Mail, Lock, Eye, EyeOff, ArrowRight, Phone, Fingerprint, ScanFace } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -52,6 +53,7 @@ const SignIn: React.FC = () => {
   const { user, signIn, signUp, signInWithGoogle, signInWithApple, signInWithPhone, verifyOtp, resetPassword, updatePassword, loading } = useAuth();
   const { updateProfile } = useApp();
   const biometric = useBiometricAuth();
+  const isNative = Capacitor.isNativePlatform();
   
   // Dark status bar for blue gradient background (light icons)
   useStatusBar({ style: 'dark', backgroundColor: '#3B82F6', overlay: true });
@@ -407,14 +409,22 @@ const SignIn: React.FC = () => {
   const passwordStrength = getPasswordStrength(password);
 
   return (
-    <div className="h-full min-h-0 relative overflow-hidden flex flex-col bg-gradient-to-br from-blue-500 via-blue-600 to-cyan-500" dir="rtl">
-      {/* Background overlay */}
-      <div aria-hidden="true" className="absolute inset-0 bg-white/5 backdrop-blur-[2px] pointer-events-none" />
-      
-      {/* Decorative circles */}
-      <div className="absolute -top-20 -right-20 w-64 h-64 bg-white/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute -bottom-32 -left-32 w-96 h-96 bg-cyan-400/20 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute top-1/3 right-1/4 w-32 h-32 bg-blue-300/20 rounded-full blur-2xl pointer-events-none" />
+    <div className="relative overflow-hidden flex flex-col w-full min-h-[100svh] bg-gradient-to-br from-blue-500 via-blue-600 to-cyan-500" dir="rtl">
+      {/* Background overlay (avoid backdrop-filter on native iOS for stability) */}
+      {isNative ? (
+        <div aria-hidden="true" className="absolute inset-0 bg-white/5 pointer-events-none" />
+      ) : (
+        <div aria-hidden="true" className="absolute inset-0 bg-white/5 backdrop-blur-[2px] pointer-events-none" />
+      )}
+
+      {/* Decorative circles (skip heavy blur on native iOS) */}
+      {!isNative && (
+        <>
+          <div className="absolute -top-20 -right-20 w-64 h-64 bg-white/10 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute -bottom-32 -left-32 w-96 h-96 bg-cyan-400/20 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute top-1/3 right-1/4 w-32 h-32 bg-blue-300/20 rounded-full blur-2xl pointer-events-none" />
+        </>
+      )}
 
       {/* Content - use pt-safe and pb-safe directly to avoid gaps */}
       <div className="relative z-10 flex-1 min-h-0 overflow-y-auto scroll-touch flex flex-col px-5 sm:px-6 pt-safe pb-safe">
