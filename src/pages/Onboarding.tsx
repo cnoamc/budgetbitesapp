@@ -132,11 +132,11 @@ export const Onboarding: React.FC = () => {
     <FixedScreenLayout>
       {/* Blue gradient background */}
       <div 
-        className="fixed inset-0" 
+        className="absolute inset-0" 
         style={{ background: 'linear-gradient(180deg, #2196F3 0%, #00BCD4 100%)' }} 
       />
 
-      <div className="relative z-10 flex-1 flex flex-col max-w-lg mx-auto w-full px-5 pt-6 overflow-y-auto">
+      <div className="relative z-10 flex-1 flex flex-col max-w-lg mx-auto w-full px-5 pt-6 overflow-hidden">
         {/* Header */}
         <div className="text-center mb-4">
           <div 
@@ -161,9 +161,13 @@ export const Onboarding: React.FC = () => {
           ))}
         </div>
 
-        {/* Step Content */}
-        <div className="flex-1 flex flex-col justify-center animate-fade-in" key={currentStepType}>
-          
+        {/* Step Content - scrollable only when content is too tall */}
+        <div 
+          className="flex-1 flex flex-col justify-center animate-fade-in overflow-y-auto overscroll-contain" 
+          key={currentStepType}
+          data-scrollable="true"
+          style={{ WebkitOverflowScrolling: 'touch' }}
+        >
           {/* Step 1: Goal Selection */}
           {currentStepType === 'goal' && (
             <div className="space-y-4">
