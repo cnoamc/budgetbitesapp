@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { SavingsComparisonCard } from '@/components/notifications';
 import { getRecipeById, categoryLabels } from '@/lib/recipes';
 import { getRecipeImage } from '@/lib/recipeImages';
+import { ScrollablePageLayout } from '@/components/layouts';
 
 export const RecipeDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -16,14 +17,17 @@ export const RecipeDetail: React.FC = () => {
 
   if (!recipe) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p>המתכון לא נמצא</p>
-      </div>
+      <ScrollablePageLayout hasBottomNav={false}>
+        <div className="flex-1 flex items-center justify-center">
+          <p>המתכון לא נמצא</p>
+        </div>
+      </ScrollablePageLayout>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background pb-32">
+    <ScrollablePageLayout hasBottomNav={false}>
+      <div className="bg-background pb-8">
       {/* Header */}
       <div className="relative">
         <div className="h-56 bg-secondary flex items-center justify-center overflow-hidden">
@@ -138,7 +142,8 @@ export const RecipeDetail: React.FC = () => {
           </Button>
         </div>
       </div>
-    </div>
+      </div>
+    </ScrollablePageLayout>
   );
 };
 

@@ -9,6 +9,7 @@ import { toast } from 'sonner';
 import { z } from 'zod';
 import confetti from 'canvas-confetti';
 import appIcon from '@/assets/app-icon.png';
+import { FixedScreenLayout } from '@/components/layouts';
 
 const emailSchema = z.string().email('כתובת אימייל לא תקינה');
 const passwordSchema = z.string().min(6, 'הסיסמה חייבת להכיל לפחות 6 תווים');
@@ -241,14 +242,14 @@ const SignIn: React.FC = () => {
 
   if (loading) {
     return (
-      <div 
-        className="h-[100dvh] flex items-center justify-center"
+      <FixedScreenLayout 
+        className="items-center justify-center" 
         style={{ background: 'linear-gradient(180deg, #2196F3 0%, #00BCD4 100%)' }}
       >
         <div className="w-16 h-16 rounded-2xl overflow-hidden animate-pulse">
           <img src={appIcon} alt="BudgetBites" className="w-full h-full object-cover" />
         </div>
-      </div>
+      </FixedScreenLayout>
     );
   }
 
@@ -273,10 +274,10 @@ const SignIn: React.FC = () => {
   };
 
   return (
-    <div className="h-[100dvh] relative overflow-hidden flex flex-col" dir="rtl">
+    <FixedScreenLayout>
       {/* Blue gradient background */}
       <div 
-        className="fixed inset-0" 
+        className="absolute inset-0" 
         style={{ background: 'linear-gradient(180deg, #2196F3 0%, #00BCD4 100%)' }} 
       />
 
@@ -516,7 +517,7 @@ const SignIn: React.FC = () => {
           )}
         </div>
       </div>
-    </div>
+    </FixedScreenLayout>
   );
 };
 

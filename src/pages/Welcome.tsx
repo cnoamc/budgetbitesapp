@@ -39,7 +39,7 @@ const Welcome: React.FC = () => {
     <FixedScreenLayout>
       {/* Blue gradient background */}
       <div 
-        className="fixed inset-0" 
+        className="absolute inset-0" 
         style={{
           background: 'linear-gradient(180deg, #2196F3 0%, #00BCD4 100%)'
         }} 
@@ -47,7 +47,7 @@ const Welcome: React.FC = () => {
 
       {/* Subtle radial glow */}
       <div 
-        className="fixed w-[600px] h-[600px] rounded-full blur-3xl opacity-30 pointer-events-none"
+        className="absolute w-[600px] h-[600px] rounded-full blur-3xl opacity-30 pointer-events-none"
         style={{
           background: 'radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%)',
           top: '15%',

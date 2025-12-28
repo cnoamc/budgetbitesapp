@@ -10,6 +10,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { soundManager } from '@/lib/sounds';
 import appLogo from '@/assets/app-logo.png';
+import { FixedScreenLayout } from '@/components/layouts';
 
 type Message = { role: 'user' | 'assistant'; content: string };
 
@@ -40,9 +41,9 @@ export const CookingAssistant: React.FC = () => {
 
   if (!recipe) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <FixedScreenLayout className="items-center justify-center bg-background">
         <p>המתכון לא נמצא</p>
-      </div>
+      </FixedScreenLayout>
     );
   }
 
@@ -175,7 +176,7 @@ export const CookingAssistant: React.FC = () => {
   const progress = (currentStep / recipe.steps.length) * 100;
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <FixedScreenLayout className="bg-background">
       {/* Header */}
       <div className="bg-card border-b border-border/50 p-4 sticky top-0 z-10">
         <div className="flex items-center gap-3 mb-3">
@@ -203,8 +204,12 @@ export const CookingAssistant: React.FC = () => {
         </div>
       </div>
 
-      {/* Chat Messages */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+      {/* Chat Messages - scrollable area */}
+      <div 
+        className="flex-1 overflow-y-auto overscroll-contain p-4 space-y-4"
+        data-scrollable="true"
+        style={{ WebkitOverflowScrolling: 'touch' }}
+      >
         {messages.map((msg, index) => (
           <ChatMessage
             key={index}
@@ -258,7 +263,7 @@ export const CookingAssistant: React.FC = () => {
           </Button>
         )}
       </div>
-    </div>
+    </FixedScreenLayout>
   );
 };
 
