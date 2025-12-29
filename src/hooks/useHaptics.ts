@@ -1,7 +1,9 @@
 /**
  * Custom hook for haptic feedback on mobile devices
- * Uses Web Vibration API for browsers that support it
+ * Uses Capacitor Haptics for native iOS/Android, falls back to Web Vibration API
  */
+import { Capacitor } from '@capacitor/core';
+import { Haptics, ImpactStyle, NotificationType } from '@capacitor/haptics';
 
 type HapticStyle = 'light' | 'medium' | 'heavy' | 'success' | 'warning' | 'error';
 
@@ -14,30 +16,79 @@ const vibrationPatterns: Record<HapticStyle, number | number[]> = {
   error: [30, 50, 30, 50, 30],
 };
 
+const impactStyleMap: Record<'light' | 'medium' | 'heavy', ImpactStyle> = {
+  light: ImpactStyle.Light,
+  medium: ImpactStyle.Medium,
+  heavy: ImpactStyle.Heavy,
+};
+
+const notificationTypeMap: Record<'success' | 'warning' | 'error', NotificationType> = {
+  success: NotificationType.Success,
+  warning: NotificationType.Warning,
+  error: NotificationType.Error,
+};
+
 export const useHaptics = () => {
-  const isSupported = typeof navigator !== 'undefined' && 'vibrate' in navigator;
+  const isNative = Capacitor.isNativePlatform();
+  const isWebSupported = typeof navigator !== 'undefined' && 'vibrate' in navigator;
+  const isSupported = isNative || isWebSupported;
 
   const trigger = async (style: HapticStyle = 'light') => {
-    if (!isSupported) return;
-
-    try {
-      const pattern = vibrationPatterns[style];
-      navigator.vibrate(pattern);
-    } catch (error) {
-      console.debug('Haptic feedback not available:', error);
+    if (isNative) {
+      try {
+        if (style === 'success' || style === 'warning' || style === 'error') {
+          await Haptics.notification({ type: notificationTypeMap[style] });
+        } else {
+          await Haptics.impact({ style: impactStyleMap[style] });
+        }
+      } catch (error) {
+        console.debug('Haptic feedback not available:', error);
+      }
+    } else if (isWebSupported) {
+      try {
+        const pattern = vibrationPatterns[style];
+        navigator.vibrate(pattern);
+      } catch (error) {
+        console.debug('Vibration not available:', error);
+      }
     }
   };
 
-  const impact = (style: 'light' | 'medium' | 'heavy' = 'light') => {
-    trigger(style);
+  const impact = async (style: 'light' | 'medium' | 'heavy' = 'light') => {
+    if (isNative) {
+      try {
+        await Haptics.impact({ style: impactStyleMap[style] });
+      } catch {
+        // Silently fail
+      }
+    } else {
+      trigger(style);
+    }
   };
 
-  const notification = (type: 'success' | 'warning' | 'error' = 'success') => {
-    trigger(type);
+  const notification = async (type: 'success' | 'warning' | 'error' = 'success') => {
+    if (isNative) {
+      try {
+        await Haptics.notification({ type: notificationTypeMap[type] });
+      } catch {
+        // Silently fail
+      }
+    } else {
+      trigger(type);
+    }
   };
 
   const selection = async () => {
-    trigger('light');
+    if (isNative) {
+      try {
+        await Haptics.selectionStart();
+        await Haptics.selectionEnd();
+      } catch {
+        // Silently fail
+      }
+    } else {
+      trigger('light');
+    }
   };
 
   return {
@@ -51,13 +102,25 @@ export const useHaptics = () => {
 
 // Standalone function for use outside React components
 export const triggerHaptic = async (style: HapticStyle = 'light') => {
-  const isSupported = typeof navigator !== 'undefined' && 'vibrate' in navigator;
-  if (!isSupported) return;
+  const isNative = Capacitor.isNativePlatform();
+  const isWebSupported = typeof navigator !== 'undefined' && 'vibrate' in navigator;
 
-  try {
-    const pattern = vibrationPatterns[style];
-    navigator.vibrate(pattern);
-  } catch {
-    // Silently fail
+  if (isNative) {
+    try {
+      if (style === 'success' || style === 'warning' || style === 'error') {
+        await Haptics.notification({ type: notificationTypeMap[style] });
+      } else {
+        await Haptics.impact({ style: impactStyleMap[style] });
+      }
+    } catch {
+      // Silently fail
+    }
+  } else if (isWebSupported) {
+    try {
+      const pattern = vibrationPatterns[style];
+      navigator.vibrate(pattern);
+    } catch {
+      // Silently fail
+    }
   }
 };
