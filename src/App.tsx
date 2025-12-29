@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Suspense, lazy } from "react";
+import React, { Suspense, lazy } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -13,7 +13,6 @@ import { SubscriptionProvider } from "@/contexts/SubscriptionContext";
 import { NotificationBanner } from "@/components/NotificationBanner";
 import { PageTransition } from "@/components/PageTransition";
 import { BottomNav } from "@/components/BottomNav";
-import { SplashScreen } from "@/components/SplashScreen";
 import { PageSkeleton } from "@/components/ui/skeleton";
 
 // Eager load critical pages
@@ -97,23 +96,6 @@ function AnimatedRoutes(): React.ReactElement {
 }
 
 function App(): React.ReactElement {
-  const [showSplash, setShowSplash] = useState(true);
-  const [hasShownSplash, setHasShownSplash] = useState(false);
-
-  useEffect(() => {
-    const splashShown = sessionStorage.getItem('bb_splash_shown');
-    if (splashShown) {
-      setShowSplash(false);
-      setHasShownSplash(true);
-    }
-  }, []);
-
-  const handleSplashComplete = () => {
-    sessionStorage.setItem('bb_splash_shown', 'true');
-    setShowSplash(false);
-    setHasShownSplash(true);
-  };
-
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
@@ -125,9 +107,6 @@ function App(): React.ReactElement {
                   <Toaster />
                   <Sonner />
                   <NotificationBanner />
-                  {showSplash && !hasShownSplash && (
-                    <SplashScreen onComplete={handleSplashComplete} minDuration={2000} />
-                  )}
                   <BrowserRouter>
                     <div className="screen-container bg-background">
                       <AnimatedRoutes />
