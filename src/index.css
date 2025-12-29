@@ -156,13 +156,18 @@
     @apply bg-background text-foreground antialiased;
     min-height: 100vh;
     min-height: 100dvh;
-    /* iOS safe area padding */
-    padding-top: var(--safe-area-inset-top);
-    padding-left: var(--safe-area-inset-left);
-    padding-right: var(--safe-area-inset-right);
     /* Prevent pull-to-refresh and overscroll */
     overscroll-behavior: none;
     -webkit-overflow-scrolling: touch;
+  }
+
+  /* Only apply safe area padding on devices that support it */
+  @supports (padding-top: env(safe-area-inset-top)) {
+    body {
+      padding-top: env(safe-area-inset-top);
+      padding-left: env(safe-area-inset-left);
+      padding-right: env(safe-area-inset-right);
+    }
   }
 
   /* Keyboard open state */
