@@ -174,9 +174,9 @@ export const Progress: React.FC = () => {
 
   return (
     <GradientBackground variant="warm">
-      <div className="h-[100dvh] flex flex-col overflow-hidden">
-        <div className="flex-1 overflow-y-auto pb-24">
-        <div className="p-6 pt-8">
+      <div className="screen-container" dir="rtl">
+        <div className="scroll-container scrollbar-hide pt-safe pb-safe-24">
+        <div className="p-6">
           <div className="flex items-center justify-between mb-6">
             <h1 className="text-2xl font-bold">ההתקדמות שלי</h1>
             <div className="w-10 h-10 bg-black/5 rounded-xl flex items-center justify-center">

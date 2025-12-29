@@ -37,10 +37,10 @@ export const Recipes: React.FC = () => {
 
   return (
     <GradientBackground variant="minimal">
-      <div className="h-[100dvh] flex flex-col overflow-hidden">
-        <div className="flex-1 overflow-y-auto pb-24">
+      <div className="screen-container" dir="rtl">
+        <div className="scroll-container scrollbar-hide pt-safe pb-safe-24">
         {/* Header */}
-        <div className="p-6 pt-8 pb-4">
+        <div className="p-6 pb-4">
           <div className="flex items-center justify-between mb-6">
             <h1 className="text-2xl font-bold">מתכונים</h1>
             <div className="w-10 h-10 rounded-xl overflow-hidden">
