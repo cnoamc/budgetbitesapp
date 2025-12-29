@@ -1,3 +1,4 @@
+import React from "react";
 import { createRoot } from "react-dom/client";
 import { Capacitor } from '@capacitor/core';
 import { StatusBar, Style } from '@capacitor/status-bar';
@@ -70,4 +71,13 @@ const initializeCapacitor = async () => {
 
 // Initialize and render
 initializeCapacitor();
-createRoot(document.getElementById("root")!).render(<App />);
+
+const container = document.getElementById("root");
+if (container) {
+  const root = createRoot(container);
+  root.render(
+    <React.StrictMode>
+      <App />
+    </React.StrictMode>
+  );
+}
