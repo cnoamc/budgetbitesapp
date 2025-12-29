@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense, lazy } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -14,25 +14,37 @@ import { NotificationBanner } from "@/components/NotificationBanner";
 import { PageTransition } from "@/components/PageTransition";
 import { BottomNav } from "@/components/BottomNav";
 import { SplashScreen } from "@/components/SplashScreen";
+import { PageSkeleton } from "@/components/ui/skeleton";
+
+// Eager load critical pages
 import Welcome from "./pages/Welcome";
 import SignIn from "./pages/SignIn";
-import LoadingSavings from "./pages/LoadingSavings";
-import Onboarding from "./pages/Onboarding";
-import Savings from "./pages/Savings";
-import Home from "./pages/Home";
-import Recipes from "./pages/Recipes";
-import RecipeDetail from "./pages/RecipeDetail";
-import CookingAssistant from "./pages/CookingAssistant";
-import RateMeal from "./pages/RateMeal";
-import Progress from "./pages/Progress";
-import Profile from "./pages/Profile";
-import Premium from "./pages/Premium";
-import PrivacyPolicy from "./pages/PrivacyPolicy";
-import TermsOfService from "./pages/TermsOfService";
-import Support from "./pages/Support";
-import NotFound from "./pages/NotFound";
 
-const queryClient = new QueryClient();
+// Lazy load non-critical pages for faster initial load
+const LoadingSavings = lazy(() => import("./pages/LoadingSavings"));
+const Onboarding = lazy(() => import("./pages/Onboarding"));
+const Savings = lazy(() => import("./pages/Savings"));
+const Home = lazy(() => import("./pages/Home"));
+const Recipes = lazy(() => import("./pages/Recipes"));
+const RecipeDetail = lazy(() => import("./pages/RecipeDetail"));
+const CookingAssistant = lazy(() => import("./pages/CookingAssistant"));
+const RateMeal = lazy(() => import("./pages/RateMeal"));
+const Progress = lazy(() => import("./pages/Progress"));
+const Profile = lazy(() => import("./pages/Profile"));
+const Premium = lazy(() => import("./pages/Premium"));
+const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
+const TermsOfService = lazy(() => import("./pages/TermsOfService"));
+const Support = lazy(() => import("./pages/Support"));
+const NotFound = lazy(() => import("./pages/NotFound"));
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60 * 5, // 5 minutes
+      gcTime: 1000 * 60 * 30, // 30 minutes (formerly cacheTime)
+    },
+  },
+});
 
 // Pages that show the bottom navigation
 const NAV_PAGES = ['/home', '/recipes', '/progress', '/profile'];
@@ -45,31 +57,38 @@ const PersistentBottomNav = () => {
   return <BottomNav />;
 };
 
+// Loading fallback component
+const PageLoader = () => (
+  <PageSkeleton hasHeader cards={3} />
+);
+
 const AnimatedRoutes = () => {
   const location = useLocation();
   
   return (
     <>
       <AnimatePresence mode="wait">
-        <Routes location={location} key={location.pathname}>
-          <Route path="/" element={<PageTransition><Welcome /></PageTransition>} />
-          <Route path="/loading" element={<PageTransition><LoadingSavings /></PageTransition>} />
-          <Route path="/signin" element={<PageTransition><SignIn /></PageTransition>} />
-          <Route path="/onboarding" element={<PageTransition><Onboarding /></PageTransition>} />
-          <Route path="/savings" element={<PageTransition><Savings /></PageTransition>} />
-          <Route path="/premium" element={<PageTransition><Premium /></PageTransition>} />
-          <Route path="/home" element={<PageTransition><Home /></PageTransition>} />
-          <Route path="/recipes" element={<PageTransition><Recipes /></PageTransition>} />
-          <Route path="/recipe/:id" element={<PageTransition><RecipeDetail /></PageTransition>} />
-          <Route path="/cook/:id" element={<PageTransition><CookingAssistant /></PageTransition>} />
-          <Route path="/rate/:id" element={<PageTransition><RateMeal /></PageTransition>} />
-          <Route path="/progress" element={<PageTransition><Progress /></PageTransition>} />
-          <Route path="/profile" element={<PageTransition><Profile /></PageTransition>} />
-          <Route path="/privacy" element={<PageTransition><PrivacyPolicy /></PageTransition>} />
-          <Route path="/terms" element={<PageTransition><TermsOfService /></PageTransition>} />
-          <Route path="/support" element={<PageTransition><Support /></PageTransition>} />
-          <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
-        </Routes>
+        <Suspense fallback={<PageLoader />}>
+          <Routes location={location} key={location.pathname}>
+            <Route path="/" element={<PageTransition><Welcome /></PageTransition>} />
+            <Route path="/loading" element={<PageTransition><LoadingSavings /></PageTransition>} />
+            <Route path="/signin" element={<PageTransition><SignIn /></PageTransition>} />
+            <Route path="/onboarding" element={<PageTransition><Onboarding /></PageTransition>} />
+            <Route path="/savings" element={<PageTransition><Savings /></PageTransition>} />
+            <Route path="/premium" element={<PageTransition><Premium /></PageTransition>} />
+            <Route path="/home" element={<PageTransition><Home /></PageTransition>} />
+            <Route path="/recipes" element={<PageTransition><Recipes /></PageTransition>} />
+            <Route path="/recipe/:id" element={<PageTransition><RecipeDetail /></PageTransition>} />
+            <Route path="/cook/:id" element={<PageTransition><CookingAssistant /></PageTransition>} />
+            <Route path="/rate/:id" element={<PageTransition><RateMeal /></PageTransition>} />
+            <Route path="/progress" element={<PageTransition><Progress /></PageTransition>} />
+            <Route path="/profile" element={<PageTransition><Profile /></PageTransition>} />
+            <Route path="/privacy" element={<PageTransition><PrivacyPolicy /></PageTransition>} />
+            <Route path="/terms" element={<PageTransition><TermsOfService /></PageTransition>} />
+            <Route path="/support" element={<PageTransition><Support /></PageTransition>} />
+            <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
+          </Routes>
+        </Suspense>
       </AnimatePresence>
       <PersistentBottomNav />
     </>
@@ -110,7 +129,9 @@ const App = () => {
                     <SplashScreen onComplete={handleSplashComplete} minDuration={2000} />
                   )}
                   <BrowserRouter>
-                    <AnimatedRoutes />
+                    <div className="screen-container bg-background">
+                      <AnimatedRoutes />
+                    </div>
                   </BrowserRouter>
                 </TooltipProvider>
               </NotificationProvider>

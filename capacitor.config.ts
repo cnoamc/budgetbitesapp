@@ -5,19 +5,19 @@ const config: CapacitorConfig = {
   appName: 'BudgetBites',
   webDir: 'dist',
   ios: {
-    contentInset: 'automatic',
+    contentInset: 'never',
     preferredContentMode: 'mobile',
-    backgroundColor: '#1E3A8A',
-    scrollEnabled: true
+    backgroundColor: '#0F172A',
+    scrollEnabled: false
   },
   android: {
-    backgroundColor: '#1E3A8A'
+    backgroundColor: '#0F172A'
   },
   plugins: {
     SplashScreen: {
       launchShowDuration: 1500,
       launchAutoHide: true,
-      backgroundColor: '#1E3A8A',
+      backgroundColor: '#0F172A',
       showSpinner: false,
       splashFullScreen: true,
       splashImmersive: true,
@@ -26,11 +26,13 @@ const config: CapacitorConfig = {
     },
     StatusBar: {
       style: 'light',
-      backgroundColor: '#1E3A8A'
+      backgroundColor: '#0F172A',
+      overlaysWebView: true
     },
     Keyboard: {
-      resize: 'body',
-      resizeOnFullScreen: true
+      resize: 'native',
+      resizeOnFullScreen: false,
+      style: 'dark'
     }
   }
 };

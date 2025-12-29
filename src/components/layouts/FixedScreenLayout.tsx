@@ -40,15 +40,11 @@ export const FixedScreenLayout: React.FC<FixedScreenLayoutProps> = ({
   return (
     <div 
       className={cn(
-        "fixed inset-0 w-full h-full overflow-hidden flex flex-col",
-        "touch-none", // Disable touch scrolling
+        "screen-container no-scroll",
+        "pt-safe pb-safe",
         className
       )}
-      style={{
-        height: '100dvh',
-        minHeight: '-webkit-fill-available',
-        ...style,
-      }}
+      style={style}
       dir={dir}
     >
       {children}
