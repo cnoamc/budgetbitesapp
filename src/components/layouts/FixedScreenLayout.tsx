@@ -42,7 +42,7 @@ export const FixedScreenLayout: React.FC<FixedScreenLayoutProps> = ({
   return (
     <div 
       className={cn(
-        "min-h-screen min-h-dvh flex flex-col overflow-hidden",
+        "fixed inset-0 flex flex-col overflow-hidden",
         className
       )}
       style={style}
