@@ -9,7 +9,6 @@ interface ScrollablePageLayoutProps {
 
 /**
  * A layout wrapper for pages with BottomNav that need scrollable content.
- * Uses iOS-safe scroll patterns: fixed outer container, scrollable inner content.
  * Use for: Home, Recipes, Progress, Profile, Savings
  */
 export const ScrollablePageLayout: React.FC<ScrollablePageLayoutProps> = ({
@@ -17,24 +16,19 @@ export const ScrollablePageLayout: React.FC<ScrollablePageLayoutProps> = ({
   className,
   hasBottomNav = true,
 }) => {
-  // Bottom nav is ~100px including safe area
-  const bottomPadding = hasBottomNav ? 'pb-safe-24' : 'pb-safe';
-  
   return (
     <div 
       className={cn(
-        "screen-container",
+        "min-h-screen min-h-dvh flex flex-col",
         className
       )}
       dir="rtl"
     >
       <div 
         className={cn(
-          "scroll-container scrollbar-hide",
-          "pt-safe",
-          bottomPadding
+          "flex-1 overflow-y-auto",
+          hasBottomNav ? "pb-24" : ""
         )}
-        data-scrollable="true"
       >
         {children}
       </div>

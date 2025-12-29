@@ -2,12 +2,11 @@
 <html lang="he" dir="rtl">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>BudgetBites - בשל, חסוך, תהנה!</title>
     <meta name="description" content="אפליקציה שמלמדת אותך לבשל צעד אחר צעד ומראה כמה כסף אתה חוסך במקום להזמין משלוחים" />
     <meta name="author" content="BudgetBites" />
-    <meta name="theme-color" content="#0F172A" />
-    <meta name="background-color" content="#0F172A" />
+    <meta name="theme-color" content="#0d0d0d" />
     <link rel="icon" href="/favicon.png" type="image/png" />
     <link rel="apple-touch-icon" href="/favicon.png" />
     
@@ -20,70 +19,9 @@
     <meta name="twitter:site" content="@BudgetBites" />
     <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
     
-    <!-- iOS Capacitor Meta Tags -->
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <meta name="apple-mobile-web-app-title" content="BudgetBites" />
-    <meta name="format-detection" content="telephone=no" />
-    <meta name="msapplication-tap-highlight" content="no" />
-    
     <!-- Preload critical fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    
-    <!-- Critical CSS for instant load - no FOUC -->
-    <style>
-      /* CSS variables for safe area - available immediately */
-      :root {
-        --sat: env(safe-area-inset-top, 0px);
-        --sar: env(safe-area-inset-right, 0px);
-        --sab: env(safe-area-inset-bottom, 0px);
-        --sal: env(safe-area-inset-left, 0px);
-      }
-      
-      /* Critical layout - prevents flash of unstyled content */
-      html, body, #root {
-        margin: 0;
-        padding: 0;
-        height: 100%;
-        width: 100%;
-        overflow: hidden;
-        background-color: #0F172A;
-        -webkit-overflow-scrolling: touch;
-        overscroll-behavior: none;
-        -webkit-text-size-adjust: 100%;
-        text-size-adjust: 100%;
-      }
-      
-      /* Prevent iOS keyboard from shifting viewport */
-      body {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-      }
-      
-      /* Initial loading state */
-      #root:empty::before {
-        content: '';
-        display: block;
-        width: 48px;
-        height: 48px;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        border: 3px solid rgba(255,255,255,0.1);
-        border-top-color: #fff;
-        border-radius: 50%;
-        animation: spin 0.8s linear infinite;
-      }
-      
-      @keyframes spin {
-        to { transform: translate(-50%, -50%) rotate(360deg); }
-      }
-    </style>
   </head>
 
   <body>
