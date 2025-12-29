@@ -1,4 +1,4 @@
-import { useState, useEffect, Suspense, lazy } from "react";
+import React, { useState, useEffect, Suspense, lazy } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -37,11 +37,12 @@ const TermsOfService = lazy(() => import("./pages/TermsOfService"));
 const Support = lazy(() => import("./pages/Support"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
+// Create QueryClient outside component to prevent recreation
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 1000 * 60 * 5, // 5 minutes
-      gcTime: 1000 * 60 * 30, // 30 minutes (formerly cacheTime)
+      staleTime: 1000 * 60 * 5,
+      gcTime: 1000 * 60 * 30,
     },
   },
 });
@@ -49,20 +50,20 @@ const queryClient = new QueryClient({
 // Pages that show the bottom navigation
 const NAV_PAGES = ['/home', '/recipes', '/progress', '/profile'];
 
-const PersistentBottomNav = () => {
+function PersistentBottomNav(): React.ReactElement | null {
   const location = useLocation();
   const showNav = NAV_PAGES.includes(location.pathname);
   
   if (!showNav) return null;
   return <BottomNav />;
-};
+}
 
 // Loading fallback component
-const PageLoader = () => (
-  <PageSkeleton hasHeader cards={3} />
-);
+function PageLoader(): React.ReactElement {
+  return <PageSkeleton hasHeader cards={3} />;
+}
 
-const AnimatedRoutes = () => {
+function AnimatedRoutes(): React.ReactElement {
   const location = useLocation();
   
   return (
@@ -93,14 +94,13 @@ const AnimatedRoutes = () => {
       <PersistentBottomNav />
     </>
   );
-};
+}
 
-const App = () => {
+function App(): React.ReactElement {
   const [showSplash, setShowSplash] = useState(true);
   const [hasShownSplash, setHasShownSplash] = useState(false);
 
   useEffect(() => {
-    // Check if splash was already shown this session
     const splashShown = sessionStorage.getItem('bb_splash_shown');
     if (splashShown) {
       setShowSplash(false);
@@ -141,6 +141,6 @@ const App = () => {
       </ThemeProvider>
     </QueryClientProvider>
   );
-};
+}
 
 export default App;
