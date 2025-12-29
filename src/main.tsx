@@ -48,8 +48,25 @@ const initCapacitor = async () => {
   }
 };
 
+// Register service worker for PWA
+const registerSW = async () => {
+  if ('serviceWorker' in navigator) {
+    try {
+      await navigator.serviceWorker.register('/sw.js');
+      console.debug('Service Worker registered');
+    } catch (e) {
+      console.debug('Service Worker registration failed:', e);
+    }
+  }
+};
+
 // Initialize Capacitor then render
 initCapacitor().then(() => {
+  // Register SW only in browser (not native)
+  if (!Capacitor.isNativePlatform()) {
+    registerSW();
+  }
+  
   const container = document.getElementById("root");
   if (container) {
     const root = createRoot(container);
