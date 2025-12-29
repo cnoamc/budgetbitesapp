@@ -14,6 +14,7 @@ import { NotificationBanner } from "@/components/NotificationBanner";
 import { PageTransition } from "@/components/PageTransition";
 import { BottomNav } from "@/components/BottomNav";
 import { PageSkeleton } from "@/components/ui/skeleton";
+import { InstallPrompt } from "@/components/InstallPrompt";
 
 // Eager load critical pages
 import Welcome from "./pages/Welcome";
@@ -106,6 +107,7 @@ function App(): React.ReactElement {
                 <TooltipProvider>
                   <Toaster />
                   <Sonner />
+                  <InstallPrompt />
                   <NotificationBanner />
                   <BrowserRouter>
                     <div className="screen-container bg-background">
