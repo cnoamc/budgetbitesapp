@@ -167,10 +167,9 @@ export const Home: React.FC = () => {
 
   return (
     <GradientBackground variant="warm">
-      <div className="screen-container" dir="rtl">
-        <div className="scroll-container scrollbar-hide pt-safe pb-safe-24">
+      <div className="scroll-container scrollbar-hide" dir="rtl">
         {/* Header - Compact */}
-        <div className="px-4 pt-3 pb-2">
+        <div className="px-4 pt-3 pb-2 pt-safe">
           <div className="flex items-center gap-3" dir="rtl">
             <div className="w-10 h-10 rounded-xl overflow-hidden shadow-glow shrink-0">
               <img 
@@ -186,7 +185,7 @@ export const Home: React.FC = () => {
           </div>
         </div>
 
-        <div className="px-4 flex-1 w-full flex flex-col gap-3 pb-4">
+        <div className="px-4 flex-1 w-full flex flex-col gap-3 pb-safe-24">
           {/* Daily Cooking Tip */}
           <div className="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/20 dark:to-orange-950/20 rounded-xl p-3 border border-amber-200/50 dark:border-amber-800/30">
             <p className="text-xs text-center">
@@ -343,7 +342,6 @@ export const Home: React.FC = () => {
         </div>
 
         <TutorialOverlay />
-        </div>
       </div>
     </GradientBackground>
   );
