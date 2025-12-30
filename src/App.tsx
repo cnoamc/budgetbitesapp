@@ -13,8 +13,7 @@ import { SubscriptionProvider } from "@/contexts/SubscriptionContext";
 import { NotificationBanner } from "@/components/NotificationBanner";
 import { PageTransition } from "@/components/PageTransition";
 import { BottomNav } from "@/components/BottomNav";
-import { HomeSkeleton } from "@/components/skeletons";
-import { AddToHomeScreenPrompt } from "@/components/AddToHomeScreenPrompt";
+import { PageSkeleton } from "@/components/ui/skeleton";
 
 // Eager load critical pages
 import Welcome from "./pages/Welcome";
@@ -60,7 +59,7 @@ function PersistentBottomNav(): React.ReactElement | null {
 
 // Loading fallback component
 function PageLoader(): React.ReactElement {
-  return <HomeSkeleton />;
+  return <PageSkeleton hasHeader cards={3} />;
 }
 
 function AnimatedRoutes(): React.ReactElement {
@@ -107,10 +106,11 @@ function App(): React.ReactElement {
                 <TooltipProvider>
                   <Toaster />
                   <Sonner />
-                  <AddToHomeScreenPrompt />
                   <NotificationBanner />
                   <BrowserRouter>
-                    <AnimatedRoutes />
+                    <div className="screen-container bg-background">
+                      <AnimatedRoutes />
+                    </div>
                   </BrowserRouter>
                 </TooltipProvider>
               </NotificationProvider>

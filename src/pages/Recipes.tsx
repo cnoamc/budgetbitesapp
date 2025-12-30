@@ -37,7 +37,8 @@ export const Recipes: React.FC = () => {
 
   return (
     <GradientBackground variant="minimal">
-      <div className="scroll-container scrollbar-hide pt-safe pb-safe-24" dir="rtl">
+      <div className="screen-container" dir="rtl">
+        <div className="scroll-container scrollbar-hide pt-safe pb-safe-24">
         {/* Header */}
         <div className="p-6 pb-4">
           <div className="flex items-center justify-between mb-6">
@@ -126,6 +127,7 @@ export const Recipes: React.FC = () => {
               </p>
             </div>
           )}
+        </div>
         </div>
       </div>
     </GradientBackground>

@@ -1,6 +1,5 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { cn } from '@/lib/utils';
-import { Capacitor } from '@capacitor/core';
 
 interface FixedScreenLayoutProps {
   children: React.ReactNode;
@@ -20,29 +19,10 @@ export const FixedScreenLayout: React.FC<FixedScreenLayoutProps> = ({
   style,
   dir = 'rtl',
 }) => {
-  // Prevent iOS overscroll/bounce on fixed screens
-  useEffect(() => {
-    if (Capacitor.isNativePlatform()) {
-      const preventTouchMove = (e: TouchEvent) => {
-        // Allow scrolling within scrollable children
-        const target = e.target as HTMLElement;
-        const isScrollable = target.closest('[data-scrollable="true"]');
-        if (!isScrollable) {
-          e.preventDefault();
-        }
-      };
-
-      document.addEventListener('touchmove', preventTouchMove, { passive: false });
-      return () => {
-        document.removeEventListener('touchmove', preventTouchMove);
-      };
-    }
-  }, []);
-
   return (
     <div 
       className={cn(
-        "screen-container",
+        "min-h-screen min-h-dvh flex flex-col overflow-hidden",
         className
       )}
       style={style}
