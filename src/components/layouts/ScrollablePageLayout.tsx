@@ -19,15 +19,15 @@ export const ScrollablePageLayout: React.FC<ScrollablePageLayoutProps> = ({
   return (
     <div 
       className={cn(
-        "min-h-screen min-h-dvh flex flex-col",
+        "screen-container",
         className
       )}
       dir="rtl"
     >
       <div 
         className={cn(
-          "flex-1 overflow-y-auto",
-          hasBottomNav ? "pb-safe-nav" : "pb-safe"
+          "scroll-container scrollbar-hide",
+          hasBottomNav ? "pb-safe-24" : "pb-safe"
         )}
         data-scrollable="true"
       >

@@ -133,6 +133,7 @@
   * {
     @apply border-border;
     -webkit-tap-highlight-color: transparent;
+    box-sizing: border-box;
   }
 
   html {
@@ -142,6 +143,9 @@
     -moz-osx-font-smoothing: grayscale;
     /* Prevent overscroll bounce on iOS */
     overscroll-behavior: none;
+    overflow: hidden;
+    height: 100%;
+    height: 100dvh;
   }
 
   /* Smooth theme transition */
@@ -154,31 +158,61 @@
 
   body {
     @apply bg-background text-foreground antialiased;
-    min-height: 100vh;
-    min-height: 100dvh;
-    /* Prevent pull-to-refresh and overscroll */
+    height: 100%;
+    height: 100dvh;
+    margin: 0;
+    padding: 0;
+    /* Prevent all scrolling on body */
+    overflow: hidden;
     overscroll-behavior: none;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  /* Only apply safe area padding on devices that support it */
-  @supports (padding-top: env(safe-area-inset-top)) {
-    body {
-      padding-top: env(safe-area-inset-top);
-      padding-left: env(safe-area-inset-left);
-      padding-right: env(safe-area-inset-right);
-    }
+    /* Prevent horizontal scroll */
+    overflow-x: hidden;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
   }
 
   /* Keyboard open state */
   body.keyboard-open {
-    height: calc(100vh - var(--keyboard-height));
-    overflow: hidden;
+    height: calc(100dvh - var(--keyboard-height));
   }
 
   #root {
-    min-height: 100vh;
-    min-height: 100dvh;
+    height: 100%;
+    height: 100dvh;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* Screen container - the main wrapper for all pages */
+  .screen-container {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    /* Respect safe areas */
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-left: env(safe-area-inset-left, 0px);
+    padding-right: env(safe-area-inset-right, 0px);
+  }
+
+  /* Scroll container - use this for scrollable content areas */
+  .scroll-container {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Reusable scroll-area class */
+  .scroll-area {
+    overflow-y: auto;
+    overflow-x: hidden;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
   }
 }
 
@@ -208,17 +242,22 @@
     margin-bottom: var(--safe-area-inset-bottom);
   }
 
-  /* Combined safe area with additional offset */
+  /* Combined safe area with additional offset for pages with bottom nav */
   .pb-safe-nav {
-    padding-bottom: calc(var(--safe-area-inset-bottom) + 80px);
+    padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 80px);
+  }
+
+  /* Padding for bottom with nav offset for smaller elements */
+  .pb-safe-24 {
+    padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 96px);
   }
 
   .bottom-safe {
-    bottom: var(--safe-area-inset-bottom);
+    bottom: env(safe-area-inset-bottom, 0px);
   }
 
   .bottom-safe-nav {
-    bottom: calc(var(--safe-area-inset-bottom) + 12px);
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 12px);
   }
 
   /* Gradient utilities */
