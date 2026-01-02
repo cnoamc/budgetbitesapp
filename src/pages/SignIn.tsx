@@ -310,8 +310,7 @@ const SignIn: React.FC = () => {
               {/* Phone option */}
               <Button
                 onClick={() => setView('phone')}
-                variant="outline"
-                className="w-full h-14 rounded-2xl text-base font-medium bg-white/15 backdrop-blur-sm border-white/30 text-white hover:bg-white/25 transition-all"
+                className="w-full h-14 rounded-2xl text-base font-medium bg-white/20 backdrop-blur-sm border border-white/30 text-white hover:bg-white/30 hover:border-white/50 hover:scale-[1.02] transition-all duration-200 active:scale-[0.98]"
               >
                 <Phone className="w-5 h-5 ml-3" />
                 המשך עם מספר טלפון
@@ -321,8 +320,7 @@ const SignIn: React.FC = () => {
               <Button
                 onClick={handleGoogleLogin}
                 disabled={isLoading}
-                variant="outline"
-                className="w-full h-14 rounded-2xl text-base font-medium bg-white border-white/30 text-gray-700 hover:bg-white/95 transition-all"
+                className="w-full h-14 rounded-2xl text-base font-medium bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 hover:shadow-lg hover:scale-[1.02] transition-all duration-200 active:scale-[0.98]"
               >
                 <svg className="w-5 h-5 ml-3" viewBox="0 0 24 24">
                   <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -336,8 +334,7 @@ const SignIn: React.FC = () => {
               {/* Apple option */}
               <Button
                 onClick={handleAppleLogin}
-                variant="outline"
-                className="w-full h-14 rounded-2xl text-base font-medium bg-black border-black text-white hover:bg-black/90 transition-all"
+                className="w-full h-14 rounded-2xl text-base font-medium bg-black border border-black text-white hover:bg-gray-900 hover:scale-[1.02] transition-all duration-200 active:scale-[0.98]"
               >
                 <svg className="w-5 h-5 ml-3" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09l.01-.01zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/>
@@ -355,7 +352,7 @@ const SignIn: React.FC = () => {
               {/* Email option */}
               <Button
                 onClick={() => setView('email')}
-                className="w-full h-14 rounded-2xl text-base font-medium bg-white text-[#2196F3] hover:bg-white/95 transition-all"
+                className="w-full h-14 rounded-2xl text-base font-medium bg-white text-[#2196F3] hover:bg-gray-50 hover:shadow-lg hover:scale-[1.02] transition-all duration-200 active:scale-[0.98]"
                 style={{ boxShadow: '0 8px 24px -8px rgba(0, 0, 0, 0.2)' }}
               >
                 <Mail className="w-5 h-5 ml-3" />
@@ -366,10 +363,10 @@ const SignIn: React.FC = () => {
 
           {view === 'phone' && (
             <form onSubmit={handlePhoneSubmit} className="space-y-4 animate-fade-in">
-              <div className="p-5 rounded-3xl space-y-4 bg-white/15 backdrop-blur-sm border border-white/20">
+              <div className="p-5 rounded-3xl space-y-4 bg-white/95 backdrop-blur-sm border border-white/50 shadow-xl">
                 <div className="space-y-1">
                   <div className="relative">
-                    <Phone className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/60" />
+                    <Phone className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                     <Input
                       type="tel"
                       placeholder="+972 50 123 4567"
@@ -378,20 +375,20 @@ const SignIn: React.FC = () => {
                         setPhone(e.target.value);
                         setErrors(prev => ({ ...prev, phone: undefined }));
                       }}
-                      className="h-14 pr-12 rounded-2xl border-0 bg-white/20 text-base px-5 text-white placeholder:text-white/50"
+                      className="h-14 pr-12 rounded-2xl border border-gray-200 bg-white text-base px-5 text-gray-900 placeholder:text-gray-400 focus:border-[#2196F3] focus:ring-[#2196F3] transition-colors"
                       dir="ltr"
                     />
                   </div>
-                  {errors.phone && <p className="text-sm text-red-200 pr-1">{errors.phone}</p>}
+                  {errors.phone && <p className="text-sm text-red-500 pr-1">{errors.phone}</p>}
                 </div>
                 
                 <Button
                   type="submit"
                   disabled={isLoading}
-                  className="w-full h-14 rounded-2xl text-base font-medium bg-white text-[#2196F3] hover:bg-white/95 transition-all active:scale-[0.98]"
+                  className="w-full h-14 rounded-2xl text-base font-medium bg-[#2196F3] text-white hover:bg-[#1976D2] hover:scale-[1.02] transition-all duration-200 active:scale-[0.98]"
                 >
                   {isLoading ? (
-                    <div className="w-5 h-5 border-2 border-[#2196F3] border-t-transparent rounded-full animate-spin" />
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
                   ) : (
                     'שלח קוד אימות'
                   )}
@@ -402,7 +399,7 @@ const SignIn: React.FC = () => {
 
           {view === 'otp' && (
             <form onSubmit={handleOtpSubmit} className="space-y-4 animate-fade-in">
-              <div className="p-5 rounded-3xl space-y-4 bg-white/15 backdrop-blur-sm border border-white/20">
+              <div className="p-5 rounded-3xl space-y-4 bg-white/95 backdrop-blur-sm border border-white/50 shadow-xl">
                 <div className="space-y-1">
                   <Input
                     type="text"
@@ -415,19 +412,19 @@ const SignIn: React.FC = () => {
                       setOtp(value);
                       setErrors(prev => ({ ...prev, otp: undefined }));
                     }}
-                    className="h-16 rounded-2xl border-0 bg-white/20 text-2xl text-center tracking-[0.5em] font-mono text-white placeholder:text-white/50"
+                    className="h-16 rounded-2xl border border-gray-200 bg-white text-2xl text-center tracking-[0.5em] font-mono text-gray-900 placeholder:text-gray-300 focus:border-[#2196F3] focus:ring-[#2196F3] transition-colors"
                     dir="ltr"
                   />
-                  {errors.otp && <p className="text-sm text-red-200 text-center">{errors.otp}</p>}
+                  {errors.otp && <p className="text-sm text-red-500 text-center">{errors.otp}</p>}
                 </div>
                 
                 <Button
                   type="submit"
                   disabled={isLoading || otp.length !== 6}
-                  className="w-full h-14 rounded-2xl text-base font-medium bg-white text-[#2196F3] hover:bg-white/95 transition-all active:scale-[0.98]"
+                  className="w-full h-14 rounded-2xl text-base font-medium bg-[#2196F3] text-white hover:bg-[#1976D2] hover:scale-[1.02] transition-all duration-200 active:scale-[0.98] disabled:opacity-50"
                 >
                   {isLoading ? (
-                    <div className="w-5 h-5 border-2 border-[#2196F3] border-t-transparent rounded-full animate-spin" />
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
                   ) : (
                     'אימות'
                   )}
@@ -438,7 +435,7 @@ const SignIn: React.FC = () => {
                     type="button"
                     onClick={handleResendOtp}
                     disabled={resendTimer > 0}
-                    className="text-sm text-white/70 hover:text-white transition-colors disabled:opacity-50"
+                    className="text-sm text-[#2196F3] hover:text-[#1976D2] transition-colors disabled:text-gray-400"
                   >
                     {resendTimer > 0 ? `שלח שוב בעוד ${resendTimer} שניות` : 'שלח קוד חדש'}
                   </button>
@@ -449,10 +446,10 @@ const SignIn: React.FC = () => {
 
           {view === 'email' && (
             <form onSubmit={handleEmailSubmit} className="space-y-4 animate-fade-in">
-              <div className="p-5 rounded-3xl space-y-4 bg-white/15 backdrop-blur-sm border border-white/20">
+              <div className="p-5 rounded-3xl space-y-4 bg-white/95 backdrop-blur-sm border border-white/50 shadow-xl">
                 <div className="space-y-1">
                   <div className="relative">
-                    <Mail className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/60" />
+                    <Mail className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                     <Input
                       type="email"
                       placeholder="האימייל שלך"
@@ -461,16 +458,16 @@ const SignIn: React.FC = () => {
                         setEmail(e.target.value);
                         setErrors(prev => ({ ...prev, email: undefined }));
                       }}
-                      className="h-14 pr-12 rounded-2xl border-0 bg-white/20 text-base px-5 text-white placeholder:text-white/50"
+                      className="h-14 pr-12 rounded-2xl border border-gray-200 bg-white text-base px-5 text-gray-900 placeholder:text-gray-400 focus:border-[#2196F3] focus:ring-[#2196F3] transition-colors"
                       dir="ltr"
                     />
                   </div>
-                  {errors.email && <p className="text-sm text-red-200 pr-1">{errors.email}</p>}
+                  {errors.email && <p className="text-sm text-red-500 pr-1">{errors.email}</p>}
                 </div>
 
                 <div className="space-y-1">
                   <div className="relative">
-                    <Lock className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/60" />
+                    <Lock className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                     <Input
                       type={showPassword ? 'text' : 'password'}
                       placeholder="סיסמה"
@@ -479,26 +476,26 @@ const SignIn: React.FC = () => {
                         setPassword(e.target.value);
                         setErrors(prev => ({ ...prev, password: undefined }));
                       }}
-                      className="h-14 pr-12 pl-12 rounded-2xl border-0 bg-white/20 text-base px-5 text-white placeholder:text-white/50"
+                      className="h-14 pr-12 pl-12 rounded-2xl border border-gray-200 bg-white text-base px-5 text-gray-900 placeholder:text-gray-400 focus:border-[#2196F3] focus:ring-[#2196F3] transition-colors"
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute left-4 top-1/2 -translate-y-1/2 text-white/60 hover:text-white transition-colors"
+                      className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
                     >
                       {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                     </button>
                   </div>
-                  {errors.password && <p className="text-sm text-red-200 pr-1">{errors.password}</p>}
+                  {errors.password && <p className="text-sm text-red-500 pr-1">{errors.password}</p>}
                 </div>
                 
                 <Button
                   type="submit"
                   disabled={isLoading}
-                  className="w-full h-14 rounded-2xl text-base font-medium bg-white text-[#2196F3] hover:bg-white/95 transition-all active:scale-[0.98]"
+                  className="w-full h-14 rounded-2xl text-base font-medium bg-[#2196F3] text-white hover:bg-[#1976D2] hover:scale-[1.02] transition-all duration-200 active:scale-[0.98]"
                 >
                   {isLoading ? (
-                    <div className="w-5 h-5 border-2 border-[#2196F3] border-t-transparent rounded-full animate-spin" />
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
                   ) : (
                     isLogin ? 'התחברות' : 'הרשמה'
                   )}
@@ -508,10 +505,10 @@ const SignIn: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => setIsLogin(!isLogin)}
-                    className="text-sm text-white/70 hover:text-white transition-colors"
+                    className="text-sm text-gray-600 hover:text-gray-800 transition-colors"
                   >
                     {isLogin ? 'אין לך חשבון? ' : 'כבר יש לך חשבון? '}
-                    <span className="font-semibold text-white">{isLogin ? 'הרשמה' : 'התחברות'}</span>
+                    <span className="font-semibold text-[#2196F3]">{isLogin ? 'הרשמה' : 'התחברות'}</span>
                   </button>
                 </div>
               </div>
