@@ -18,7 +18,32 @@ serve(async (req) => {
       throw new Error('LOVABLE_API_KEY is not configured');
     }
 
-    const systemPrompt = `אתה עוזר בישול ידידותי ומעודד בשם "שפי". אתה מלווה משתמשים צעירים (גילאי 16-29) שלומדים לבשל.
+    // Check if this is general chat (no recipe) or cooking assistant mode
+    const isGeneralChat = !recipeName;
+
+    let systemPrompt: string;
+    
+    if (isGeneralChat) {
+      systemPrompt = `אתה עוזר בישול ידידותי ומעודד בשם "שפי". אתה עוזר למשתמשים צעירים (גילאי 16-29) עם כל נושא שקשור לאוכל ובישול.
+
+הנחיות חשובות:
+- דבר בעברית בלבד
+- תן תשובות קצרות וממוקדות (2-4 משפטים)
+- השתמש בשפה חמה, מעודדת וידידותית
+- השתמש באימוג'י אחד או שניים
+- עזור עם שאלות על מתכונים, טיפים לבישול, חיסכון בקניות, אכילה בריאה
+- המלץ על מתכונים פשוטים למתחילים
+- עודד את המשתמש לבשל ולחסוך כסף
+- היה אופטימי ותומך
+
+אתה יכול לעזור עם:
+🍳 רעיונות למתכונים ומה לבשל היום
+💰 טיפים לחיסכון בקניות ובישול
+🥗 המלצות לאכילה בריאה
+⏱️ מתכונים מהירים וקלים
+🔧 פתרון בעיות בבישול`;
+    } else {
+      systemPrompt = `אתה עוזר בישול ידידותי ומעודד בשם "שפי". אתה מלווה משתמשים צעירים (גילאי 16-29) שלומדים לבשל.
 
 המתכון הנוכחי: ${recipeName}
 שלב נוכחי: ${currentStep} מתוך ${totalSteps}
@@ -40,8 +65,9 @@ ${isLastStep ? 'זה השלב האחרון - המשתמש סיים!' : ''}
 - "מעולה! עכשיו נטגן 3 דקות על אש בינונית 🍳"
 - "יופי! הוסף את הבצל וערבב עד שהוא משחים 👨‍🍳"
 - "סיימת! נראה מדהים, תהנה מהאוכל! 🎉"`;
+    }
 
-    console.log('Calling Lovable AI with messages:', messages.length);
+    console.log('Calling Lovable AI with messages:', messages.length, 'mode:', isGeneralChat ? 'general' : 'cooking');
 
     const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',

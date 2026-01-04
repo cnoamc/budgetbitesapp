@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Home, BookOpen, TrendingUp, User } from 'lucide-react';
+import { Home, BookOpen, MessageCircle, TrendingUp, User } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
 import { triggerHaptic } from '@/hooks/useHaptics';
@@ -8,6 +8,7 @@ import { triggerHaptic } from '@/hooks/useHaptics';
 const navItems = [
   { icon: Home, label: 'בית', path: '/home' },
   { icon: BookOpen, label: 'מתכונים', path: '/recipes' },
+  { icon: MessageCircle, label: 'שפי', path: '/chat' },
   { icon: TrendingUp, label: 'התקדמות', path: '/progress' },
   { icon: User, label: 'פרופיל', path: '/profile' },
 ];
