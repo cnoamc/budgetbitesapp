@@ -1,17 +1,15 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Settings, RefreshCw, MapPin, LogOut, Pencil, Camera, X, Bell, Moon, Crown, FileText, HelpCircle, Shield, User } from 'lucide-react';
+import { Settings, RefreshCw, MapPin, LogOut, Pencil, Camera, X, Bell, Crown, FileText, HelpCircle, Shield, User } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import appLogo from '@/assets/app-logo.png';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Switch } from '@/components/ui/switch';
 
 import { SyncIndicator } from '@/components/SyncIndicator';
 import { TrialReminderBanner } from '@/components/PremiumPaywall';
 import { useApp } from '@/contexts/AppContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNotifications } from '@/contexts/NotificationContext';
-import { useTheme } from '@/contexts/ThemeContext';
 import { useSubscription } from '@/contexts/SubscriptionContext';
 import { NotificationSettings } from '@/components/NotificationSettings';
 import { toast } from 'sonner';
@@ -39,7 +37,6 @@ export const Profile: React.FC = () => {
   const { profile, progress, displayName, photoUrl, updateDisplayName, updatePhotoUrl, syncing } = useApp();
   const { user, signOut } = useAuth();
   const { unreadCount } = useNotifications();
-  const { resolvedMode, setMode } = useTheme();
   const { daysLeftInTrial, isTrialActive, subscription, toggleCancelReminder } = useSubscription();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -251,16 +248,6 @@ export const Profile: React.FC = () => {
               <span className="text-sm text-muted-foreground">{profile.weeklyOrders} פעמים</span>
             </div>
             
-            <div className="flex items-center justify-between py-1.5">
-              <div className="flex items-center gap-2">
-                <Moon className="w-4 h-4 text-muted-foreground" />
-                <span className="text-sm">מצב כהה</span>
-              </div>
-              <Switch
-                checked={resolvedMode === 'dark'}
-                onCheckedChange={(checked) => setMode(checked ? 'dark' : 'light')}
-              />
-            </div>
           </div>
         </div>
 

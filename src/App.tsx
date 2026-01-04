@@ -27,6 +27,7 @@ const Home = lazy(() => import("./pages/Home"));
 const Recipes = lazy(() => import("./pages/Recipes"));
 const RecipeDetail = lazy(() => import("./pages/RecipeDetail"));
 const CookingAssistant = lazy(() => import("./pages/CookingAssistant"));
+const Chat = lazy(() => import("./pages/Chat"));
 const RateMeal = lazy(() => import("./pages/RateMeal"));
 const Progress = lazy(() => import("./pages/Progress"));
 const Profile = lazy(() => import("./pages/Profile"));
@@ -47,7 +48,7 @@ const queryClient = new QueryClient({
 });
 
 // Pages that show the bottom navigation
-const NAV_PAGES = ['/home', '/recipes', '/progress', '/profile'];
+const NAV_PAGES = ['/home', '/recipes', '/chat', '/progress', '/profile'];
 
 function PersistentBottomNav(): React.ReactElement | null {
   const location = useLocation();
@@ -80,6 +81,7 @@ function AnimatedRoutes(): React.ReactElement {
             <Route path="/recipes" element={<PageTransition><Recipes /></PageTransition>} />
             <Route path="/recipe/:id" element={<PageTransition><RecipeDetail /></PageTransition>} />
             <Route path="/cook/:id" element={<PageTransition><CookingAssistant /></PageTransition>} />
+            <Route path="/chat" element={<PageTransition><Chat /></PageTransition>} />
             <Route path="/rate/:id" element={<PageTransition><RateMeal /></PageTransition>} />
             <Route path="/progress" element={<PageTransition><Progress /></PageTransition>} />
             <Route path="/profile" element={<PageTransition><Profile /></PageTransition>} />
