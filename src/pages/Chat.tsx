@@ -1,15 +1,24 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Send } from 'lucide-react';
+import { Send, Timer, Plus, ChefHat } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ChatMessage } from '@/components/ChatMessage';
+import { CookingTimer } from '@/components/CookingTimer';
+import { AddRecipeDialog } from '@/components/AddRecipeDialog';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { soundManager } from '@/lib/sounds';
 import appLogo from '@/assets/app-logo.png';
 import { FixedScreenLayout } from '@/components/layouts';
+import { cn } from '@/lib/utils';
 
 type Message = { role: 'user' | 'assistant'; content: string };
+
+interface ActiveTimer {
+  id: string;
+  minutes: number;
+  label: string;
+}
 
 const CHAT_STORAGE_KEY = 'bb_chat_history';
 
@@ -20,11 +29,19 @@ const suggestedTopics = [
   { emoji: '⏱️', text: 'מתכונים מהירים' },
 ];
 
+const quickActions = [
+  { emoji: '⏱️', text: 'הפעל טיימר', action: 'timer' },
+  { emoji: '📝', text: 'הוסף מתכון', action: 'recipe' },
+];
+
 export const Chat: React.FC = () => {
   const [messages, setMessages] = useState<Array<{ text: string; isBot: boolean }>>([]);
   const [chatHistory, setChatHistory] = useState<Message[]>([]);
   const [inputText, setInputText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [activeTimers, setActiveTimers] = useState<ActiveTimer[]>([]);
+  const [isAddRecipeOpen, setIsAddRecipeOpen] = useState(false);
+  const [showTimerPicker, setShowTimerPicker] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   // Load chat history from localStorage
@@ -36,7 +53,6 @@ export const Chat: React.FC = () => {
         setMessages(parsed.messages || []);
         setChatHistory(parsed.chatHistory || []);
       } catch {
-        // Show welcome if no history
         showWelcome();
       }
     } else {
@@ -52,17 +68,31 @@ export const Chat: React.FC = () => {
   }, [messages, chatHistory]);
 
   const showWelcome = () => {
-    const welcomeMessage = `היי! 👋 אני שפי, העוזר האישי שלך במטבח!\n\nאני כאן לעזור לך עם כל שאלה על בישול, מתכונים, חיסכון באוכל ועוד.\n\nמה תרצה לדעת?`;
+    const welcomeMessage = `היי! 👋 אני שפי, העוזר האישי שלך במטבח!\n\nאני כאן לעזור לך עם כל שאלה על בישול, מתכונים, חיסכון באוכל ועוד.\n\n⏱️ אפשר להפעיל טיימר לבישול\n📝 אפשר להוסיף מתכונים משלך\n\nמה תרצה לדעת?`;
     setMessages([{ text: welcomeMessage, isBot: true }]);
     setChatHistory([{ role: 'assistant', content: welcomeMessage }]);
   };
 
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
+  }, [messages, activeTimers]);
 
   const sendToAI = async (userMessage: string) => {
     setIsLoading(true);
+    
+    // Check for timer commands
+    const timerMatch = userMessage.match(/טיימר.*?(\d+)\s*דקות?|(\d+)\s*דקות?\s*טיימר/);
+    if (timerMatch) {
+      const minutes = parseInt(timerMatch[1] || timerMatch[2]);
+      if (minutes > 0 && minutes <= 180) {
+        addTimer(minutes, `טיימר ${minutes} דקות`);
+        const response = `הפעלתי טיימר ל-${minutes} דקות! ⏱️\nאזכיר לך כשהזמן יגמר.`;
+        setMessages(prev => [...prev, { text: response, isBot: true }]);
+        setChatHistory(prev => [...prev, { role: 'user', content: userMessage }, { role: 'assistant', content: response }]);
+        setIsLoading(false);
+        return;
+      }
+    }
     
     const newChatHistory: Message[] = [...chatHistory, { role: 'user', content: userMessage }];
     
@@ -125,10 +155,39 @@ export const Chat: React.FC = () => {
     await sendToAI(topic);
   };
 
+  const handleQuickAction = (action: string) => {
+    if (action === 'timer') {
+      setShowTimerPicker(true);
+    } else if (action === 'recipe') {
+      setIsAddRecipeOpen(true);
+    }
+  };
+
+  const addTimer = (minutes: number, label: string) => {
+    const newTimer: ActiveTimer = {
+      id: Date.now().toString(),
+      minutes,
+      label,
+    };
+    setActiveTimers(prev => [...prev, newTimer]);
+    setShowTimerPicker(false);
+    toast.success(`טיימר ${minutes} דקות הופעל! ⏱️`);
+  };
+
+  const removeTimer = (id: string) => {
+    setActiveTimers(prev => prev.filter(t => t.id !== id));
+  };
+
   const handleClearChat = () => {
     localStorage.removeItem(CHAT_STORAGE_KEY);
     showWelcome();
     toast.success('הצ׳אט נוקה');
+  };
+
+  const handleRecipeAdded = () => {
+    const response = 'מעולה! 🎉 המתכון נוסף בהצלחה לאוסף שלך.\nאתה יכול למצוא אותו בלשונית "המתכונים שלי" בעמוד המתכונים.';
+    setMessages(prev => [...prev, { text: response, isBot: true }]);
+    setChatHistory(prev => [...prev, { role: 'assistant', content: response }]);
   };
 
   return (
@@ -168,10 +227,65 @@ export const Chat: React.FC = () => {
           />
         ))}
         
+        {/* Active Timers */}
+        {activeTimers.map((timer) => (
+          <div key={timer.id} className="animate-slide-up">
+            <CookingTimer
+              initialMinutes={timer.minutes}
+              label={timer.label}
+              onClose={() => removeTimer(timer.id)}
+              onComplete={() => {
+                const completeMsg = `⏰ ${timer.label} - הזמן נגמר!`;
+                setMessages(prev => [...prev, { text: completeMsg, isBot: true }]);
+              }}
+            />
+          </div>
+        ))}
+        
+        {/* Timer Picker */}
+        {showTimerPicker && (
+          <div className="bg-card rounded-2xl p-4 border border-border/50 animate-slide-up">
+            <p className="text-sm font-medium mb-3 text-center">בחר זמן לטיימר:</p>
+            <div className="grid grid-cols-4 gap-2">
+              {[1, 3, 5, 10, 15, 20, 30, 45].map((mins) => (
+                <button
+                  key={mins}
+                  onClick={() => addTimer(mins, `טיימר ${mins} דק׳`)}
+                  className="py-3 bg-secondary hover:bg-muted rounded-xl text-sm font-medium transition-colors"
+                >
+                  {mins} דק׳
+                </button>
+              ))}
+            </div>
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="w-full mt-2"
+              onClick={() => setShowTimerPicker(false)}
+            >
+              ביטול
+            </Button>
+          </div>
+        )}
+        
         {/* Suggested Topics - only show after welcome */}
         {messages.length === 1 && (
-          <div className="space-y-2 animate-fade-in">
-            <p className="text-sm text-muted-foreground text-center mb-3">או בחר נושא:</p>
+          <div className="space-y-3 animate-fade-in">
+            {/* Quick Actions */}
+            <div className="flex gap-2 justify-center">
+              {quickActions.map((action) => (
+                <button
+                  key={action.action}
+                  onClick={() => handleQuickAction(action.action)}
+                  className="px-4 py-2 bg-primary/10 hover:bg-primary/20 rounded-xl text-sm font-medium transition-colors flex items-center gap-2"
+                >
+                  <span>{action.emoji}</span>
+                  <span>{action.text}</span>
+                </button>
+              ))}
+            </div>
+            
+            <p className="text-sm text-muted-foreground text-center">או בחר נושא:</p>
             <div className="grid grid-cols-2 gap-2">
               {suggestedTopics.map((topic) => (
                 <button
@@ -204,6 +318,30 @@ export const Chat: React.FC = () => {
         <div ref={scrollRef} />
       </div>
 
+      {/* Quick Action Buttons */}
+      {messages.length > 1 && !showTimerPicker && (
+        <div className="px-4 pb-2 flex gap-2 justify-center">
+          <Button
+            variant="outline"
+            size="sm"
+            className="rounded-xl text-xs"
+            onClick={() => setShowTimerPicker(true)}
+          >
+            <Timer className="w-3 h-3 ml-1" />
+            טיימר
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            className="rounded-xl text-xs"
+            onClick={() => setIsAddRecipeOpen(true)}
+          >
+            <Plus className="w-3 h-3 ml-1" />
+            מתכון חדש
+          </Button>
+        </div>
+      )}
+
       {/* Input Area */}
       <div className="p-4 border-t border-border/50 bg-card pb-24">
         <form onSubmit={handleSendMessage} className="flex gap-2">
@@ -219,6 +357,13 @@ export const Chat: React.FC = () => {
           </Button>
         </form>
       </div>
+
+      {/* Add Recipe Dialog */}
+      <AddRecipeDialog
+        open={isAddRecipeOpen}
+        onOpenChange={setIsAddRecipeOpen}
+        onRecipeAdded={handleRecipeAdded}
+      />
     </FixedScreenLayout>
   );
 };

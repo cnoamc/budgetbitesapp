@@ -1,9 +1,10 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { TrendingUp, Sparkles, ArrowLeft, Flame, Info, Wallet } from 'lucide-react';
+import { TrendingUp, Sparkles, ArrowLeft, Flame, Info, Wallet, Share2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { GradientBackground } from '@/components/ui/GradientBackground';
 import { PremiumCard } from '@/components/ui/PremiumCard';
+import { SocialShareButton } from '@/components/SocialShareButton';
 import { useApp } from '@/contexts/AppContext';
 import { getSmartSavingsText } from '@/lib/notifications';
 
@@ -20,6 +21,10 @@ export const Savings: React.FC = () => {
     { name: 'פסטה', home: 8, delivery: 55, emoji: '🍝' },
     { name: 'שקשוקה', home: 10, delivery: 45, emoji: '🍳' },
   ];
+
+  const shareText = hasCooked 
+    ? `🍳 חסכתי ₪${actualMonthlySavings} החודש בבישול ביתי עם BudgetBites!\n\n💰 סה"כ ${progress.totalMealsCooked} ארוחות שהכנתי בבית.\n\nהצטרפו גם אתם לחיסכון!`
+    : `💰 גיליתי שאני יכול לחסוך ₪${potentialMonthlySavings} בחודש אם אבשל בבית!\n\n📊 זה ₪${potentialYearlySavings} בשנה!\n\nהצטרפו ל-BudgetBites לגלות כמה אתם יכולים לחסוך!`;
 
   return (
     <GradientBackground variant="fresh">
@@ -52,20 +57,29 @@ export const Savings: React.FC = () => {
           </p>
 
           {/* Yearly Savings Card */}
-          <PremiumCard variant="elevated" className="p-6 mb-6 animate-slide-up">
+          <PremiumCard variant="elevated" className="p-4 sm:p-6 mb-4 sm:mb-6 animate-slide-up">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground mb-2">חיסכון שנתי פוטנציאלי</p>
-                <p className="text-4xl font-bold text-savings">₪{potentialYearlySavings.toLocaleString()}</p>
+                <p className="text-xs sm:text-sm text-muted-foreground mb-1 sm:mb-2">חיסכון שנתי פוטנציאלי</p>
+                <p className="text-3xl sm:text-4xl font-bold text-savings">₪{potentialYearlySavings.toLocaleString()}</p>
               </div>
-              <div className="w-16 h-16 bg-savings-light rounded-2xl flex items-center justify-center shadow-soft">
-                <TrendingUp className="w-8 h-8 text-savings" />
+              <div className="w-12 sm:w-16 h-12 sm:h-16 bg-savings-light rounded-2xl flex items-center justify-center shadow-soft">
+                <TrendingUp className="w-6 sm:w-8 h-6 sm:h-8 text-savings" />
               </div>
             </div>
-            <div className="mt-4 pt-4 border-t border-border/30">
-              <p className="text-sm text-muted-foreground flex items-center gap-2">
+            <div className="mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-border/30 flex items-center justify-between gap-2">
+              <p className="text-xs sm:text-sm text-muted-foreground flex-1">
                 {getSmartSavingsText(potentialYearlySavings)}
               </p>
+              <SocialShareButton
+                title="פוטנציאל החיסכון שלי"
+                text={shareText}
+                variant="ghost"
+                size="sm"
+                className="shrink-0"
+              >
+                <Share2 className="w-4 h-4" />
+              </SocialShareButton>
             </div>
           </PremiumCard>
 
