@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Check, X, TrendingUp } from 'lucide-react';
+import { Check, X, TrendingUp, Share2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { StarRating } from '@/components/StarRating';
+import { SocialShareButton } from '@/components/SocialShareButton';
 import { FixedScreenLayout } from '@/components/layouts';
 import { getRecipeById } from '@/lib/recipes';
 import { useApp } from '@/contexts/AppContext';
@@ -54,7 +55,7 @@ export const RateMeal: React.FC = () => {
           </div>
 
           {/* Savings Highlight */}
-          <div className="bg-savings-light rounded-2xl p-4 mb-6 flex items-center justify-between animate-slide-up">
+          <div className="bg-savings-light rounded-2xl p-4 mb-4 flex items-center justify-between animate-slide-up">
             <div>
               <p className="text-xs text-muted-foreground mb-1">חסכת בארוחה הזו</p>
               <p className="text-2xl font-bold text-savings">₪{savings}</p>
@@ -62,6 +63,19 @@ export const RateMeal: React.FC = () => {
             <div className="w-12 h-12 bg-savings rounded-xl flex items-center justify-center">
               <TrendingUp className="w-6 h-6 text-accent-foreground" />
             </div>
+          </div>
+
+          {/* Share Achievement */}
+          <div className="mb-6 animate-slide-up" style={{ animationDelay: '0.05s' }}>
+            <SocialShareButton
+              title="הכנתי ארוחה וחסכתי!"
+              text={`🍳 הכנתי ${recipe.name} בבית וחסכתי ₪${savings}!\n\n💰 בישול ביתי משתלם!\n\nהצטרפו גם אתם ל-BudgetBites!`}
+              variant="outline"
+              className="w-full rounded-xl"
+            >
+              <Share2 className="w-4 h-4 ml-2" />
+              שתף את ההישג שלי
+            </SocialShareButton>
           </div>
 
           {/* Rating Form */}

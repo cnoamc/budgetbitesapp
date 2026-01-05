@@ -136,20 +136,20 @@ export const Onboarding: React.FC = () => {
         style={{ background: 'linear-gradient(180deg, #2196F3 0%, #00BCD4 100%)' }} 
       />
 
-      <div className="relative z-10 flex-1 flex flex-col max-w-lg mx-auto w-full px-5 pt-6 overflow-hidden">
+      <div className="relative z-10 flex-1 flex flex-col max-w-lg mx-auto w-full px-4 sm:px-5 pt-4 sm:pt-6 overflow-hidden">
         {/* Header */}
-        <div className="text-center mb-4">
+        <div className="text-center mb-3 sm:mb-4">
           <div 
-            className="w-14 h-14 rounded-[16px] mx-auto overflow-hidden mb-2"
+            className="w-12 sm:w-14 h-12 sm:h-14 rounded-[16px] mx-auto overflow-hidden mb-2"
             style={{ boxShadow: '0 8px 24px -8px rgba(0, 0, 0, 0.3)' }}
           >
             <img src={appIcon} alt="BudgetBites" className="w-full h-full object-cover" />
           </div>
-          <p className="text-sm font-medium text-white/70 tracking-[0.15em] uppercase">BUDGETBITES</p>
+          <p className="text-xs sm:text-sm font-medium text-white/70 tracking-[0.15em] uppercase">BUDGETBITES</p>
         </div>
 
         {/* Progress dots */}
-        <div className="flex justify-center gap-2 mb-6">
+        <div className="flex justify-center gap-2 mb-4 sm:mb-6">
           {Array.from({ length: totalSteps }).map((_, i) => (
             <div
               key={i}
@@ -163,32 +163,32 @@ export const Onboarding: React.FC = () => {
 
         {/* Step Content - scrollable only when content is too tall */}
         <div 
-          className="flex-1 flex flex-col justify-center animate-fade-in overflow-y-auto overscroll-contain" 
+          className="flex-1 flex flex-col justify-center animate-fade-in overflow-y-auto overscroll-contain pb-4" 
           key={currentStepType}
           data-scrollable="true"
           style={{ WebkitOverflowScrolling: 'touch' }}
         >
           {/* Step 1: Goal Selection */}
           {currentStepType === 'goal' && (
-            <div className="space-y-4">
-              <h2 className="text-xl font-semibold text-center text-white">מה המטרה שלך? 🎯</h2>
-              <p className="text-center text-white/70 text-sm">בחר את הסיבה העיקרית שלך להשתמש באפליקציה</p>
-              <div className="space-y-3 mt-6">
+            <div className="space-y-3 sm:space-y-4">
+              <h2 className="text-lg sm:text-xl font-semibold text-center text-white">מה המטרה שלך? 🎯</h2>
+              <p className="text-center text-white/70 text-xs sm:text-sm">בחר את הסיבה העיקרית שלך להשתמש באפליקציה</p>
+              <div className="space-y-2 sm:space-y-3 mt-4 sm:mt-6">
                 {goalOptions.map((goal) => (
                   <button
                     key={goal.id}
                     onClick={() => setFormData({ ...formData, goal: goal.id })}
                     className={cn(
-                      "w-full py-4 px-5 rounded-2xl border-2 transition-all duration-200 flex items-center gap-4 active:scale-[0.98]",
+                      "w-full py-3 sm:py-4 px-4 sm:px-5 rounded-2xl border-2 transition-all duration-200 flex items-center gap-3 sm:gap-4 active:scale-[0.98]",
                       formData.goal === goal.id
                         ? "border-white bg-white text-[#2196F3] scale-[1.01] shadow-lg"
                         : "border-white/30 hover:border-white/50 hover:scale-[1.01] text-white bg-white/10 backdrop-blur-sm"
                     )}
                   >
-                    <span className="text-3xl">{goal.emoji}</span>
-                    <div className="text-right flex-1">
-                      <span className="text-base font-semibold block">{goal.label}</span>
-                      <span className={cn("text-xs", formData.goal === goal.id ? "text-[#2196F3]/70" : "text-white/60")}>{goal.description}</span>
+                    <span className="text-2xl sm:text-3xl">{goal.emoji}</span>
+                    <div className="text-right flex-1 min-w-0">
+                      <span className="text-sm sm:text-base font-semibold block">{goal.label}</span>
+                      <span className={cn("text-xs truncate block", formData.goal === goal.id ? "text-[#2196F3]/70" : "text-white/60")}>{goal.description}</span>
                     </div>
                   </button>
                 ))}
@@ -198,15 +198,15 @@ export const Onboarding: React.FC = () => {
 
           {/* Cooking Skill */}
           {currentStepType === 'skill' && (
-            <div className="space-y-4">
-              <h2 className="text-lg font-semibold text-center text-white">מה רמת הבישול שלך? 👨‍🍳</h2>
+            <div className="space-y-3 sm:space-y-4">
+              <h2 className="text-base sm:text-lg font-semibold text-center text-white">מה רמת הבישול שלך? 👨‍🍳</h2>
               <div className="space-y-2">
                 {[1, 2, 3, 4, 5].map((level) => (
                   <button
                     key={level}
                     onClick={() => setFormData({ ...formData, cookingSkill: level })}
                     className={cn(
-                      "w-full py-3 px-4 rounded-xl border-2 transition-all duration-200 flex items-center gap-3 active:scale-[0.98]",
+                      "w-full py-2.5 sm:py-3 px-3 sm:px-4 rounded-xl border-2 transition-all duration-200 flex items-center gap-3 active:scale-[0.98]",
                       formData.cookingSkill === level
                         ? "border-white bg-white text-[#2196F3] scale-[1.01] shadow-md"
                         : "border-white/30 hover:border-white/50 hover:scale-[1.01] text-white bg-white/10 backdrop-blur-sm"
@@ -217,7 +217,7 @@ export const Onboarding: React.FC = () => {
                         <div
                           key={i}
                           className={cn(
-                            "w-2.5 h-2.5 rounded-full transition-all duration-200",
+                            "w-2 sm:w-2.5 h-2 sm:h-2.5 rounded-full transition-all duration-200",
                             i < level 
                               ? formData.cookingSkill === level ? "bg-[#2196F3]" : "bg-white" 
                               : formData.cookingSkill === level ? "bg-[#2196F3]/30" : "bg-white/30"
@@ -234,91 +234,91 @@ export const Onboarding: React.FC = () => {
 
           {/* Monthly Spending */}
           {currentStepType === 'spending' && (
-            <div className="space-y-4">
-              <h2 className="text-lg font-semibold text-center text-white">כמה אתה מוציא על אוכל בחוץ בחודש? 💸</h2>
+            <div className="space-y-3 sm:space-y-4">
+              <h2 className="text-base sm:text-lg font-semibold text-center text-white">כמה אתה מוציא על אוכל בחוץ בחודש? 💸</h2>
               <div className="grid grid-cols-3 gap-2">
                 {spendingOptions.map((amount) => (
                   <button
                     key={amount}
                     onClick={() => setFormData({ ...formData, monthlySpending: amount })}
                     className={cn(
-                      "py-3 px-2 rounded-xl border-2 transition-all duration-200 active:scale-95",
+                      "py-2.5 sm:py-3 px-1 sm:px-2 rounded-xl border-2 transition-all duration-200 active:scale-95",
                       formData.monthlySpending === amount
                         ? "border-white bg-white text-[#2196F3] scale-[1.02] shadow-md"
                         : "border-white/30 hover:border-white/50 hover:scale-[1.02] text-white bg-white/10 backdrop-blur-sm"
                     )}
                   >
-                    <span className="text-base font-bold">₪{amount.toLocaleString()}</span>
+                    <span className="text-sm sm:text-base font-bold">₪{amount.toLocaleString()}</span>
                   </button>
                 ))}
               </div>
               <button
                 onClick={() => setFormData({ ...formData, monthlySpending: 4000 })}
                 className={cn(
-                  "w-full py-3 rounded-xl border-2 transition-all duration-200 active:scale-95",
+                  "w-full py-2.5 sm:py-3 rounded-xl border-2 transition-all duration-200 active:scale-95",
                   formData.monthlySpending === 4000
                     ? "border-white bg-white text-[#2196F3] scale-[1.02] shadow-md"
                     : "border-white/30 hover:border-white/50 hover:scale-[1.02] text-white bg-white/10 backdrop-blur-sm"
                 )}
               >
-                <span className="text-base font-bold">יותר מ-₪3,000</span>
+                <span className="text-sm sm:text-base font-bold">יותר מ-₪3,000</span>
               </button>
             </div>
           )}
 
           {/* Weekly Orders */}
           {currentStepType === 'orders' && (
-            <div className="space-y-4">
-              <h2 className="text-lg font-semibold text-center text-white">כמה פעמים בשבוע אתה מזמין משלוח? 🛵</h2>
+            <div className="space-y-3 sm:space-y-4">
+              <h2 className="text-base sm:text-lg font-semibold text-center text-white">כמה פעמים בשבוע אתה מזמין משלוח? 🛵</h2>
               <div className="grid grid-cols-3 gap-2">
                 {orderOptions.map((count) => (
                   <button
                     key={count}
                     onClick={() => setFormData({ ...formData, weeklyOrders: count })}
                     className={cn(
-                      "py-3 rounded-xl border-2 transition-all duration-200 active:scale-95",
+                      "py-2.5 sm:py-3 rounded-xl border-2 transition-all duration-200 active:scale-95",
                       formData.weeklyOrders === count
                         ? "border-white bg-white text-[#2196F3] scale-[1.02] shadow-md"
                         : "border-white/30 hover:border-white/50 hover:scale-[1.02] text-white bg-white/10 backdrop-blur-sm"
                     )}
                   >
-                    <span className="text-xl font-bold">{count === 1 ? '1 או פחות' : count}</span>
+                    <span className="text-lg sm:text-xl font-bold">{count === 1 ? '1 או פחות' : count}</span>
                   </button>
                 ))}
               </div>
               <button
                 onClick={() => setFormData({ ...formData, weeklyOrders: 12 })}
                 className={cn(
-                  "w-full py-3 rounded-xl border-2 transition-all duration-200 active:scale-95",
+                  "w-full py-2.5 sm:py-3 rounded-xl border-2 transition-all duration-200 active:scale-95",
                   formData.weeklyOrders === 12
                     ? "border-white bg-white text-[#2196F3] scale-[1.02] shadow-md"
                     : "border-white/30 hover:border-white/50 hover:scale-[1.02] text-white bg-white/10 backdrop-blur-sm"
                 )}
               >
-                <span className="text-base font-bold">יותר מ-10</span>
+                <span className="text-sm sm:text-base font-bold">יותר מ-10</span>
               </button>
             </div>
           )}
 
           {/* Food Preferences */}
           {currentStepType === 'food' && (
-            <div className="space-y-4">
-              <h2 className="text-lg font-semibold text-center text-white">איזה סוג אוכל אתה אוהב? 🍽️</h2>
+            <div className="space-y-3 sm:space-y-4">
+              <h2 className="text-base sm:text-lg font-semibold text-center text-white">איזה סוג אוכל אתה אוהב? 🍽️</h2>
               <p className="text-center text-white/70 text-xs">אפשר לבחור כמה</p>
-              <div className="grid grid-cols-3 gap-2">
+              <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
                 {foodOptions.map((food) => (
                   <button
                     key={food.id}
                     onClick={() => toggleFood(food.id)}
                     className={cn(
-                      "py-3 rounded-xl border-2 transition-all duration-200 flex flex-col items-center gap-1 active:scale-95",
+                      "py-2.5 sm:py-3 rounded-xl border-2 transition-all duration-200 flex flex-col items-center gap-0.5 sm:gap-1 active:scale-95",
                       formData.preferredFood.includes(food.id)
                         ? "border-white bg-white text-[#2196F3] scale-[1.02] shadow-md"
                         : "border-white/30 hover:border-white/50 hover:scale-[1.02] text-white bg-white/10 backdrop-blur-sm"
                     )}
                   >
-                    <span className="text-2xl">{food.emoji}</span>
-                    <span className="text-xs font-medium">{food.label}</span>
+                    <span className="text-xl sm:text-2xl">{food.emoji}</span>
+                    <span className="text-[10px] sm:text-xs font-medium">{food.label}</span>
                   </button>
                 ))}
               </div>
@@ -327,42 +327,42 @@ export const Onboarding: React.FC = () => {
 
           {/* Benefits */}
           {currentStepType === 'benefits' && (
-            <div className="space-y-4">
-              <h2 className="text-xl font-semibold text-center text-white">מה תקבל מאיתנו? ✨</h2>
-              <p className="text-center text-white/70 text-sm">הנה למה שווה להצטרף</p>
-              <div className="space-y-3 mt-4">
-                <div className="p-4 rounded-2xl bg-white/20 backdrop-blur-sm border border-white/30 animate-fade-in">
+            <div className="space-y-3 sm:space-y-4">
+              <h2 className="text-lg sm:text-xl font-semibold text-center text-white">מה תקבל מאיתנו? ✨</h2>
+              <p className="text-center text-white/70 text-xs sm:text-sm">הנה למה שווה להצטרף</p>
+              <div className="space-y-2 sm:space-y-3 mt-3 sm:mt-4">
+                <div className="p-3 sm:p-4 rounded-2xl bg-white/20 backdrop-blur-sm border border-white/30 animate-fade-in">
                   <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 bg-white/30 rounded-xl flex items-center justify-center">
-                      <Clock className="w-6 h-6 text-white" />
+                    <div className="w-10 sm:w-12 h-10 sm:h-12 bg-white/30 rounded-xl flex items-center justify-center">
+                      <Clock className="w-5 sm:w-6 h-5 sm:h-6 text-white" />
                     </div>
-                    <div className="flex-1 text-right">
-                      <h3 className="font-semibold text-white">חסוך זמן בתכנון</h3>
-                      <p className="text-xs text-white/70">מתכונים מהירים עם רשימת קניות אוטומטית</p>
+                    <div className="flex-1 text-right min-w-0">
+                      <h3 className="font-semibold text-white text-sm sm:text-base">חסוך זמן בתכנון</h3>
+                      <p className="text-xs text-white/70 truncate">מתכונים מהירים עם רשימת קניות אוטומטית</p>
                     </div>
                   </div>
                 </div>
                 
-                <div className="p-4 rounded-2xl bg-white/20 backdrop-blur-sm border border-white/30 animate-fade-in" style={{ animationDelay: '0.1s' }}>
+                <div className="p-3 sm:p-4 rounded-2xl bg-white/20 backdrop-blur-sm border border-white/30 animate-fade-in" style={{ animationDelay: '0.1s' }}>
                   <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 bg-white/30 rounded-xl flex items-center justify-center">
-                      <Trophy className="w-6 h-6 text-white" />
+                    <div className="w-10 sm:w-12 h-10 sm:h-12 bg-white/30 rounded-xl flex items-center justify-center">
+                      <Trophy className="w-5 sm:w-6 h-5 sm:h-6 text-white" />
                     </div>
-                    <div className="flex-1 text-right">
-                      <h3 className="font-semibold text-white">אתגרים שבועיים</h3>
-                      <p className="text-xs text-white/70">צבור נקודות והישגים ותתחרה עם חברים</p>
+                    <div className="flex-1 text-right min-w-0">
+                      <h3 className="font-semibold text-white text-sm sm:text-base">אתגרים שבועיים</h3>
+                      <p className="text-xs text-white/70 truncate">צבור נקודות והישגים ותתחרה עם חברים</p>
                     </div>
                   </div>
                 </div>
                 
-                <div className="p-4 rounded-2xl bg-white/20 backdrop-blur-sm border border-white/30 animate-fade-in" style={{ animationDelay: '0.2s' }}>
+                <div className="p-3 sm:p-4 rounded-2xl bg-white/20 backdrop-blur-sm border border-white/30 animate-fade-in" style={{ animationDelay: '0.2s' }}>
                   <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 bg-white/30 rounded-xl flex items-center justify-center">
-                      <Sparkles className="w-6 h-6 text-white" />
+                    <div className="w-10 sm:w-12 h-10 sm:h-12 bg-white/30 rounded-xl flex items-center justify-center">
+                      <Sparkles className="w-5 sm:w-6 h-5 sm:h-6 text-white" />
                     </div>
-                    <div className="flex-1 text-right">
-                      <h3 className="font-semibold text-white">מתכונים בלעדיים</h3>
-                      <p className="text-xs text-white/70">גישה למתכונים מקצועיים וטכניקות מתקדמות</p>
+                    <div className="flex-1 text-right min-w-0">
+                      <h3 className="font-semibold text-white text-sm sm:text-base">מתכונים בלעדיים</h3>
+                      <p className="text-xs text-white/70 truncate">גישה למתכונים מקצועיים וטכניקות מתקדמות</p>
                     </div>
                   </div>
                 </div>
@@ -372,20 +372,20 @@ export const Onboarding: React.FC = () => {
 
           {/* Done */}
           {currentStepType === 'done' && (
-            <div className="space-y-4 text-center">
-              <div className="text-5xl">{getDoneMessage().emoji}</div>
-              <h2 className="text-xl font-semibold text-white">{getDoneMessage().title}</h2>
-              <p className="text-white/70 text-sm">{getDoneMessage().subtitle}</p>
+            <div className="space-y-3 sm:space-y-4 text-center">
+              <div className="text-4xl sm:text-5xl">{getDoneMessage().emoji}</div>
+              <h2 className="text-lg sm:text-xl font-semibold text-white">{getDoneMessage().title}</h2>
+              <p className="text-white/70 text-xs sm:text-sm">{getDoneMessage().subtitle}</p>
             </div>
           )}
         </div>
 
         {/* Navigation */}
-        <div className="py-5">
+        <div className="py-4 sm:py-5 pb-safe">
           <Button
             onClick={handleNext}
             disabled={!canProceed()}
-            className="w-full h-[54px] rounded-full text-[17px] font-semibold bg-white text-[#2196F3] hover:bg-white/95 disabled:bg-white/50 disabled:text-[#2196F3]/50"
+            className="w-full h-12 sm:h-[54px] rounded-full text-base sm:text-[17px] font-semibold bg-white text-[#2196F3] hover:bg-white/95 disabled:bg-white/50 disabled:text-[#2196F3]/50"
             style={{ boxShadow: '0 8px 24px -8px rgba(0, 0, 0, 0.2)' }}
           >
             {getButtonText()}

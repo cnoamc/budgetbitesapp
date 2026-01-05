@@ -47,6 +47,51 @@ export type Database = {
         }
         Relationships: []
       }
+      custom_recipes: {
+        Row: {
+          category: string | null
+          created_at: string
+          delivery_cost: number | null
+          emoji: string | null
+          home_cost: number | null
+          id: string
+          ingredients: string[] | null
+          name: string
+          prep_time: number | null
+          steps: string[] | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string
+          delivery_cost?: number | null
+          emoji?: string | null
+          home_cost?: number | null
+          id?: string
+          ingredients?: string[] | null
+          name: string
+          prep_time?: number | null
+          steps?: string[] | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          category?: string | null
+          created_at?: string
+          delivery_cost?: number | null
+          emoji?: string | null
+          home_cost?: number | null
+          id?: string
+          ingredients?: string[] | null
+          name?: string
+          prep_time?: number | null
+          steps?: string[] | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       favorite_recipes: {
         Row: {
           created_at: string
