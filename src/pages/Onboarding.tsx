@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Clock, Trophy, Sparkles } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { FixedScreenLayout } from '@/components/layouts';
 import { useApp } from '@/contexts/AppContext';
@@ -110,6 +110,7 @@ export const Onboarding: React.FC = () => {
 
   const getButtonText = () => {
     if (currentStepType === 'done') return 'בואו נתחיל!';
+    if (currentStepType === 'benefits') return 'בוא נבשל יחד ➡️';
     return 'המשך';
   };
 
@@ -328,45 +329,46 @@ export const Onboarding: React.FC = () => {
           {/* Benefits */}
           {currentStepType === 'benefits' && (
             <div className="space-y-3 sm:space-y-4">
-              <h2 className="text-lg sm:text-xl font-semibold text-center text-white">מה תקבל מאיתנו? ✨</h2>
-              <p className="text-center text-white/70 text-xs sm:text-sm">הנה למה שווה להצטרף</p>
-              <div className="space-y-2 sm:space-y-3 mt-3 sm:mt-4">
+              <h2 className="text-lg sm:text-xl font-semibold text-center text-white">✨ הצטרפות מעניקה לך</h2>
+              <p className="text-center text-white/70 text-xs sm:text-sm">חוויה חכמה במטבח, בלי ניחושים ובלי לחץ</p>
+              <div className="space-y-3 sm:space-y-4 mt-3 sm:mt-4">
                 <div className="p-3 sm:p-4 rounded-2xl bg-white/20 backdrop-blur-sm border border-white/30 animate-fade-in">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 sm:w-12 h-10 sm:h-12 bg-white/30 rounded-xl flex items-center justify-center">
-                      <Clock className="w-5 sm:w-6 h-5 sm:h-6 text-white" />
+                    <div className="w-10 sm:w-12 h-10 sm:h-12 bg-white/30 rounded-xl flex items-center justify-center text-xl sm:text-2xl">
+                      🤖
                     </div>
                     <div className="flex-1 text-right min-w-0">
-                      <h3 className="font-semibold text-white text-sm sm:text-base">חסוך זמן בתכנון</h3>
-                      <p className="text-xs text-white/70 truncate">מתכונים מהירים עם רשימת קניות אוטומטית</p>
+                      <h3 className="font-semibold text-white text-sm sm:text-base">שף AI אישי</h3>
+                      <p className="text-xs text-white/70">מלווה אותך שלב־שלב, עונה על שאלות בזמן אמת</p>
                     </div>
                   </div>
                 </div>
                 
                 <div className="p-3 sm:p-4 rounded-2xl bg-white/20 backdrop-blur-sm border border-white/30 animate-fade-in" style={{ animationDelay: '0.1s' }}>
                   <div className="flex items-center gap-3">
-                    <div className="w-10 sm:w-12 h-10 sm:h-12 bg-white/30 rounded-xl flex items-center justify-center">
-                      <Trophy className="w-5 sm:w-6 h-5 sm:h-6 text-white" />
+                    <div className="w-10 sm:w-12 h-10 sm:h-12 bg-white/30 rounded-xl flex items-center justify-center text-xl sm:text-2xl">
+                      📖
                     </div>
                     <div className="flex-1 text-right min-w-0">
-                      <h3 className="font-semibold text-white text-sm sm:text-base">אתגרים שבועיים</h3>
-                      <p className="text-xs text-white/70 truncate">צבור נקודות והישגים ותתחרה עם חברים</p>
+                      <h3 className="font-semibold text-white text-sm sm:text-base">ספר מתכונים דיגיטלי</h3>
+                      <p className="text-xs text-white/70">מתכונים ברורים, קלים ומתקדמים לכל רמה</p>
                     </div>
                   </div>
                 </div>
                 
                 <div className="p-3 sm:p-4 rounded-2xl bg-white/20 backdrop-blur-sm border border-white/30 animate-fade-in" style={{ animationDelay: '0.2s' }}>
                   <div className="flex items-center gap-3">
-                    <div className="w-10 sm:w-12 h-10 sm:h-12 bg-white/30 rounded-xl flex items-center justify-center">
-                      <Sparkles className="w-5 sm:w-6 h-5 sm:h-6 text-white" />
+                    <div className="w-10 sm:w-12 h-10 sm:h-12 bg-white/30 rounded-xl flex items-center justify-center text-xl sm:text-2xl">
+                      ⏱️
                     </div>
                     <div className="flex-1 text-right min-w-0">
-                      <h3 className="font-semibold text-white text-sm sm:text-base">מתכונים בלעדיים</h3>
-                      <p className="text-xs text-white/70 truncate">גישה למתכונים מקצועיים וטכניקות מתקדמות</p>
+                      <h3 className="font-semibold text-white text-sm sm:text-base">בישול בלי לחשוב</h3>
+                      <p className="text-xs text-white/70">זמנים, מרכיבים והשלב הבא — הכל ברור</p>
                     </div>
                   </div>
                 </div>
               </div>
+              <p className="text-center text-white/50 text-[10px] sm:text-xs mt-2">אפשר לשנות הכל בהמשך</p>
             </div>
           )}
 

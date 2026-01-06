@@ -127,16 +127,6 @@ export const Recipes: React.FC = () => {
         {/* My Recipes Section */}
         {(activeCategory === 'all' || activeCategory === 'my-recipes') && (
           <div className="px-4 sm:px-6 mb-4">
-            {/* Add Recipe Button */}
-            <Button
-              onClick={() => setIsAddRecipeOpen(true)}
-              variant="outline"
-              className="w-full mb-4 rounded-xl border-dashed border-2 h-14 text-muted-foreground hover:text-foreground hover:border-primary"
-            >
-              <Plus className="w-5 h-5 ml-2" />
-              הוסף מתכון חדש
-            </Button>
-
             {/* Custom Recipes List */}
             {filteredCustomRecipes.length > 0 && (
               <div className="space-y-3 mb-4">
