@@ -50,43 +50,73 @@ export type Database = {
       custom_recipes: {
         Row: {
           category: string | null
+          chef_notes: string | null
+          common_questions: Json | null
           created_at: string
           delivery_cost: number | null
+          difficulty: string | null
+          doneness_checks: string[] | null
           emoji: string | null
+          explanation_text: string | null
           home_cost: number | null
           id: string
           ingredients: string[] | null
           name: string
           prep_time: number | null
+          recipe_memory_json: Json | null
+          recipe_summary: string | null
+          servings: number | null
           steps: string[] | null
+          substitutions: Json | null
+          tips: string[] | null
           updated_at: string
           user_id: string
         }
         Insert: {
           category?: string | null
+          chef_notes?: string | null
+          common_questions?: Json | null
           created_at?: string
           delivery_cost?: number | null
+          difficulty?: string | null
+          doneness_checks?: string[] | null
           emoji?: string | null
+          explanation_text?: string | null
           home_cost?: number | null
           id?: string
           ingredients?: string[] | null
           name: string
           prep_time?: number | null
+          recipe_memory_json?: Json | null
+          recipe_summary?: string | null
+          servings?: number | null
           steps?: string[] | null
+          substitutions?: Json | null
+          tips?: string[] | null
           updated_at?: string
           user_id: string
         }
         Update: {
           category?: string | null
+          chef_notes?: string | null
+          common_questions?: Json | null
           created_at?: string
           delivery_cost?: number | null
+          difficulty?: string | null
+          doneness_checks?: string[] | null
           emoji?: string | null
+          explanation_text?: string | null
           home_cost?: number | null
           id?: string
           ingredients?: string[] | null
           name?: string
           prep_time?: number | null
+          recipe_memory_json?: Json | null
+          recipe_summary?: string | null
+          servings?: number | null
           steps?: string[] | null
+          substitutions?: Json | null
+          tips?: string[] | null
           updated_at?: string
           user_id?: string
         }
