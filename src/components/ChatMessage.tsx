@@ -1,6 +1,5 @@
 import React from 'react';
 import { cn } from '@/lib/utils';
-import appLogo from '@/assets/app-logo.png';
 
 interface ChatMessageProps {
   message: string;
@@ -12,15 +11,9 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({ message, isBot = true,
   return (
     <div className={cn(
       "flex gap-3 animate-slide-up",
-      !isBot && "flex-row-reverse",
+      isBot ? "justify-start" : "justify-end",
       className
     )}>
-      {isBot && (
-        <div className="w-10 h-10 rounded-full overflow-hidden shrink-0 shadow-card">
-          <img src={appLogo} alt="שפי" className="w-full h-full object-cover" />
-        </div>
-      )}
-      
       <div className={cn(
         "rounded-2xl px-4 py-3 max-w-[80%]",
         isBot 

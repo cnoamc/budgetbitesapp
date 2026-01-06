@@ -290,7 +290,7 @@ export const Profile: React.FC = () => {
 
         {/* App Info */}
         <div className="mt-auto pt-2 text-center text-xs text-muted-foreground">
-          <p>BudgetBites v1.0 • נבנה באהבה 🧡</p>
+          <p>BudgetBites • נבנה באהבה 🧡</p>
         </div>
       </div>
 
