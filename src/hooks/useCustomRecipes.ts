@@ -14,6 +14,32 @@ export interface CustomRecipe {
   deliveryCost: number;
   category: string;
   createdAt: string;
+  servings?: number;
+  difficulty?: string;
+  tips?: string[];
+  donenessChecks?: string[];
+  chefNotes?: string;
+  recipeMemoryJson?: any;
+  recipeSummary?: string;
+  explanationText?: string;
+}
+
+interface CreateRecipeData {
+  name: string;
+  emoji: string;
+  ingredients: string[];
+  steps: string[];
+  prepTime: number;
+  homeCost?: number;
+  deliveryCost?: number;
+  category?: string;
+  servings?: number;
+  difficulty?: string;
+  tips?: string[];
+  donenessChecks?: string[];
+  chefNotes?: string;
+  recipeMemoryJson?: any;
+  explanationText?: string;
 }
 
 export const useCustomRecipes = () => {
@@ -48,6 +74,14 @@ export const useCustomRecipes = () => {
         deliveryCost: r.delivery_cost || 60,
         category: r.category || 'easy',
         createdAt: r.created_at,
+        servings: r.servings,
+        difficulty: r.difficulty,
+        tips: r.tips || [],
+        donenessChecks: r.doneness_checks || [],
+        chefNotes: r.chef_notes,
+        recipeMemoryJson: r.recipe_memory_json,
+        recipeSummary: r.recipe_summary,
+        explanationText: r.explanation_text,
       }));
 
       setCustomRecipes(recipes);
@@ -62,25 +96,32 @@ export const useCustomRecipes = () => {
     loadCustomRecipes();
   }, [loadCustomRecipes]);
 
-  const addCustomRecipe = async (recipe: Omit<CustomRecipe, 'id' | 'createdAt'>) => {
+  const addCustomRecipe = async (data: CreateRecipeData): Promise<CustomRecipe | null> => {
     if (!user) {
       toast.error('יש להתחבר כדי להוסיף מתכונים');
       return null;
     }
 
     try {
-      const { data, error } = await supabase
+      const { data: inserted, error } = await supabase
         .from('custom_recipes')
         .insert({
           user_id: user.id,
-          name: recipe.name,
-          emoji: recipe.emoji,
-          ingredients: recipe.ingredients,
-          steps: recipe.steps,
-          prep_time: recipe.prepTime,
-          home_cost: recipe.homeCost,
-          delivery_cost: recipe.deliveryCost,
-          category: recipe.category,
+          name: data.name,
+          emoji: data.emoji,
+          ingredients: data.ingredients,
+          steps: data.steps,
+          prep_time: data.prepTime,
+          home_cost: data.homeCost || 30,
+          delivery_cost: data.deliveryCost || 60,
+          category: data.category || 'easy',
+          servings: data.servings || 2,
+          difficulty: data.difficulty || 'beginner',
+          tips: data.tips || [],
+          doneness_checks: data.donenessChecks || [],
+          chef_notes: data.chefNotes || null,
+          recipe_memory_json: data.recipeMemoryJson || null,
+          explanation_text: data.explanationText || null,
         })
         .select()
         .single();
@@ -88,16 +129,23 @@ export const useCustomRecipes = () => {
       if (error) throw error;
 
       const newRecipe: CustomRecipe = {
-        id: data.id,
-        name: data.name,
-        emoji: data.emoji || '🍽️',
-        ingredients: data.ingredients || [],
-        steps: data.steps || [],
-        prepTime: data.prep_time || 30,
-        homeCost: data.home_cost || 30,
-        deliveryCost: data.delivery_cost || 60,
-        category: data.category || 'easy',
-        createdAt: data.created_at,
+        id: inserted.id,
+        name: inserted.name,
+        emoji: inserted.emoji || '🍽️',
+        ingredients: inserted.ingredients || [],
+        steps: inserted.steps || [],
+        prepTime: inserted.prep_time || 30,
+        homeCost: inserted.home_cost || 30,
+        deliveryCost: inserted.delivery_cost || 60,
+        category: inserted.category || 'easy',
+        createdAt: inserted.created_at,
+        servings: inserted.servings,
+        difficulty: inserted.difficulty,
+        tips: inserted.tips || [],
+        donenessChecks: inserted.doneness_checks || [],
+        chefNotes: inserted.chef_notes,
+        recipeMemoryJson: inserted.recipe_memory_json,
+        explanationText: inserted.explanation_text,
       };
 
       setCustomRecipes(prev => [newRecipe, ...prev]);
@@ -132,11 +180,16 @@ export const useCustomRecipes = () => {
     }
   };
 
+  const getRecipeById = (recipeId: string): CustomRecipe | undefined => {
+    return customRecipes.find(r => r.id === recipeId);
+  };
+
   return {
     customRecipes,
     loading,
     addCustomRecipe,
     deleteCustomRecipe,
+    getRecipeById,
     refreshRecipes: loadCustomRecipes,
   };
 };
