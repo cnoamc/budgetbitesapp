@@ -14,6 +14,7 @@ import { recipes } from '@/lib/recipes';
 import { getRecipeImage } from '@/lib/recipeImages';
 import appLogo from '@/assets/app-logo.png';
 import { cn } from '@/lib/utils';
+import { toast } from 'sonner';
 
 // Streak milestones - reward framing
 const MILESTONES = [
@@ -86,12 +87,7 @@ export const Home: React.FC = () => {
     setHeroTitleIndex(dayOfYear % HERO_TITLES.length);
   }, []);
   
-  // Redirect to premium if user hasn't started trial
-  useEffect(() => {
-    if (!subLoading && subscription && !hasStartedTrial) {
-      navigate('/premium');
-    }
-  }, [subscription, subLoading, hasStartedTrial, navigate]);
+  // REMOVED: Auto-redirect to premium - Premium is now only accessible via Profile
   
   // Memoize recipe selection
   const todayRecipe = useMemo(() => recipes[getDailyRecipeIndex()], []);
@@ -134,9 +130,12 @@ export const Home: React.FC = () => {
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (searchInput.trim()) {
-      navigate('/chat', { state: { initialMessage: searchInput } });
+    if (!searchInput.trim()) {
+      toast.info('כתוב מרכיב/מנה כדי להתחיל');
+      return;
     }
+    navigate('/chat', { state: { initialMessage: searchInput.trim() } });
+    setSearchInput('');
   };
 
   const handleAskShefi = () => {

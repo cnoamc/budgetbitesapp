@@ -49,8 +49,7 @@ export const Recipes: React.FC = () => {
   });
 
   const handleCustomRecipeClick = (recipe: CustomRecipe) => {
-    // For now, just show a toast - we could expand this to a detail page
-    navigate(`/chat`);
+    navigate(`/my-recipe/${recipe.id}`);
   };
 
   return (

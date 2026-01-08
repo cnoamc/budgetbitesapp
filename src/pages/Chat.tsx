@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Send, Timer, Plus, ChefHat } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -35,6 +36,8 @@ const quickActions = [
 ];
 
 export const Chat: React.FC = () => {
+  const location = useLocation();
+  const initialMessage = location.state?.initialMessage as string | undefined;
   const [messages, setMessages] = useState<Array<{ text: string; isBot: boolean }>>([]);
   const [chatHistory, setChatHistory] = useState<Message[]>([]);
   const [inputText, setInputText] = useState('');
@@ -42,23 +45,38 @@ export const Chat: React.FC = () => {
   const [activeTimers, setActiveTimers] = useState<ActiveTimer[]>([]);
   const [isAddRecipeOpen, setIsAddRecipeOpen] = useState(false);
   const [showTimerPicker, setShowTimerPicker] = useState(false);
+  const [hasProcessedInitialMessage, setHasProcessedInitialMessage] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  // Load chat history from localStorage
+  // Load chat history from localStorage OR handle initial message
   useEffect(() => {
-    const stored = localStorage.getItem(CHAT_STORAGE_KEY);
-    if (stored) {
-      try {
-        const parsed = JSON.parse(stored);
-        setMessages(parsed.messages || []);
-        setChatHistory(parsed.chatHistory || []);
-      } catch {
+    // If there's an initial message from Home, start fresh with it
+    if (initialMessage && !hasProcessedInitialMessage) {
+      showWelcome();
+      setHasProcessedInitialMessage(true);
+      // Auto-send the initial message after a short delay
+      setTimeout(() => {
+        setMessages(prev => [...prev, { text: initialMessage, isBot: false }]);
+        sendToAI(initialMessage);
+      }, 300);
+      return;
+    }
+
+    if (!hasProcessedInitialMessage) {
+      const stored = localStorage.getItem(CHAT_STORAGE_KEY);
+      if (stored) {
+        try {
+          const parsed = JSON.parse(stored);
+          setMessages(parsed.messages || []);
+          setChatHistory(parsed.chatHistory || []);
+        } catch {
+          showWelcome();
+        }
+      } else {
         showWelcome();
       }
-    } else {
-      showWelcome();
     }
-  }, []);
+  }, [initialMessage, hasProcessedInitialMessage]);
 
   // Save chat history to localStorage
   useEffect(() => {
