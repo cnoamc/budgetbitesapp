@@ -45,24 +45,39 @@ export const Chat: React.FC = () => {
   const [activeTimers, setActiveTimers] = useState<ActiveTimer[]>([]);
   const [isAddRecipeOpen, setIsAddRecipeOpen] = useState(false);
   const [showTimerPicker, setShowTimerPicker] = useState(false);
-  const [hasProcessedInitialMessage, setHasProcessedInitialMessage] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+  
+  // Guard ref to prevent double auto-send
+  const didAutoSendRef = useRef(false);
 
-  // Load chat history from localStorage OR handle initial message
+  // Load chat history from localStorage OR handle initial message - runs once on mount
   useEffect(() => {
-    // If there's an initial message from Home, start fresh with it
-    if (initialMessage && !hasProcessedInitialMessage) {
-      showWelcome();
-      setHasProcessedInitialMessage(true);
-      // Auto-send the initial message after a short delay
-      setTimeout(() => {
-        setMessages(prev => [...prev, { text: initialMessage, isBot: false }]);
-        sendToAI(initialMessage);
-      }, 300);
+    // If there's an initial message from Home and we haven't sent it yet
+    if (initialMessage && !didAutoSendRef.current) {
+      didAutoSendRef.current = true;
+      
+      // Show welcome and immediately add user message + send to AI
+      const welcomeMessage = `היי! 👋 אני שפי, העוזר האישי שלך במטבח!\n\nאני כאן לעזור לך עם כל שאלה על בישול, מתכונים, חיסכון באוכל ועוד.\n\n⏱️ אפשר להפעיל טיימר לבישול\n📝 אפשר להוסיף מתכונים משלך\n\nמה תרצה לדעת?`;
+      
+      setMessages([
+        { text: welcomeMessage, isBot: true },
+        { text: initialMessage, isBot: false }
+      ]);
+      setChatHistory([
+        { role: 'assistant', content: welcomeMessage },
+        { role: 'user', content: initialMessage }
+      ]);
+      
+      // Send to AI
+      sendToAIInitial(initialMessage, [
+        { role: 'assistant', content: welcomeMessage },
+        { role: 'user', content: initialMessage }
+      ]);
       return;
     }
 
-    if (!hasProcessedInitialMessage) {
+    // Normal load from storage (only if no initial message)
+    if (!initialMessage) {
       const stored = localStorage.getItem(CHAT_STORAGE_KEY);
       if (stored) {
         try {
@@ -76,7 +91,8 @@ export const Chat: React.FC = () => {
         showWelcome();
       }
     }
-  }, [initialMessage, hasProcessedInitialMessage]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Save chat history to localStorage
   useEffect(() => {
@@ -94,6 +110,55 @@ export const Chat: React.FC = () => {
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, activeTimers]);
+
+  // Send to AI for initial message (with pre-built history)
+  const sendToAIInitial = async (userMessage: string, history: Message[]) => {
+    setIsLoading(true);
+    
+    try {
+      const { data, error } = await supabase.functions.invoke('cooking-assistant', {
+        body: {
+          messages: history,
+          recipeName: null,
+          currentStep: 0,
+          totalSteps: 0,
+          ingredients: [],
+        },
+      });
+
+      if (error) throw error;
+      
+      const aiResponse = data.message;
+      
+      setChatHistory([...history, { role: 'assistant', content: aiResponse }]);
+      setMessages(prev => [...prev, { text: aiResponse, isBot: true }]);
+      
+      soundManager.playMessageSound();
+      
+    } catch (error: any) {
+      console.error('AI error:', error);
+      handleAIError(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleAIError = (error: any) => {
+    if (error.status === 429) {
+      toast.error('יותר מדי בקשות, נסה שוב בעוד כמה שניות');
+    } else if (error.status === 402) {
+      toast.error('נגמרו הקרדיטים');
+    } else {
+      toast.error('שגיאה בתקשורת עם שפי');
+    }
+    
+    const fallbackResponses = [
+      'סליחה, יש לי בעיה טכנית קטנה. נסה שוב בעוד רגע! 🙏',
+      'אופס! משהו השתבש. בוא ננסה שוב? 😅',
+    ];
+    const fallback = fallbackResponses[Math.floor(Math.random() * fallbackResponses.length)];
+    setMessages(prev => [...prev, { text: fallback, isBot: true }]);
+  };
 
   const sendToAI = async (userMessage: string) => {
     setIsLoading(true);
@@ -136,21 +201,7 @@ export const Chat: React.FC = () => {
       
     } catch (error: any) {
       console.error('AI error:', error);
-      
-      if (error.status === 429) {
-        toast.error('יותר מדי בקשות, נסה שוב בעוד כמה שניות');
-      } else if (error.status === 402) {
-        toast.error('נגמרו הקרדיטים');
-      } else {
-        toast.error('שגיאה בתקשורת עם שפי');
-      }
-      
-      const fallbackResponses = [
-        'סליחה, יש לי בעיה טכנית קטנה. נסה שוב בעוד רגע! 🙏',
-        'אופס! משהו השתבש. בוא ננסה שוב? 😅',
-      ];
-      const fallback = fallbackResponses[Math.floor(Math.random() * fallbackResponses.length)];
-      setMessages(prev => [...prev, { text: fallback, isBot: true }]);
+      handleAIError(error);
     } finally {
       setIsLoading(false);
     }

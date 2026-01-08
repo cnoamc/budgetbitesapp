@@ -1,6 +1,6 @@
 import React, { useMemo, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Sparkles, ArrowLeft, Clock, Flame, TrendingUp, ChefHat, Send, Gift, Play } from 'lucide-react';
+import { Sparkles, ArrowLeft, Clock, Flame, TrendingUp, ChefHat, Send, Gift, Play, Globe, Link } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { RecipeCard } from '@/components/RecipeCard';
@@ -180,6 +180,28 @@ export const Home: React.FC = () => {
                 </Button>
               </form>
             </div>
+
+            {/* Import Recipe Banner */}
+            <PremiumCard 
+              variant="elevated" 
+              hoverable
+              onClick={() => navigate('/import')}
+              className="p-3 bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center">
+                  <Globe className="w-5 h-5 text-blue-600" />
+                </div>
+                <div className="flex-1">
+                  <p className="font-semibold text-sm text-blue-900">מצאת מתכון באינטרנט?</p>
+                  <p className="text-xs text-blue-700">הדבק לינק ונשמור אותו בשבילך</p>
+                </div>
+                <Button size="sm" className="rounded-lg text-xs h-8 bg-blue-600 hover:bg-blue-700">
+                  <Link className="w-3 h-3 ml-1" />
+                  יבא מתכון
+                </Button>
+              </div>
+            </PremiumCard>
 
             {/* Continue Cooking - Only if in progress */}
             {inProgressRecipe && (
