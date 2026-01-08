@@ -7,6 +7,11 @@
 
 @layer base {
   :root {
+    /* Safe area insets for Capacitor/notch devices */
+    --safe-top: env(safe-area-inset-top, 0px);
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+    --safe-left: env(safe-area-inset-left, 0px);
+    --safe-right: env(safe-area-inset-right, 0px);
     
     /* Cal AI inspired - Clean white background */
     --background: 0 0% 100%;
@@ -145,6 +150,12 @@
     @apply bg-background text-foreground antialiased;
     min-height: 100vh;
     min-height: 100dvh;
+    padding-top: var(--safe-top);
+    padding-bottom: var(--safe-bottom);
+    padding-left: var(--safe-left);
+    padding-right: var(--safe-right);
+    /* Prevent overscroll bounce on iOS */
+    overscroll-behavior: none;
   }
 
   #root {

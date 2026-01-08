@@ -20,15 +20,17 @@ export const ScrollablePageLayout: React.FC<ScrollablePageLayoutProps> = ({
     <div 
       className={cn(
         "min-h-screen min-h-dvh flex flex-col",
+        "pt-[var(--safe-top)]",
         className
       )}
       dir="rtl"
     >
       <div 
         className={cn(
-          "flex-1 overflow-y-auto",
-          hasBottomNav ? "pb-28" : ""
+          "flex-1 overflow-y-auto overscroll-contain",
+          hasBottomNav ? "pb-[calc(7rem+var(--safe-bottom))]" : "pb-[var(--safe-bottom)]"
         )}
+        style={{ WebkitOverflowScrolling: 'touch' }}
       >
         {children}
       </div>
