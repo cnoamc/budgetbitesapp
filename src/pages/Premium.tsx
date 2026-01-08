@@ -1,78 +1,59 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Check } from 'lucide-react';
+import { ArrowRight, Sparkles, Heart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 import { FixedScreenLayout } from '@/components/layouts';
-import { useAuth } from '@/contexts/AuthContext';
-import { useSubscription } from '@/contexts/SubscriptionContext';
-import { toast } from 'sonner';
-import confetti from 'canvas-confetti';
 import appIcon from '@/assets/app-icon.png';
 
 const Premium: React.FC = () => {
   const navigate = useNavigate();
-  const { user, loading: authLoading } = useAuth();
-  const { subscription, loading: subLoading, hasStartedTrial, startTrial } = useSubscription();
-  const [isStarting, setIsStarting] = useState(false);
 
-  // REMOVED: Auto-redirects - Premium is now a placeholder accessible only from Profile
-
-  const handleStartTrial = async () => {
-    setIsStarting(true);
-    
-    confetti({
-      particleCount: 100,
-      spread: 70,
-      origin: { y: 0.6 }
-    });
-    
-    await startTrial();
-    toast.success('תקופת הניסיון החלה! 🎉');
-    navigate('/home');
-  };
-
-  if (authLoading || subLoading) {
-    return (
-      <FixedScreenLayout className="items-center justify-center" style={{ background: 'linear-gradient(180deg, #2196F3 0%, #00BCD4 100%)' }}>
-        <div className="w-10 h-10 rounded-full border-2 border-white/30 border-t-white animate-spin" />
-      </FixedScreenLayout>
-    );
-  }
-
-  const features = [
+  const upcomingFeatures = [
     '☁️ גיבוי בענן',
     '📖 מתכונים ללא הגבלה',
     '📊 אנליטיקס ותובנות',
-    '🤖 עוזר בישול AI אישי',
+    '🤖 עוזר בישול AI מתקדם',
     '💰 מעקב חיסכון מלא',
-    '📈 התקדמות ורמות',
     '🔔 התראות חכמות',
   ];
 
   return (
     <FixedScreenLayout>
-      {/* Blue gradient background */}
+      {/* Soft gradient background */}
       <div 
         className="fixed inset-0" 
-        style={{ background: 'linear-gradient(180deg, #2196F3 0%, #00BCD4 100%)' }} 
+        style={{ background: 'linear-gradient(180deg, hsl(var(--background)) 0%, hsl(var(--muted)) 100%)' }} 
       />
       
       {/* Content */}
-      <div className="relative z-10 flex-1 flex flex-col">
+      <div className="relative z-10 flex-1 flex flex-col" dir="rtl">
         {/* Header */}
-        <div className="pt-10 pb-6 px-6 text-center">
+        <div className="p-4">
+          <button
+            onClick={() => navigate(-1)}
+            className="w-10 h-10 bg-card rounded-full flex items-center justify-center shadow-card"
+          >
+            <ArrowRight className="w-5 h-5" />
+          </button>
+        </div>
+
+        {/* Main Content */}
+        <div className="flex-1 flex flex-col items-center justify-center px-6 text-center">
           <motion.div
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ type: "spring", duration: 0.6 }}
-            className="relative inline-block"
+            className="relative inline-block mb-6"
           >
             <div 
-              className="w-16 h-16 rounded-[20px] overflow-hidden mx-auto"
-              style={{ boxShadow: '0 12px 40px -10px rgba(0, 0, 0, 0.3)' }}
+              className="w-20 h-20 rounded-[24px] overflow-hidden mx-auto"
+              style={{ boxShadow: '0 12px 40px -10px rgba(0, 0, 0, 0.15)' }}
             >
               <img src={appIcon} alt="BudgetBites" className="w-full h-full object-cover" />
+            </div>
+            <div className="absolute -top-1 -right-1 w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+              <Sparkles className="w-4 h-4 text-primary-foreground" />
             </div>
           </motion.div>
           
@@ -81,89 +62,61 @@ const Premium: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
           >
-            <h1 className="text-2xl font-bold mt-4 text-white tracking-tight">נסה חודש חינם</h1>
-            <p className="text-white/70 text-sm mt-1">אחר כך ₪4.99 לחודש</p>
+            <h1 className="text-2xl font-bold mb-2">Premium בקרוב</h1>
+            <p className="text-muted-foreground mb-8">
+              אנחנו בונים את זה נכון 💛
+            </p>
           </motion.div>
-        </div>
 
-        {/* Features List */}
-        <div className="flex-1 px-6 overflow-y-auto">
+          {/* Upcoming Features */}
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="bg-white/15 backdrop-blur-sm rounded-2xl p-4 border border-white/20"
+            className="bg-card rounded-2xl p-5 border border-border/50 shadow-card w-full max-w-sm"
           >
+            <p className="text-sm font-medium text-muted-foreground mb-4">מה יהיה כלול:</p>
             <div className="space-y-3">
-              {features.map((feature, index) => (
+              {upcomingFeatures.map((feature, index) => (
                 <motion.div
                   key={feature}
                   initial={{ opacity: 0, x: -10 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.4 + index * 0.05 }}
-                  className="flex items-center gap-3"
+                  className="flex items-center gap-3 text-sm"
                 >
-                  <div className="w-5 h-5 rounded-full bg-white flex items-center justify-center flex-shrink-0">
-                    <Check className="w-3 h-3 text-[#2196F3]" strokeWidth={3} />
-                  </div>
-                  <span className="text-sm text-white">{feature}</span>
+                  <span>{feature}</span>
                 </motion.div>
               ))}
             </div>
           </motion.div>
 
-          {/* Timeline */}
+          {/* Love note */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6 }}
-            className="mt-4 flex items-center justify-between text-center px-2"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.7 }}
+            className="mt-8 flex items-center gap-2 text-sm text-muted-foreground"
           >
-            <div className="flex-1">
-              <div className="text-xs font-semibold text-white">היום 🎉</div>
-              <p className="text-[10px] text-white/60 mt-0.5">גישה מלאה</p>
-            </div>
-            <div className="flex-1 flex justify-center">
-              <div className="w-12 h-[1px] bg-white/30 self-center" />
-            </div>
-            <div className="flex-1">
-              <div className="text-xs font-semibold text-white">יום 29 📩</div>
-              <p className="text-[10px] text-white/60 mt-0.5">נזכיר לך</p>
-            </div>
-            <div className="flex-1 flex justify-center">
-              <div className="w-12 h-[1px] bg-white/30 self-center" />
-            </div>
-            <div className="flex-1">
-              <div className="text-xs font-semibold text-white">יום 30 💳</div>
-              <p className="text-[10px] text-white/60 mt-0.5">₪4.99/חודש</p>
-            </div>
+            <Heart className="w-4 h-4 text-red-400" />
+            <span>תודה שאתם איתנו</span>
           </motion.div>
         </div>
 
-        {/* CTA Section */}
+        {/* CTA */}
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.7 }}
+          transition={{ delay: 0.5 }}
           className="p-6 pb-8"
         >
           <Button
-            onClick={handleStartTrial}
-            disabled={isStarting}
-            className="w-full h-[52px] rounded-full text-base font-semibold bg-white text-[#2196F3] hover:bg-white/95 active:scale-[0.98] transition-transform relative overflow-hidden"
-            style={{ boxShadow: '0 8px 24px -8px rgba(0, 0, 0, 0.2)' }}
+            onClick={() => navigate('/home')}
+            variant="outline"
+            className="w-full h-12 rounded-xl"
           >
-            {isStarting ? (
-              <div className="w-5 h-5 border-2 border-[#2196F3] border-t-transparent rounded-full animate-spin" />
-            ) : (
-              <span>התחל תקופת ניסיון</span>
-            )}
+            חזרה לאפליקציה
           </Button>
-
-          {/* Trust badge */}
-          <div className="flex items-center justify-center gap-1.5 mt-3">
-            <span className="text-xs text-white/70">🔒 ללא תשלום עכשיו • בטל בכל עת 💚</span>
-          </div>
         </motion.div>
       </div>
     </FixedScreenLayout>

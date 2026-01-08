@@ -64,6 +64,63 @@ This project is built with:
 
 Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
 
+## Building for iOS/Android with Capacitor
+
+To build native iOS/Android apps, follow these steps:
+
+```sh
+# Step 1: Clone and install dependencies
+git clone <YOUR_GIT_URL>
+cd <YOUR_PROJECT_NAME>
+npm install
+
+# Step 2: Build the web app
+npm run build
+
+# Step 3: Initialize Capacitor (if not already done)
+npx cap init
+
+# Step 4: Add platforms
+npx cap add ios
+npx cap add android
+
+# Step 5: Sync the web build to native projects
+npx cap sync
+
+# Step 6: Open in native IDE
+npx cap open ios      # Opens Xcode (Mac required)
+npx cap open android  # Opens Android Studio
+
+# After making code changes, rebuild and sync:
+npm run build && npx cap sync
+```
+
+### Capacitor Responsiveness Patch
+
+For optimal display on all devices, ensure these are in place:
+
+1. **Viewport meta tag** (in index.html):
+```html
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+```
+
+2. **Safe area CSS** (in index.css):
+```css
+:root {
+  --safe-top: env(safe-area-inset-top);
+  --safe-bottom: env(safe-area-inset-bottom);
+}
+
+body {
+  min-height: 100dvh;
+}
+```
+
+3. **Bottom padding** for scrollable content:
+```css
+padding-bottom: calc(110px + var(--safe-bottom));
+```
+
 ## Can I connect a custom domain to my Lovable project?
 
 Yes, you can!

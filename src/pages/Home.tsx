@@ -128,14 +128,27 @@ export const Home: React.FC = () => {
     return null;
   }, []);
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!searchInput.trim()) {
+    if (isSubmitting) return;
+    
+    const trimmedInput = searchInput.trim();
+    if (!trimmedInput) {
       toast.info('כתוב מרכיב/מנה כדי להתחיל');
       return;
     }
-    navigate('/chat', { state: { initialMessage: searchInput.trim() } });
+    
+    setIsSubmitting(true);
+    const formattedMessage = `יש לי שאריות: ${trimmedInput}. תציע לי 3 רעיונות לארוחה + זמן הכנה + רשימת מצרכים חסרים.`;
     setSearchInput('');
+    
+    // Small delay for UX feedback then navigate
+    setTimeout(() => {
+      navigate('/chat', { state: { initialMessage: formattedMessage } });
+      setIsSubmitting(false);
+    }, 150);
   };
 
   const handleAskShefi = () => {
@@ -175,8 +188,12 @@ export const Home: React.FC = () => {
                   placeholder="כתוב: יש לי חזה עוף / משהו מתוק / אני רעב..."
                   className="flex-1 h-11 text-sm bg-background/80"
                 />
-                <Button type="submit" size="icon" className="h-11 w-11 shrink-0">
-                  <Send className="w-4 h-4" />
+                <Button type="submit" size="icon" className="h-11 w-11 shrink-0" disabled={isSubmitting}>
+                  {isSubmitting ? (
+                    <div className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
+                  ) : (
+                    <Send className="w-4 h-4" />
+                  )}
                 </Button>
               </form>
             </div>
