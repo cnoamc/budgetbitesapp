@@ -41,7 +41,10 @@ export const BottomNav: React.FC = () => {
   };
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 flex justify-center pb-3">
+    <div 
+      className="fixed bottom-0 left-0 right-0 z-50 flex justify-center"
+      style={{ paddingBottom: 'max(0.75rem, var(--safe-bottom))' }}
+    >
       <nav>
         <div 
           ref={navRef}
