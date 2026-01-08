@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Link, ExternalLink, ArrowRight, Loader2, CheckCircle, AlertCircle, Plus, X, ChevronLeft, Globe, Camera, FileText, Clipboard } from 'lucide-react';
+import { Link, ExternalLink, ArrowRight, Loader2, CheckCircle, AlertCircle, Plus, X, ChevronLeft, Globe, Camera, Clipboard } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollablePageLayout } from '@/components/layouts';
@@ -13,6 +13,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import { TikTokIcon, FacebookIcon, InstagramIcon, YouTubeIcon, PinterestIcon } from '@/components/SocialIcons';
 
 type ImportSource = 'link' | 'manual' | null;
 type ImportStatus = 'idle' | 'loading' | 'success' | 'error';
@@ -20,7 +21,7 @@ type ImportStatus = 'idle' | 'loading' | 'success' | 'error';
 interface SocialPlatform {
   id: string;
   name: string;
-  icon: string;
+  icon: React.ReactNode;
   color: string;
   steps: { text: string; highlight?: string }[];
   appLink?: string;
@@ -30,7 +31,7 @@ const socialPlatforms: SocialPlatform[] = [
   { 
     id: 'tiktok', 
     name: 'TikTok', 
-    icon: '🎵', 
+    icon: <TikTokIcon className="w-5 h-5" />, 
     color: 'bg-black',
     appLink: 'https://tiktok.com',
     steps: [
@@ -43,7 +44,7 @@ const socialPlatforms: SocialPlatform[] = [
   { 
     id: 'facebook', 
     name: 'Facebook', 
-    icon: '👤', 
+    icon: <FacebookIcon className="w-5 h-5" />, 
     color: 'bg-blue-600',
     appLink: 'https://facebook.com',
     steps: [
@@ -56,8 +57,8 @@ const socialPlatforms: SocialPlatform[] = [
   { 
     id: 'instagram', 
     name: 'Instagram', 
-    icon: '📸', 
-    color: 'bg-gradient-to-br from-purple-500 to-pink-500',
+    icon: <InstagramIcon className="w-5 h-5" />, 
+    color: 'bg-gradient-to-br from-purple-500 via-pink-500 to-orange-400',
     appLink: 'https://instagram.com',
     steps: [
       { text: 'פתח את המתכון ולחץ על', highlight: 'Share' },
@@ -69,8 +70,8 @@ const socialPlatforms: SocialPlatform[] = [
   { 
     id: 'youtube', 
     name: 'YouTube', 
-    icon: '▶️', 
-    color: 'bg-red-500',
+    icon: <YouTubeIcon className="w-5 h-5" />, 
+    color: 'bg-red-600',
     appLink: 'https://youtube.com',
     steps: [
       { text: 'פתח את המתכון ולחץ על', highlight: 'Share' },
@@ -82,7 +83,7 @@ const socialPlatforms: SocialPlatform[] = [
   { 
     id: 'pinterest', 
     name: 'Pinterest', 
-    icon: '📌', 
+    icon: <PinterestIcon className="w-5 h-5" />, 
     color: 'bg-red-600',
     appLink: 'https://pinterest.com',
     steps: [
