@@ -16,17 +16,7 @@ const Premium: React.FC = () => {
   const { subscription, loading: subLoading, hasStartedTrial, startTrial } = useSubscription();
   const [isStarting, setIsStarting] = useState(false);
 
-  useEffect(() => {
-    if (!authLoading && !user) {
-      navigate('/signin');
-    }
-  }, [user, authLoading, navigate]);
-
-  useEffect(() => {
-    if (!subLoading && subscription && hasStartedTrial) {
-      navigate('/home');
-    }
-  }, [subscription, subLoading, hasStartedTrial, navigate]);
+  // REMOVED: Auto-redirects - Premium is now a placeholder accessible only from Profile
 
   const handleStartTrial = async () => {
     setIsStarting(true);

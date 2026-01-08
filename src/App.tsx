@@ -22,16 +22,17 @@ import SignIn from "./pages/SignIn";
 // Lazy load non-critical pages for faster initial load
 const LoadingSavings = lazy(() => import("./pages/LoadingSavings"));
 const Onboarding = lazy(() => import("./pages/Onboarding"));
-const Savings = lazy(() => import("./pages/Savings"));
 const Home = lazy(() => import("./pages/Home"));
 const Recipes = lazy(() => import("./pages/Recipes"));
 const RecipeDetail = lazy(() => import("./pages/RecipeDetail"));
+const CustomRecipeDetail = lazy(() => import("./pages/CustomRecipeDetail"));
 const CookingAssistant = lazy(() => import("./pages/CookingAssistant"));
 const Chat = lazy(() => import("./pages/Chat"));
 const RateMeal = lazy(() => import("./pages/RateMeal"));
 const Progress = lazy(() => import("./pages/Progress"));
 const Profile = lazy(() => import("./pages/Profile"));
 const Premium = lazy(() => import("./pages/Premium"));
+const ImportRecipe = lazy(() => import("./pages/ImportRecipe"));
 const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
 const TermsOfService = lazy(() => import("./pages/TermsOfService"));
 const Support = lazy(() => import("./pages/Support"));
@@ -75,16 +76,17 @@ function AnimatedRoutes(): React.ReactElement {
             <Route path="/loading" element={<PageTransition><LoadingSavings /></PageTransition>} />
             <Route path="/signin" element={<PageTransition><SignIn /></PageTransition>} />
             <Route path="/onboarding" element={<PageTransition><Onboarding /></PageTransition>} />
-            <Route path="/savings" element={<PageTransition><Savings /></PageTransition>} />
             <Route path="/premium" element={<PageTransition><Premium /></PageTransition>} />
             <Route path="/home" element={<PageTransition><Home /></PageTransition>} />
             <Route path="/recipes" element={<PageTransition><Recipes /></PageTransition>} />
             <Route path="/recipe/:id" element={<PageTransition><RecipeDetail /></PageTransition>} />
+            <Route path="/my-recipe/:id" element={<PageTransition><CustomRecipeDetail /></PageTransition>} />
             <Route path="/cook/:id" element={<PageTransition><CookingAssistant /></PageTransition>} />
             <Route path="/chat" element={<PageTransition><Chat /></PageTransition>} />
             <Route path="/rate/:id" element={<PageTransition><RateMeal /></PageTransition>} />
             <Route path="/progress" element={<PageTransition><Progress /></PageTransition>} />
             <Route path="/profile" element={<PageTransition><Profile /></PageTransition>} />
+            <Route path="/import" element={<PageTransition><ImportRecipe /></PageTransition>} />
             <Route path="/privacy" element={<PageTransition><PrivacyPolicy /></PageTransition>} />
             <Route path="/terms" element={<PageTransition><TermsOfService /></PageTransition>} />
             <Route path="/support" element={<PageTransition><Support /></PageTransition>} />

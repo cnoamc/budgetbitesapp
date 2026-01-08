@@ -27,7 +27,7 @@ export const ScrollablePageLayout: React.FC<ScrollablePageLayoutProps> = ({
       <div 
         className={cn(
           "flex-1 overflow-y-auto",
-          hasBottomNav ? "pb-24" : ""
+          hasBottomNav ? "pb-28" : ""
         )}
       >
         {children}

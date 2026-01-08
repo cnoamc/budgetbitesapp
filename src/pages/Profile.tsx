@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Settings, RefreshCw, MapPin, LogOut, Pencil, Camera, X, Bell, Crown, FileText, HelpCircle, Shield, User } from 'lucide-react';
+import { Settings, RefreshCw, MapPin, LogOut, Pencil, Camera, X, Bell, Crown, FileText, HelpCircle, Shield, User, Sparkles } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import appLogo from '@/assets/app-logo.png';
 import { Button } from '@/components/ui/button';
@@ -264,6 +264,16 @@ export const Profile: React.FC = () => {
           <Button variant="outline" size="sm" className="w-full justify-start h-10" onClick={handleRestartOnboarding}>
             <RefreshCw className="w-4 h-4" />
             מילוי שאלון מחדש
+          </Button>
+          
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="w-full justify-start h-10" 
+            onClick={() => navigate('/premium')}
+          >
+            <Sparkles className="w-4 h-4" />
+            Premium בקרוב
           </Button>
           
           <Button variant="ghost" size="sm" className="w-full justify-start h-10 text-destructive hover:text-destructive hover:bg-destructive/10" onClick={() => setIsSignOutDialogOpen(true)}>
