@@ -1,18 +1,19 @@
-/* Global app container - Capacitor/mobile optimized */
+/* Global app container - Capacitor/mobile optimized - FIXED FOR iOS */
 #root {
-  min-height: 100vh;
-  min-height: 100dvh;
-  max-width: 100%;
+  height: 100%;
+  width: 100%;
   margin: 0;
   padding: 0;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
+  position: relative;
 }
 
 /* Screen container for full-height layouts */
 .screen-container {
-  min-height: 100vh;
-  min-height: 100dvh;
+  height: 100%;
+  width: 100%;
   display: flex;
   flex-direction: column;
   position: relative;
@@ -25,7 +26,8 @@
   overflow-y: auto;
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
-  overscroll-behavior: contain;
+  overscroll-behavior-y: contain;
+  overscroll-behavior-x: none;
 }
 
 /* Safe area padding utilities */
@@ -60,4 +62,11 @@
   position: fixed;
   -webkit-transform: translateZ(0);
   transform: translateZ(0);
+}
+
+/* iOS-specific scroll fixes */
+@supports (-webkit-touch-callout: none) {
+  .scroll-container {
+    -webkit-overflow-scrolling: touch;
+  }
 }
