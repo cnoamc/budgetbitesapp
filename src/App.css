@@ -1,6 +1,7 @@
 /* Global app container - Median/mobile optimized */
 #root {
-  height: 100%;
+  height: 100vh;
+  height: 100dvh;
   width: 100%;
   margin: 0;
   padding: 0;
@@ -11,7 +12,8 @@
 
 /* Screen container for full-height layouts */
 .screen-container {
-  height: 100%;
+  height: 100vh;
+  height: 100dvh;
   width: 100%;
   display: flex;
   flex-direction: column;
