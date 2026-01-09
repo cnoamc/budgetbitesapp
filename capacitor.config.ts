@@ -9,9 +9,6 @@ const config: CapacitorConfig = {
   ios: {
     contentInset: 'automatic',
     backgroundColor: '#FFFFFF',
-    // Prevent iOS scroll bounce
-    scrollEnabled: false,
-    // Handle deep links for OAuth
     preferredContentMode: 'mobile',
   },
   android: {
