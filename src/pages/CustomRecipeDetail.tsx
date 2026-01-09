@@ -186,8 +186,11 @@ export const CustomRecipeDetail: React.FC = () => {
           </div>
         </div>
 
-        {/* CTA */}
-        <div className="fixed bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-background via-background to-transparent">
+        {/* CTA - proper spacing above navbar */}
+        <div 
+          className="fixed bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-background via-background to-transparent"
+          style={{ paddingBottom: 'calc(24px + env(safe-area-inset-bottom, 0px))' }}
+        >
           <div className="max-w-lg mx-auto">
             <Button
               onClick={handleChefExplains}

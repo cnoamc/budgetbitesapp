@@ -175,7 +175,10 @@ export const Progress: React.FC = () => {
   return (
     <GradientBackground variant="warm">
       <div className="screen-container" dir="rtl">
-        <div className="scroll-container scrollbar-hide pt-safe pb-safe-24">
+        <div 
+          className="scroll-container scrollbar-hide pt-safe"
+          style={{ paddingBottom: 'calc(110px + env(safe-area-inset-bottom, 0px) + 16px)' }}
+        >
         <div className="p-6">
           <div className="flex items-center justify-between mb-6">
             <h1 className="text-2xl font-bold">ההתקדמות שלי</h1>

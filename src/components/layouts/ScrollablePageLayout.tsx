@@ -10,6 +10,8 @@ interface ScrollablePageLayoutProps {
 /**
  * A layout wrapper for pages with BottomNav that need scrollable content.
  * Use for: Home, Recipes, Progress, Profile, Savings
+ * 
+ * Ensures content is never hidden behind the bottom navbar.
  */
 export const ScrollablePageLayout: React.FC<ScrollablePageLayoutProps> = ({
   children,
@@ -27,10 +29,15 @@ export const ScrollablePageLayout: React.FC<ScrollablePageLayoutProps> = ({
     >
       <div 
         className={cn(
-          "flex-1 overflow-y-auto overscroll-contain",
-          hasBottomNav ? "pb-[calc(7rem+var(--safe-bottom))]" : "pb-[var(--safe-bottom)]"
+          "flex-1 overflow-y-auto overscroll-contain"
         )}
-        style={{ WebkitOverflowScrolling: 'touch' }}
+        style={{ 
+          WebkitOverflowScrolling: 'touch',
+          // Proper bottom padding: navbar height (~96px) + safe area + breathing room
+          paddingBottom: hasBottomNav 
+            ? 'calc(110px + env(safe-area-inset-bottom, 0px) + 12px)' 
+            : 'calc(env(safe-area-inset-bottom, 0px) + 12px)'
+        }}
       >
         {children}
       </div>
