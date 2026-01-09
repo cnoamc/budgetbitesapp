@@ -75,7 +75,7 @@ const SignIn: React.FC = () => {
 
   useEffect(() => {
     if (user && !loading) {
-      navigate(isNewSignup ? '/savings' : '/home');
+      navigate(isNewSignup ? '/premium' : '/home');
     }
   }, [user, loading, navigate, isNewSignup]);
 
