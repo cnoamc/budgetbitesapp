@@ -1,28 +1,18 @@
 import React, { useMemo, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Sparkles, ArrowLeft, Clock, Flame, TrendingUp, ChefHat, Send, Gift, Play, Globe, Link } from 'lucide-react';
+import { Sparkles, ArrowLeft, Clock, ChefHat, Send, Play, TrendingUp, Globe, Link as LinkIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { RecipeCard } from '@/components/RecipeCard';
 
 import { GradientBackground } from '@/components/ui/GradientBackground';
 import { PremiumCard } from '@/components/ui/PremiumCard';
-import { TutorialOverlay } from '@/components/TutorialOverlay';
 import { useApp } from '@/contexts/AppContext';
-import { useSubscription } from '@/contexts/SubscriptionContext';
 import { recipes } from '@/lib/recipes';
 import { getRecipeImage } from '@/lib/recipeImages';
 import appLogo from '@/assets/app-logo.png';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
-
-// Streak milestones - reward framing
-const MILESTONES = [
-  { days: 3, emoji: '🎁', label: 'מתכון פרימיום' },
-  { days: 7, emoji: '🎁', label: 'שף מתקדם' },
-  { days: 14, emoji: '🎁', label: 'מתכונים בלעדיים' },
-  { days: 30, emoji: '🏆', label: 'שף אלוף!' },
-];
 
 // Quick filter categories
 const QUICK_FILTERS = [
@@ -36,34 +26,8 @@ const QUICK_FILTERS = [
 const HERO_TITLES = [
   'מה בא לך להכין היום?',
   'יש לך 20 דקות? בוא נבשל משהו טעים',
-  'יש לי מנה מושלמת בשבילך 👨‍🍳',
   'רעב? בוא נמצא לך משהו טוב',
 ];
-
-// Calculate cooking streak from cooked meals
-const calculateStreak = (cookedMeals: { date: string }[]) => {
-  if (cookedMeals.length === 0) return 0;
-  
-  const sortedDates = [...cookedMeals]
-    .map(m => new Date(m.date).toDateString())
-    .filter((date, i, arr) => arr.indexOf(date) === i)
-    .sort((a, b) => new Date(b).getTime() - new Date(a).getTime());
-  
-  const today = new Date().toDateString();
-  const yesterday = new Date(Date.now() - 86400000).toDateString();
-  
-  if (sortedDates[0] !== today && sortedDates[0] !== yesterday) return 0;
-  
-  let streak = 1;
-  for (let i = 1; i < sortedDates.length; i++) {
-    const prevDate = new Date(sortedDates[i - 1]);
-    const currDate = new Date(sortedDates[i]);
-    const diffDays = Math.round((prevDate.getTime() - currDate.getTime()) / 86400000);
-    if (diffDays === 1) streak++;
-    else break;
-  }
-  return streak;
-};
 
 // Get a consistent daily recipe based on the date (changes at midnight)
 const getDailyRecipeIndex = () => {
@@ -75,7 +39,6 @@ const getDailyRecipeIndex = () => {
 export const Home: React.FC = () => {
   const navigate = useNavigate();
   const { progress, displayName, photoUrl } = useApp();
-  const { subscription, loading: subLoading, hasStartedTrial } = useSubscription();
   
   const [searchInput, setSearchInput] = useState('');
   const [activeFilter, setActiveFilter] = useState<string | null>(null);
@@ -86,8 +49,6 @@ export const Home: React.FC = () => {
     const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 86400000);
     setHeroTitleIndex(dayOfYear % HERO_TITLES.length);
   }, []);
-  
-  // REMOVED: Auto-redirect to premium - Premium is now only accessible via Profile
   
   // Memoize recipe selection
   const todayRecipe = useMemo(() => recipes[getDailyRecipeIndex()], []);
@@ -108,11 +69,6 @@ export const Home: React.FC = () => {
     
     return filtered.slice(0, 3);
   }, [activeFilter]);
-  
-  // Streak calculation
-  const streak = calculateStreak(progress.cookedMeals);
-  const today = new Date().toDateString();
-  const cookedToday = progress.cookedMeals.some(m => new Date(m.date).toDateString() === today);
 
   // Check for in-progress recipe
   const inProgressRecipe = useMemo(() => {
@@ -129,12 +85,11 @@ export const Home: React.FC = () => {
   }, []);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const submitGuardRef = React.useRef(false); // Guard against double submit
+  const submitGuardRef = React.useRef(false);
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Guard: prevent double submission
     if (isSubmitting || submitGuardRef.current) return;
     
     const trimmedInput = searchInput.trim();
@@ -146,15 +101,12 @@ export const Home: React.FC = () => {
     submitGuardRef.current = true;
     setIsSubmitting(true);
     
-    // Clear input immediately
     const message = trimmedInput;
     setSearchInput('');
     
-    // Format message and encode for query params
     const formattedMessage = `יש לי שאריות: ${message}. תציע לי 3 רעיונות לארוחה + זמן הכנה + רשימת מצרכים חסרים.`;
     const encodedSeed = encodeURIComponent(formattedMessage);
     
-    // Small delay for UX feedback then navigate with query params
     setTimeout(() => {
       navigate(`/chat?mode=leftovers&seed=${encodedSeed}`);
       setIsSubmitting(false);
@@ -173,7 +125,7 @@ export const Home: React.FC = () => {
           className="scroll-container scrollbar-hide pt-safe"
           style={{ paddingBottom: 'calc(110px + env(safe-area-inset-bottom, 0px) + 16px)' }}
         >
-          {/* Header - Compact */}
+          {/* Header */}
           <div className="px-4 pt-3 pb-2">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl overflow-hidden shadow-glow shrink-0">
@@ -190,7 +142,7 @@ export const Home: React.FC = () => {
           </div>
 
           <div className="px-4 flex-1 w-full flex flex-col gap-3 pb-4">
-            {/* AI Hero Section */}
+            {/* AI Search */}
             <div className="bg-gradient-to-br from-primary/10 to-primary/5 rounded-2xl p-4 border border-primary/20">
               <h2 className="text-base font-semibold mb-2 text-center">
                 {HERO_TITLES[heroTitleIndex]}
@@ -228,13 +180,13 @@ export const Home: React.FC = () => {
                   <p className="text-xs text-blue-700">הדבק לינק ונשמור אותו בשבילך</p>
                 </div>
                 <Button size="sm" className="rounded-lg text-xs h-8 bg-blue-600 hover:bg-blue-700">
-                  <Link className="w-3 h-3 ml-1" />
-                  יבא מתכון
+                  <LinkIcon className="w-3 h-3 ml-1" />
+                  יבא
                 </Button>
               </div>
             </PremiumCard>
 
-            {/* Continue Cooking - Only if in progress */}
+            {/* Continue Cooking */}
             {inProgressRecipe && (
               <PremiumCard 
                 variant="elevated" 
@@ -248,16 +200,16 @@ export const Home: React.FC = () => {
                   </div>
                   <div className="flex-1">
                     <p className="text-xs text-amber-700">המשך מאיפה שעצרת</p>
-                    <p className="font-semibold text-sm">👨‍🍳 היית באמצע {inProgressRecipe.name}</p>
+                    <p className="font-semibold text-sm">👨‍🍳 {inProgressRecipe.name}</p>
                   </div>
                   <Button size="sm" variant="outline" className="rounded-lg text-xs h-8">
-                    המשך לבשל
+                    המשך
                   </Button>
                 </div>
               </PremiumCard>
             )}
 
-            {/* Primary Daily Recommendation */}
+            {/* Daily Recommendation */}
             <div>
               <div className="flex items-center gap-1.5 mb-1.5">
                 <Sparkles className="w-3.5 h-3.5 text-primary" />
@@ -302,10 +254,10 @@ export const Home: React.FC = () => {
               </PremiumCard>
             </div>
 
-            {/* Quick Meals with Filters */}
+            {/* Quick Meals */}
             <div>
               <div className="flex items-center justify-between mb-1.5">
-                <h2 className="font-semibold text-xs">אין כוח לבשל? אלה מוכנים תוך 20 דקות</h2>
+                <h2 className="font-semibold text-xs">מוכנים תוך 20 דקות</h2>
               </div>
               
               {/* Filter Chips */}
@@ -344,54 +296,16 @@ export const Home: React.FC = () => {
               </div>
             </div>
 
-            {/* Savings Indicator - De-emphasized */}
+            {/* Savings Indicator */}
             {progress.totalSavings > 0 && (
               <div className="bg-muted/30 rounded-xl p-3 flex items-center gap-3">
                 <TrendingUp className="w-4 h-4 text-muted-foreground" />
                 <p className="text-xs text-muted-foreground">
-                  דרך אגב, השבוע חסכת כבר <span className="font-semibold text-foreground">₪{progress.totalSavings}</span> 👀
+                  חסכת כבר <span className="font-semibold text-foreground">₪{progress.totalSavings}</span> 👀
                 </p>
               </div>
             )}
-
-            {/* Streak & Unlock System */}
-            <PremiumCard className="p-3 bg-orange-50/50 border-orange-200/50">
-              <div className="flex items-center gap-2 mb-3">
-                <Flame className="w-4 h-4 text-orange-500" />
-                <p className="text-xs text-muted-foreground">ככל שאתה מבשל – שפי פותח לך יותר</p>
-                <span className="mr-auto font-bold text-sm">{streak} ימים</span>
-              </div>
-              
-              <div className="flex justify-between">
-                {MILESTONES.map((milestone) => {
-                  const isUnlocked = streak >= milestone.days;
-                  const daysLeft = milestone.days - streak;
-                  return (
-                    <div key={milestone.days} className="flex flex-col items-center">
-                      <div 
-                        className={cn(
-                          "w-9 h-9 rounded-full flex items-center justify-center text-sm transition-all",
-                          isUnlocked 
-                            ? "bg-gradient-to-br from-orange-400 to-orange-500 shadow-md" 
-                            : "bg-muted border border-muted-foreground/20"
-                        )}
-                      >
-                        {milestone.emoji}
-                      </div>
-                      <p className={cn(
-                        "text-[9px] font-medium mt-1",
-                        isUnlocked ? "text-orange-600" : "text-muted-foreground"
-                      )}>
-                        {isUnlocked ? milestone.label : `עוד ${daysLeft} ימים`}
-                      </p>
-                    </div>
-                  );
-                })}
-              </div>
-            </PremiumCard>
           </div>
-
-          <TutorialOverlay />
         </div>
       </div>
 
