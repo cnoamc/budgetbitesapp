@@ -63,10 +63,22 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   const signInWithGoogle = async () => {
+    // For native iOS/Android apps, use the app's URL scheme for deep linking
+    // For web, use the current origin
+    const isNativeApp = window.location.protocol === 'capacitor:' || 
+                        window.location.hostname === 'localhost' ||
+                        navigator.userAgent.includes('Capacitor');
+    
+    // Use app URL scheme for native, web origin for browser
+    const redirectUrl = isNativeApp 
+      ? 'app.lovable.c034698cdde14f42bd36c9d8740a134f://home'
+      : `${window.location.origin}/home`;
+    
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${window.location.origin}/home`
+        redirectTo: redirectUrl,
+        skipBrowserRedirect: isNativeApp
       }
     });
     return { error: error as Error | null };

@@ -5,10 +5,14 @@ const config: CapacitorConfig = {
   appName: 'BudgetBites',
   webDir: 'dist',
   bundledWebRuntime: false,
-  // Remove server.url for production - loads from local assets
+  // Production: loads from local assets (no server.url)
   ios: {
     contentInset: 'automatic',
     backgroundColor: '#FFFFFF',
+    // Prevent iOS scroll bounce
+    scrollEnabled: false,
+    // Handle deep links for OAuth
+    preferredContentMode: 'mobile',
   },
   android: {
     allowMixedContent: false,

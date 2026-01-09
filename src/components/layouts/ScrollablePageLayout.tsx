@@ -21,18 +21,19 @@ export const ScrollablePageLayout: React.FC<ScrollablePageLayoutProps> = ({
   return (
     <div 
       className={cn(
-        "min-h-screen min-h-dvh flex flex-col",
-        "pt-[var(--safe-top)]",
+        "h-full w-full flex flex-col overflow-hidden",
         className
       )}
       dir="rtl"
     >
       <div 
         className={cn(
-          "flex-1 overflow-y-auto overscroll-contain"
+          "flex-1 overflow-y-auto overflow-x-hidden"
         )}
         style={{ 
           WebkitOverflowScrolling: 'touch',
+          overscrollBehaviorY: 'contain',
+          overscrollBehaviorX: 'none',
           // Proper bottom padding: navbar height (~96px) + safe area + breathing room
           paddingBottom: hasBottomNav 
             ? 'calc(110px + env(safe-area-inset-bottom, 0px) + 12px)' 
