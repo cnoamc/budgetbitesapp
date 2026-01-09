@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useSearchParams, useNavigate } from 'react-router-dom';
 import { Send, Timer, Plus, ChefHat } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -10,7 +10,6 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { soundManager } from '@/lib/sounds';
 import appLogo from '@/assets/app-logo.png';
-import { FixedScreenLayout } from '@/components/layouts';
 import { cn } from '@/lib/utils';
 
 type Message = { role: 'user' | 'assistant'; content: string };
@@ -22,6 +21,7 @@ interface ActiveTimer {
 }
 
 const CHAT_STORAGE_KEY = 'bb_chat_history';
+const SEED_CONSUMED_KEY = 'bb_chat_seed_consumed';
 
 const suggestedTopics = [
   { emoji: '🍳', text: 'מה לבשל היום?' },
@@ -37,7 +37,13 @@ const quickActions = [
 
 export const Chat: React.FC = () => {
   const location = useLocation();
-  const initialMessage = location.state?.initialMessage as string | undefined;
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  
+  // Get seed from query params (preferred) or location state (fallback)
+  const seedParam = searchParams.get('seed');
+  const initialMessage = seedParam ? decodeURIComponent(seedParam) : (location.state?.initialMessage as string | undefined);
+  
   const [messages, setMessages] = useState<Array<{ text: string; isBot: boolean }>>([]);
   const [chatHistory, setChatHistory] = useState<Message[]>([]);
   const [inputText, setInputText] = useState('');
@@ -52,32 +58,44 @@ export const Chat: React.FC = () => {
 
   // Load chat history from localStorage OR handle initial message - runs once on mount
   useEffect(() => {
-    // If there's an initial message from Home and we haven't sent it yet
-    if (initialMessage && !didAutoSendRef.current) {
+    // Check if this seed was already consumed (prevents double-send on re-render)
+    const consumedSeed = sessionStorage.getItem(SEED_CONSUMED_KEY);
+    const currentSeed = seedParam || initialMessage;
+    
+    // If there's an initial message and we haven't sent it yet
+    if (currentSeed && !didAutoSendRef.current && consumedSeed !== currentSeed) {
       didAutoSendRef.current = true;
+      
+      // Mark as consumed immediately
+      sessionStorage.setItem(SEED_CONSUMED_KEY, currentSeed);
+      
+      // Clear query params from URL without navigation
+      if (seedParam) {
+        window.history.replaceState({}, '', '/chat');
+      }
       
       // Show welcome and immediately add user message + send to AI
       const welcomeMessage = `היי! 👋 אני שפי, העוזר האישי שלך במטבח!\n\nאני כאן לעזור לך עם כל שאלה על בישול, מתכונים, חיסכון באוכל ועוד.\n\n⏱️ אפשר להפעיל טיימר לבישול\n📝 אפשר להוסיף מתכונים משלך\n\nמה תרצה לדעת?`;
       
       setMessages([
         { text: welcomeMessage, isBot: true },
-        { text: initialMessage, isBot: false }
+        { text: currentSeed, isBot: false }
       ]);
       setChatHistory([
         { role: 'assistant', content: welcomeMessage },
-        { role: 'user', content: initialMessage }
+        { role: 'user', content: currentSeed }
       ]);
       
       // Send to AI
-      sendToAIInitial(initialMessage, [
+      sendToAIInitial(currentSeed, [
         { role: 'assistant', content: welcomeMessage },
-        { role: 'user', content: initialMessage }
+        { role: 'user', content: currentSeed }
       ]);
       return;
     }
 
     // Normal load from storage (only if no initial message)
-    if (!initialMessage) {
+    if (!currentSeed) {
       const stored = localStorage.getItem(CHAT_STORAGE_KEY);
       if (stored) {
         try {
@@ -260,9 +278,13 @@ export const Chat: React.FC = () => {
   };
 
   return (
-    <FixedScreenLayout className="bg-background">
+    <div 
+      className="fixed inset-0 flex flex-col bg-background"
+      style={{ paddingTop: 'var(--safe-top)', paddingBottom: 'var(--safe-bottom)' }}
+      dir="rtl"
+    >
       {/* Header */}
-      <div className="bg-card border-b border-border/50 p-4 sticky top-0 z-10">
+      <div className="bg-card border-b border-border/50 p-4 shrink-0">
         <div className="flex items-center gap-3">
           <div className="w-12 h-12 rounded-2xl overflow-hidden shadow-card">
             <img src={appLogo} alt="שפי" className="w-full h-full object-cover" />
@@ -282,11 +304,13 @@ export const Chat: React.FC = () => {
         </div>
       </div>
 
-      {/* Chat Messages */}
+      {/* Chat Messages - scrollable area with proper bottom padding */}
       <div 
         className="flex-1 overflow-y-auto overscroll-contain p-4 space-y-4"
-        data-scrollable="true"
-        style={{ WebkitOverflowScrolling: 'touch' }}
+        style={{ 
+          WebkitOverflowScrolling: 'touch',
+          paddingBottom: 'calc(180px + env(safe-area-inset-bottom, 0px))'
+        }}
       >
         {messages.map((msg, index) => (
           <ChatMessage
@@ -411,8 +435,11 @@ export const Chat: React.FC = () => {
         </div>
       )}
 
-      {/* Input Area */}
-      <div className="p-4 border-t border-border/50 bg-card pb-24">
+      {/* Input Area - fixed at bottom with proper spacing for navbar */}
+      <div 
+        className="shrink-0 p-4 border-t border-border/50 bg-card"
+        style={{ paddingBottom: 'calc(96px + env(safe-area-inset-bottom, 0px))' }}
+      >
         <form onSubmit={handleSendMessage} className="flex gap-2">
           <Input
             value={inputText}
@@ -433,7 +460,7 @@ export const Chat: React.FC = () => {
         onOpenChange={setIsAddRecipeOpen}
         onRecipeAdded={handleRecipeAdded}
       />
-    </FixedScreenLayout>
+    </div>
   );
 };
 

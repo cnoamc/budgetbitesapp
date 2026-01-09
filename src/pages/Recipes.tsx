@@ -55,7 +55,10 @@ export const Recipes: React.FC = () => {
   return (
     <GradientBackground variant="minimal">
       <div className="screen-container" dir="rtl">
-        <div className="scroll-container scrollbar-hide pt-safe pb-safe-24">
+        <div 
+          className="scroll-container scrollbar-hide pt-safe"
+          style={{ paddingBottom: 'calc(110px + env(safe-area-inset-bottom, 0px) + 16px)' }}
+        >
         {/* Header */}
         <div className="p-4 sm:p-6 pb-4">
           <div className="flex items-center justify-between mb-4 sm:mb-6">

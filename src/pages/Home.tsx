@@ -129,10 +129,13 @@ export const Home: React.FC = () => {
   }, []);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const submitGuardRef = React.useRef(false); // Guard against double submit
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (isSubmitting) return;
+    
+    // Guard: prevent double submission
+    if (isSubmitting || submitGuardRef.current) return;
     
     const trimmedInput = searchInput.trim();
     if (!trimmedInput) {
@@ -140,14 +143,22 @@ export const Home: React.FC = () => {
       return;
     }
     
+    submitGuardRef.current = true;
     setIsSubmitting(true);
-    const formattedMessage = `יש לי שאריות: ${trimmedInput}. תציע לי 3 רעיונות לארוחה + זמן הכנה + רשימת מצרכים חסרים.`;
+    
+    // Clear input immediately
+    const message = trimmedInput;
     setSearchInput('');
     
-    // Small delay for UX feedback then navigate
+    // Format message and encode for query params
+    const formattedMessage = `יש לי שאריות: ${message}. תציע לי 3 רעיונות לארוחה + זמן הכנה + רשימת מצרכים חסרים.`;
+    const encodedSeed = encodeURIComponent(formattedMessage);
+    
+    // Small delay for UX feedback then navigate with query params
     setTimeout(() => {
-      navigate('/chat', { state: { initialMessage: formattedMessage } });
+      navigate(`/chat?mode=leftovers&seed=${encodedSeed}`);
       setIsSubmitting(false);
+      submitGuardRef.current = false;
     }, 150);
   };
 
@@ -158,7 +169,10 @@ export const Home: React.FC = () => {
   return (
     <GradientBackground variant="warm">
       <div className="screen-container" dir="rtl">
-        <div className="scroll-container scrollbar-hide pt-safe pb-safe-24">
+        <div 
+          className="scroll-container scrollbar-hide pt-safe"
+          style={{ paddingBottom: 'calc(110px + env(safe-area-inset-bottom, 0px) + 16px)' }}
+        >
           {/* Header - Compact */}
           <div className="px-4 pt-3 pb-2">
             <div className="flex items-center gap-3">

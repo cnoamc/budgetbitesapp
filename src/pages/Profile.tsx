@@ -151,7 +151,10 @@ export const Profile: React.FC = () => {
 
   return (
     <div className="screen-container bg-background" dir="rtl">
-      <div className="scroll-container scrollbar-hide p-4 pt-safe pb-safe-24">
+      <div 
+        className="scroll-container scrollbar-hide p-4 pt-safe"
+        style={{ paddingBottom: 'calc(110px + env(safe-area-inset-bottom, 0px) + 16px)' }}
+      >
         {/* Trial Reminder Banner */}
         {isTrialActive && (
           <TrialReminderBanner

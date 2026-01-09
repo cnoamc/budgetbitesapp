@@ -29,7 +29,10 @@ export const Savings: React.FC = () => {
   return (
     <GradientBackground variant="fresh">
       <div className="h-[100dvh] flex flex-col overflow-hidden">
-        <div className="flex-1 overflow-y-auto p-6 pb-32">
+        <div 
+          className="flex-1 overflow-y-auto p-6"
+          style={{ paddingBottom: 'calc(150px + env(safe-area-inset-bottom, 0px))' }}
+        >
         <div className="max-w-lg mx-auto">
           {/* Hero Section */}
           <div className="text-center mb-8 pt-4 animate-scale-in">

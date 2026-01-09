@@ -39,20 +39,20 @@
 
 /* Bottom padding that accounts for nav bar + safe area */
 .pb-safe-24 {
-  padding-bottom: calc(7rem + var(--safe-bottom));
+  padding-bottom: calc(110px + env(safe-area-inset-bottom, 0px) + 12px);
 }
 
 .pb-safe-28 {
-  padding-bottom: calc(8rem + var(--safe-bottom));
+  padding-bottom: calc(120px + env(safe-area-inset-bottom, 0px) + 12px);
 }
 
 .pb-safe-32 {
-  padding-bottom: calc(9rem + var(--safe-bottom));
+  padding-bottom: calc(130px + env(safe-area-inset-bottom, 0px) + 12px);
 }
 
 /* For pages with bottom nav - ensure content isn't hidden */
 .pb-nav {
-  padding-bottom: calc(110px + var(--safe-bottom));
+  padding-bottom: calc(110px + env(safe-area-inset-bottom, 0px) + 16px);
 }
 
 /* Prevent iOS rubber-banding on fixed elements */
