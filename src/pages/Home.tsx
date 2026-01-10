@@ -258,10 +258,6 @@ export const Home: React.FC = () => {
 
             {/* Quick Meals */}
             <div>
-              <div className="flex items-center justify-between mb-1.5">
-                <h2 className="font-semibold text-xs">מוכנים תוך 20 דקות</h2>
-              </div>
-              
               {/* Filter Chips */}
               <div className="flex gap-1.5 mb-2 overflow-x-auto scrollbar-hide">
                 {QUICK_FILTERS.map((filter) => (
