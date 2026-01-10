@@ -116,8 +116,8 @@ function App(): React.ReactElement {
                     <Sonner />
                     <NotificationBanner />
                     <PremiumPopup />
-                    <GuestLoginModal />
                     <BrowserRouter>
+                      <GuestLoginModal />
                       <div className="screen-container bg-background">
                         <AnimatedRoutes />
                       </div>
