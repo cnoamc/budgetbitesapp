@@ -145,7 +145,7 @@ export const Home: React.FC = () => {
             {/* AI Search */}
             <div className="bg-gradient-to-br from-primary/10 to-primary/5 rounded-2xl p-4 border border-primary/20">
               <h2 className="text-base font-semibold mb-2 text-center">
-                מה בא לך להכין היום?
+                {HERO_TITLES[heroTitleIndex]}
               </h2>
               <form onSubmit={handleSearchSubmit} className="flex gap-2">
                 <Input
@@ -292,13 +292,6 @@ export const Home: React.FC = () => {
                   </div>
                 ))}
               </div>
-            </div>
-
-            {/* Dynamic Tip */}
-            <div className="bg-muted/40 rounded-xl p-3 text-center">
-              <p className="text-sm text-muted-foreground">
-                💡 {HERO_TITLES[heroTitleIndex]}
-              </p>
             </div>
 
             {/* Savings Indicator */}
