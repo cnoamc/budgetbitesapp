@@ -48,15 +48,15 @@ export const BottomNav: React.FC = () => {
       <nav>
         <div 
           ref={navRef}
-          className="relative inline-flex justify-center items-center py-2 px-2 rounded-full backdrop-blur-xl bg-neutral-200/60 dark:bg-neutral-900/70 border border-neutral-300/40 dark:border-white/10"
+          className="relative inline-flex justify-center items-center py-3 px-3 rounded-full backdrop-blur-md bg-white/50 dark:bg-neutral-900/50 border border-white/60 dark:border-white/15"
           style={{
-            boxShadow: '0 8px 32px -8px rgba(0, 0, 0, 0.18), inset 0 1px 2px rgba(0, 0, 0, 0.06), inset 0 -1px 1px rgba(255, 255, 255, 0.1)'
+            boxShadow: '0 8px 32px -8px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.4), inset 0 -1px 0 rgba(0, 0, 0, 0.05)'
           }}
         >
           {/* Animated indicator */}
           {activeIndex >= 0 && (
             <motion.div
-              className="absolute top-1 bottom-1 rounded-full bg-black/5 dark:bg-white/10"
+              className="absolute top-1.5 bottom-1.5 rounded-full bg-black/8 dark:bg-white/12"
               initial={false}
               animate={{
                 left: indicatorStyle.left,
@@ -78,20 +78,20 @@ export const BottomNav: React.FC = () => {
                 ref={el => itemRefs.current[index] = el}
                 onClick={() => handleNavClick(item.path)}
                 className={cn(
-                  "relative flex flex-col items-center gap-0 py-1.5 px-3 rounded-full transition-colors duration-200 z-10",
+                  "relative flex flex-col items-center gap-0.5 py-2 px-4 rounded-full transition-colors duration-200 z-10",
                   isActive 
                     ? "text-foreground" 
-                    : "text-foreground/40 hover:text-foreground/60 active:scale-95"
+                    : "text-foreground/50 hover:text-foreground/70 active:scale-95"
                 )}
               >
                 <item.icon 
                   className={cn(
-                    "w-5 h-5 transition-all duration-200",
+                    "w-6 h-6 transition-all duration-200",
                     isActive ? "stroke-[2px]" : "stroke-[1.5px]"
                   )} 
                 />
                 <span className={cn(
-                  "text-[10px] transition-all duration-200",
+                  "text-[11px] transition-all duration-200",
                   isActive ? "font-semibold" : "font-medium"
                 )}>
                   {item.label}
