@@ -119,8 +119,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       setProgress(defaultUserProgress);
       // Load from localStorage for non-authenticated users (guests)
       const bbProfile = getBBProfile();
-      // For guests, use 'אורח' (Guest) as the default name
-      setDisplayName(bbProfile.displayName === 'השף הביתי' ? 'אורח' : bbProfile.displayName);
+      // Use stored name, or 'אורח' (Guest) as default for new guests
+      setDisplayName(bbProfile.displayName || 'אורח');
       setPhotoUrl(bbProfile.photoDataUrl);
       setLoading(false);
     }

@@ -10,7 +10,7 @@ export interface BBProfile {
 }
 
 const defaultBBProfile: BBProfile = {
-  displayName: 'השף הביתי',
+  displayName: 'אורח',
   photoDataUrl: null,
 };
 
