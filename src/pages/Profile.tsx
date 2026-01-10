@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Settings, MapPin, LogOut, Pencil, Camera, X, Crown, FileText, HelpCircle, Shield, User, Sparkles, UserPlus, Smartphone, Share, MoreVertical } from 'lucide-react';
+import { Settings, MapPin, LogOut, Pencil, Camera, X, Crown, FileText, HelpCircle, Shield, User, Sparkles, UserPlus, Smartphone, ChevronLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import appLogo from '@/assets/app-logo.png';
 import { Button } from '@/components/ui/button';
@@ -287,67 +287,22 @@ export const Profile: React.FC = () => {
           </div>
         </div>
 
-        {/* Add to Home Screen Tutorial */}
-        <div className="bg-card rounded-xl p-4 shadow-card border border-border/50 mb-3">
-          <h3 className="font-semibold text-sm mb-3 flex items-center gap-2">
-            <Smartphone className="w-4 h-4" />
-            הוספת האפליקציה למסך הבית
-          </h3>
-          
-          <div className="space-y-4">
-            {/* iOS Instructions */}
-            <div className="bg-muted/30 rounded-lg p-3">
-              <div className="flex items-center gap-2 mb-2">
-                <div className="w-6 h-6 bg-gray-800 rounded-md flex items-center justify-center">
-                  <span className="text-white text-xs font-bold">S</span>
-                </div>
-                <span className="text-sm font-medium">Safari (iPhone)</span>
-              </div>
-              <div className="space-y-2 text-sm text-muted-foreground">
-                <div className="flex items-center gap-2">
-                  <span className="w-5 h-5 bg-primary/10 rounded-full flex items-center justify-center text-xs font-bold text-primary">1</span>
-                  <div className="flex items-center gap-1">
-                    <span>לחץ על</span>
-                    <Share className="w-4 h-4" />
-                    <span>(שיתוף)</span>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="w-5 h-5 bg-primary/10 rounded-full flex items-center justify-center text-xs font-bold text-primary">2</span>
-                  <span>בחר "הוסף למסך הבית"</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="w-5 h-5 bg-primary/10 rounded-full flex items-center justify-center text-xs font-bold text-primary">3</span>
-                  <span>אשר</span>
-                </div>
-              </div>
+        {/* Add to Home Screen Link */}
+        <button
+          onClick={() => navigate('/install')}
+          className="w-full bg-card rounded-xl p-4 shadow-card border border-border/50 mb-3 flex items-center justify-between hover:bg-muted/50 transition-colors"
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 bg-primary/10 rounded-full flex items-center justify-center">
+              <Smartphone className="w-4 h-4 text-primary" />
             </div>
-
-            {/* Android Instructions */}
-            <div className="bg-muted/30 rounded-lg p-3">
-              <div className="flex items-center gap-2 mb-2">
-                <div className="w-6 h-6 bg-green-600 rounded-md flex items-center justify-center">
-                  <span className="text-white text-xs font-bold">C</span>
-                </div>
-                <span className="text-sm font-medium">Chrome (Android)</span>
-              </div>
-              <div className="space-y-2 text-sm text-muted-foreground">
-                <div className="flex items-center gap-2">
-                  <span className="w-5 h-5 bg-primary/10 rounded-full flex items-center justify-center text-xs font-bold text-primary">1</span>
-                  <div className="flex items-center gap-1">
-                    <span>לחץ על</span>
-                    <MoreVertical className="w-4 h-4" />
-                    <span>(תפריט)</span>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="w-5 h-5 bg-primary/10 rounded-full flex items-center justify-center text-xs font-bold text-primary">2</span>
-                  <span>בחר "הוסף למסך הבית"</span>
-                </div>
-              </div>
+            <div className="text-right">
+              <p className="text-sm font-medium">הוסף למסך הבית</p>
+              <p className="text-xs text-muted-foreground">גישה מהירה לאפליקציה</p>
             </div>
           </div>
-        </div>
+          <ChevronLeft className="w-5 h-5 text-muted-foreground" />
+        </button>
 
         {/* Actions - Compact */}
         <div className="space-y-2">
