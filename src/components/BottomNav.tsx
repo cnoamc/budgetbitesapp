@@ -74,7 +74,14 @@ export const BottomNav: React.FC = () => {
           <div className="relative flex flex-col items-center flex-1">
             <motion.button
               onClick={() => handleNavClick(centerItem.path)}
-              whileTap={{ scale: 0.95 }}
+              whileTap={{ scale: 0.85 }}
+              animate={isCenterActive ? { scale: [1, 1.1, 1] } : {}}
+              transition={{ 
+                type: "spring", 
+                stiffness: 400, 
+                damping: 10,
+                mass: 0.8
+              }}
               className={cn(
                 "relative flex items-center justify-center w-14 h-14 -mt-4 rounded-full shadow-lg transition-all duration-200 overflow-hidden",
                 isCenterActive && "ring-2 ring-primary/30 ring-offset-2 ring-offset-background"
