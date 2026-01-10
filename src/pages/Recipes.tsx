@@ -14,7 +14,8 @@ import { useApp } from '@/contexts/AppContext';
 import type { RecipeCategory } from '@/lib/types';
 import appLogo from '@/assets/app-logo.png';
 
-const categories: Array<RecipeCategory | 'all' | 'favorites' | 'my-recipes'> = ['all', 'my-recipes', 'favorites', 'desserts', 'beginner', 'fast', 'cheap', 'protein', 'vegetarian', 'easy', 'kosher'];
+// Simplified categories per user request: מהיר, חסכוני, חלבון, צמחוני, כשר
+const categories: Array<RecipeCategory | 'all' | 'favorites' | 'my-recipes'> = ['all', 'fast', 'cheap', 'protein', 'vegetarian', 'kosher', 'favorites', 'my-recipes'];
 
 export const Recipes: React.FC = () => {
   const navigate = useNavigate();
