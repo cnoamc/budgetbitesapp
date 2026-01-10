@@ -34,7 +34,7 @@ export const PremiumPopup: React.FC = () => {
   return (
     <Dialog open={showPremiumPopup} onOpenChange={(open) => !open && handleNotNow()}>
       <DialogContent 
-        className="max-w-sm mx-4 rounded-3xl p-0 border-0 shadow-2xl overflow-hidden max-h-[90vh] flex flex-col"
+        className="w-[calc(100vw-32px)] max-w-[360px] rounded-3xl p-0 border-0 shadow-2xl overflow-hidden max-h-[85vh] flex flex-col"
         dir="rtl"
       >
         {/* Close button */}
