@@ -110,10 +110,10 @@ const Welcome: React.FC = () => {
             style={{ transitionDelay: '150ms' }}
           >
             <h1 className="text-4xl font-extrabold text-white mb-3">
-              ברוך הבא 👋
+              שפי עושה סדר במטבח
             </h1>
-            <p className="text-xl text-white/90 font-medium">
-              אוכל טוב, חיסכון, בלי כאב ראש
+            <p className="text-base text-white/80 font-medium leading-relaxed">
+              פחות בלגן, פחות התלבטויות, יותר זמן לעצמך.
             </p>
           </div>
 
@@ -129,18 +129,7 @@ const Welcome: React.FC = () => {
                 <ChefHat className="w-6 h-6 text-white" />
               </div>
               <div className="flex-1">
-                <p className="font-semibold text-white text-sm">שפי – העוזר האישי</p>
-                <p className="text-white/70 text-xs">מלווה אותך צעד אחרי צעד</p>
-              </div>
-            </div>
-
-            <div className="bg-white/15 backdrop-blur-sm rounded-2xl p-4 flex items-center gap-4">
-              <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
-                <TrendingDown className="w-6 h-6 text-white" />
-              </div>
-              <div className="flex-1">
-                <p className="font-semibold text-white text-sm">חסוך כסף בקלות</p>
-                <p className="text-white/70 text-xs">בישול ביתי במקום משלוחים</p>
+                <p className="font-semibold text-white text-sm">שפי – עוזר בישול חכם צעד־אחר־צעד</p>
               </div>
             </div>
 
@@ -149,8 +138,16 @@ const Welcome: React.FC = () => {
                 <Sparkles className="w-6 h-6 text-white" />
               </div>
               <div className="flex-1">
-                <p className="font-semibold text-white text-sm">מתכונים פשוטים</p>
-                <p className="text-white/70 text-xs">גם אם אתה לא יודע לבשל</p>
+                <p className="font-semibold text-white text-sm">מאות מתכונים זמינים בכל רגע</p>
+              </div>
+            </div>
+
+            <div className="bg-white/15 backdrop-blur-sm rounded-2xl p-4 flex items-center gap-4">
+              <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
+                <TrendingDown className="w-6 h-6 text-white" />
+              </div>
+              <div className="flex-1">
+                <p className="font-semibold text-white text-sm">עלות מצרכים ברורה לפני שמבשלים</p>
               </div>
             </div>
           </div>
