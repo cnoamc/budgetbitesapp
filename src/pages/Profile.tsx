@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Settings, RefreshCw, MapPin, LogOut, Pencil, Camera, X, Bell, Crown, FileText, HelpCircle, Shield, User, Sparkles, UserPlus } from 'lucide-react';
+import { Settings, MapPin, LogOut, Pencil, Camera, X, Crown, FileText, HelpCircle, Shield, User, Sparkles, UserPlus, Smartphone, Share, MoreVertical } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import appLogo from '@/assets/app-logo.png';
 import { Button } from '@/components/ui/button';
@@ -10,9 +10,7 @@ import { TrialReminderBanner } from '@/components/PremiumPaywall';
 import { useApp } from '@/contexts/AppContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { useGuest } from '@/contexts/GuestContext';
-import { useNotifications } from '@/contexts/NotificationContext';
 import { useSubscription } from '@/contexts/SubscriptionContext';
-import { NotificationSettings } from '@/components/NotificationSettings';
 import { toast } from 'sonner';
 import {
   Dialog,
@@ -20,7 +18,6 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
-  DialogDescription,
 } from '@/components/ui/dialog';
 import {
   AlertDialog,
@@ -38,12 +35,10 @@ export const Profile: React.FC = () => {
   const { profile, progress, displayName, photoUrl, updateDisplayName, updatePhotoUrl, syncing } = useApp();
   const { user, signOut } = useAuth();
   const { isGuest, isPremium, openPremiumPopup, exitGuestMode } = useGuest();
-  const { unreadCount } = useNotifications();
   const { daysLeftInTrial, isTrialActive, subscription, toggleCancelReminder } = useSubscription();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [isEditingName, setIsEditingName] = useState(false);
-  const [isNotificationSettingsOpen, setIsNotificationSettingsOpen] = useState(false);
   const [isSignOutDialogOpen, setIsSignOutDialogOpen] = useState(false);
   const [editedName, setEditedName] = useState(displayName);
 
@@ -271,7 +266,7 @@ export const Profile: React.FC = () => {
               <span className="text-sm text-muted-foreground">ישראל</span>
             </div>
             
-            <div className="flex items-center justify-between py-1.5 border-b border-border/50">
+            <div className="flex items-center justify-between py-1.5">
               <div className="flex items-center gap-2">
                 <div className="w-4 h-4 rounded overflow-hidden">
                   <img src={appLogo} alt="Skill" className="w-full h-full object-cover" />
@@ -280,28 +275,73 @@ export const Profile: React.FC = () => {
               </div>
               <span className="text-sm text-muted-foreground">{profile.cookingSkill}/5</span>
             </div>
-            
-            <div className="flex items-center justify-between py-1.5 border-b border-border/50">
-              <div className="flex items-center gap-2">
-                <span className="text-base">🍔</span>
-                <span className="text-sm">הזמנות שבועיות</span>
+          </div>
+        </div>
+
+        {/* Add to Home Screen Tutorial */}
+        <div className="bg-card rounded-xl p-4 shadow-card border border-border/50 mb-3">
+          <h3 className="font-semibold text-sm mb-3 flex items-center gap-2">
+            <Smartphone className="w-4 h-4" />
+            הוספת האפליקציה למסך הבית
+          </h3>
+          
+          <div className="space-y-4">
+            {/* iOS Instructions */}
+            <div className="bg-muted/30 rounded-lg p-3">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-6 h-6 bg-gray-800 rounded-md flex items-center justify-center">
+                  <span className="text-white text-xs font-bold">S</span>
+                </div>
+                <span className="text-sm font-medium">Safari (iPhone)</span>
               </div>
-              <span className="text-sm text-muted-foreground">{profile.weeklyOrders} פעמים</span>
+              <div className="space-y-2 text-sm text-muted-foreground">
+                <div className="flex items-center gap-2">
+                  <span className="w-5 h-5 bg-primary/10 rounded-full flex items-center justify-center text-xs font-bold text-primary">1</span>
+                  <div className="flex items-center gap-1">
+                    <span>לחץ על</span>
+                    <Share className="w-4 h-4" />
+                    <span>(שיתוף)</span>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="w-5 h-5 bg-primary/10 rounded-full flex items-center justify-center text-xs font-bold text-primary">2</span>
+                  <span>בחר "הוסף למסך הבית"</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="w-5 h-5 bg-primary/10 rounded-full flex items-center justify-center text-xs font-bold text-primary">3</span>
+                  <span>אשר</span>
+                </div>
+              </div>
             </div>
-            
+
+            {/* Android Instructions */}
+            <div className="bg-muted/30 rounded-lg p-3">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-6 h-6 bg-green-600 rounded-md flex items-center justify-center">
+                  <span className="text-white text-xs font-bold">C</span>
+                </div>
+                <span className="text-sm font-medium">Chrome (Android)</span>
+              </div>
+              <div className="space-y-2 text-sm text-muted-foreground">
+                <div className="flex items-center gap-2">
+                  <span className="w-5 h-5 bg-primary/10 rounded-full flex items-center justify-center text-xs font-bold text-primary">1</span>
+                  <div className="flex items-center gap-1">
+                    <span>לחץ על</span>
+                    <MoreVertical className="w-4 h-4" />
+                    <span>(תפריט)</span>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="w-5 h-5 bg-primary/10 rounded-full flex items-center justify-center text-xs font-bold text-primary">2</span>
+                  <span>בחר "הוסף למסך הבית"</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
         {/* Actions - Compact */}
         <div className="space-y-2">
-          <Button variant="outline" size="sm" className="w-full justify-start h-10" onClick={() => setIsNotificationSettingsOpen(true)}>
-            <Bell className="w-4 h-4" />
-            הגדרות התראות
-            {unreadCount > 0 && (
-              <span className="mr-auto bg-primary text-primary-foreground text-xs px-1.5 py-0.5 rounded-full">{unreadCount}</span>
-            )}
-          </Button>
-          
           {/* Premium Button */}
           <Button 
             variant="outline" 
@@ -380,16 +420,6 @@ export const Profile: React.FC = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-
-      <Dialog open={isNotificationSettingsOpen} onOpenChange={setIsNotificationSettingsOpen}>
-        <DialogContent className="max-w-md max-h-[80vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>הגדרות התראות</DialogTitle>
-            <DialogDescription>בחר אילו התראות לקבל ומתי</DialogDescription>
-          </DialogHeader>
-          <NotificationSettings />
-        </DialogContent>
-      </Dialog>
     </div>
   );
 };

@@ -1,11 +1,9 @@
 import React from 'react';
-import { Sparkles, X } from 'lucide-react';
+import { Sparkles, X, ChefHat, Clock, TrendingUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
-  DialogHeader,
-  DialogTitle,
 } from '@/components/ui/dialog';
 import { useGuest } from '@/contexts/GuestContext';
 import { toast } from 'sonner';
@@ -27,74 +25,95 @@ export const PremiumPopup: React.FC = () => {
   return (
     <Dialog open={showPremiumPopup} onOpenChange={(open) => !open && handleNotNow()}>
       <DialogContent 
-        className="max-w-sm mx-4 rounded-3xl p-6 text-center border-0 shadow-2xl"
+        className="max-w-sm mx-4 rounded-3xl p-0 border-0 shadow-2xl overflow-hidden"
         dir="rtl"
       >
+        {/* Close button - only one */}
         <button 
           onClick={handleNotNow}
-          className="absolute top-4 left-4 p-1 rounded-full hover:bg-muted transition-colors"
+          className="absolute top-4 left-4 z-10 p-2 rounded-full bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-colors"
         >
-          <X className="w-5 h-5 text-muted-foreground" />
+          <X className="w-5 h-5 text-white" />
         </button>
 
-        {/* Header with animated emoji */}
-        <div className="mb-4">
+        {/* Header with gradient */}
+        <div 
+          className="pt-10 pb-6 px-6 text-center"
+          style={{
+            background: 'linear-gradient(180deg, #1a1a2e 0%, #16213e 100%)'
+          }}
+        >
+          {/* Animated emoji */}
           <div className="text-5xl mb-3 animate-bounce">🎁</div>
-          <DialogHeader>
-            <DialogTitle className="text-xl font-bold">
-              Premium בהשקה
-            </DialogTitle>
-          </DialogHeader>
+          <h2 className="text-2xl font-bold text-white mb-1">
+            Premium בהשקה
+          </h2>
+          <p className="text-white/70 text-sm">
+            חינם לחלוטין עד סוף פברואר!
+          </p>
         </div>
 
-        {/* Body */}
-        <div className="space-y-4 mb-6">
-          <p className="text-muted-foreground text-sm leading-relaxed">
-            פרימיום חינם עד סוף פברואר כדי לחגוג את ההשקה.
-            <br />
-            רוצה להפעיל עכשיו?
-          </p>
+        {/* Content */}
+        <div className="p-6 bg-white">
+          {/* Features list */}
+          <div className="space-y-3 mb-6">
+            {/* Main feature - highlighted */}
+            <div className="flex items-center gap-3 p-3 bg-gradient-to-r from-primary/10 to-primary/5 rounded-xl border border-primary/20">
+              <div className="w-10 h-10 bg-primary/20 rounded-full flex items-center justify-center">
+                <ChefHat className="w-5 h-5 text-primary" />
+              </div>
+              <div className="flex-1">
+                <p className="font-semibold text-sm">✨ שפי – עוזר בישול חכם</p>
+                <p className="text-xs text-muted-foreground">הפיצ'ר המרכזי שלנו</p>
+              </div>
+            </div>
 
-          {/* Features preview */}
-          <div className="bg-gradient-to-br from-primary/5 to-primary/10 rounded-2xl p-4 space-y-2">
-            <div className="flex items-center gap-2 text-sm">
-              <span className="text-lg">☁️</span>
-              <span>Cloud backup</span>
+            <div className="flex items-center gap-3 p-2">
+              <span className="text-lg">⏱</span>
+              <span className="text-sm">מתכונים מהירים וחסכוניים</span>
             </div>
-            <div className="flex items-center gap-2 text-sm">
-              <span className="text-lg">📖</span>
-              <span>מתכונים ללא הגבלה</span>
-            </div>
-            <div className="flex items-center gap-2 text-sm">
+            
+            <div className="flex items-center gap-3 p-2">
               <span className="text-lg">📊</span>
-              <span>אנליטיקס ותובנות</span>
+              <span className="text-sm">מעקב התקדמות וחיסכון</span>
             </div>
           </div>
-        </div>
 
-        {/* Buttons */}
-        <div className="space-y-3">
-          <Button 
-            onClick={handleActivatePremium}
-            className="w-full h-12 rounded-xl text-base font-semibold bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70"
-          >
-            <Sparkles className="w-4 h-4 ml-2" />
-            הפעל פרימיום בחינם
-          </Button>
-          
-          <Button 
-            onClick={handleNotNow}
-            variant="ghost"
-            className="w-full h-10 text-muted-foreground"
-          >
-            אולי אחר כך
-          </Button>
-        </div>
+          {/* Info badge */}
+          <div className="bg-muted/50 rounded-xl p-3 text-center mb-6">
+            <p className="text-xs text-muted-foreground">
+              🚀 האפליקציה חינמית בתקופת ההשקה
+              <br />
+              <span className="text-foreground font-medium">חלק מהפיצ'רים יהיו מוגבלים בעתיד</span>
+            </p>
+          </div>
 
-        {/* Footnote */}
-        <p className="text-xs text-muted-foreground mt-4">
-          אפשר לשדרג בכל רגע
-        </p>
+          {/* Buttons */}
+          <div className="space-y-3">
+            <Button 
+              onClick={handleActivatePremium}
+              className="w-full h-14 rounded-2xl text-base font-bold"
+              style={{
+                background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)'
+              }}
+            >
+              <Sparkles className="w-5 h-5 ml-2" />
+              הפעל פרימיום בחינם
+            </Button>
+            
+            <button 
+              onClick={handleNotNow}
+              className="w-full py-3 text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
+              אולי אחר כך
+            </button>
+          </div>
+
+          {/* Footnote */}
+          <p className="text-xs text-center text-muted-foreground mt-4">
+            אפשר לשדרג בכל רגע
+          </p>
+        </div>
       </DialogContent>
     </Dialog>
   );

@@ -164,7 +164,8 @@ export const Home: React.FC = () => {
               </form>
             </div>
 
-            {/* Import Recipe Banner */}
+            {/* Import Recipe Banner - Hidden for launch */}
+            {/* 
             <PremiumCard 
               variant="elevated" 
               hoverable
@@ -185,6 +186,7 @@ export const Home: React.FC = () => {
                 </Button>
               </div>
             </PremiumCard>
+            */}
 
             {/* Continue Cooking */}
             {inProgressRecipe && (

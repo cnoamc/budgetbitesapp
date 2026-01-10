@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
+import { ChefHat, TrendingDown, Sparkles } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useGuest } from '@/contexts/GuestContext';
 import { FixedScreenLayout } from '@/components/layouts';
@@ -70,7 +71,7 @@ const Welcome: React.FC = () => {
         className="absolute w-[600px] h-[600px] rounded-full blur-3xl opacity-30 pointer-events-none"
         style={{
           background: 'radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%)',
-          top: '15%',
+          top: '10%',
           left: '50%',
           transform: 'translateX(-50%)'
         }}
@@ -79,18 +80,18 @@ const Welcome: React.FC = () => {
       {/* Content */}
       <div className="relative z-10 flex-1 flex flex-col" dir="rtl">
         
-        {/* App icon section */}
-        <div className="flex-1 flex flex-col items-center justify-center pt-12">
+        {/* Hero section */}
+        <div className="flex-1 flex flex-col items-center justify-center px-6">
+          {/* App icon with animation */}
           <div 
             className={`relative transition-all duration-700 ease-out ${
               mounted ? 'scale-100 opacity-100' : 'scale-50 opacity-0'
             }`}
           >
-            {/* Icon with shadow and rounded corners */}
             <div 
-              className="w-32 h-32 rounded-[32px] overflow-hidden"
+              className="w-28 h-28 rounded-[28px] overflow-hidden"
               style={{
-                boxShadow: '0 20px 60px -15px rgba(0, 0, 0, 0.3), 0 10px 20px -10px rgba(0, 0, 0, 0.2)'
+                boxShadow: '0 25px 60px -15px rgba(0, 0, 0, 0.35), 0 15px 30px -10px rgba(0, 0, 0, 0.25)'
               }}
             >
               <img 
@@ -101,43 +102,88 @@ const Welcome: React.FC = () => {
             </div>
           </div>
 
-          {/* Welcome title */}
+          {/* Main headline */}
           <div 
-            className={`mt-8 transition-all duration-700 ${
+            className={`mt-8 text-center transition-all duration-700 ${
               mounted ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
             }`}
-            style={{ transitionDelay: '200ms' }}
+            style={{ transitionDelay: '150ms' }}
           >
-            <h1 className="text-4xl font-bold text-white text-center">
+            <h1 className="text-4xl font-extrabold text-white mb-3">
               ברוך הבא 👋
             </h1>
+            <p className="text-xl text-white/90 font-medium">
+              אוכל טוב, חיסכון, בלי כאב ראש
+            </p>
+          </div>
+
+          {/* Feature cards */}
+          <div 
+            className={`mt-8 w-full max-w-xs space-y-3 transition-all duration-700 ${
+              mounted ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'
+            }`}
+            style={{ transitionDelay: '300ms' }}
+          >
+            <div className="bg-white/15 backdrop-blur-sm rounded-2xl p-4 flex items-center gap-4">
+              <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
+                <ChefHat className="w-6 h-6 text-white" />
+              </div>
+              <div className="flex-1">
+                <p className="font-semibold text-white text-sm">שפי – העוזר האישי</p>
+                <p className="text-white/70 text-xs">מלווה אותך צעד אחרי צעד</p>
+              </div>
+            </div>
+
+            <div className="bg-white/15 backdrop-blur-sm rounded-2xl p-4 flex items-center gap-4">
+              <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
+                <TrendingDown className="w-6 h-6 text-white" />
+              </div>
+              <div className="flex-1">
+                <p className="font-semibold text-white text-sm">חסוך כסף בקלות</p>
+                <p className="text-white/70 text-xs">בישול ביתי במקום משלוחים</p>
+              </div>
+            </div>
+
+            <div className="bg-white/15 backdrop-blur-sm rounded-2xl p-4 flex items-center gap-4">
+              <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
+                <Sparkles className="w-6 h-6 text-white" />
+              </div>
+              <div className="flex-1">
+                <p className="font-semibold text-white text-sm">מתכונים פשוטים</p>
+                <p className="text-white/70 text-xs">גם אם אתה לא יודע לבשל</p>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Bottom section with buttons */}
+        {/* Bottom CTA section */}
         <div 
-          className={`px-6 pb-10 pt-4 transition-all duration-700 ${
+          className={`px-6 pb-10 pt-6 transition-all duration-700 ${
             mounted ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
           }`}
-          style={{ transitionDelay: '300ms' }}
+          style={{ transitionDelay: '450ms' }}
         >
-          {/* App name */}
-          <p className="text-center text-sm font-medium text-white/70 tracking-[0.2em] mb-6 uppercase">
-            BUDGETBITES
-          </p>
+          {/* Launch badge */}
+          <div className="flex justify-center mb-5">
+            <div className="bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full">
+              <p className="text-white text-sm font-medium">
+                🎉 חינם בתקופת ההשקה
+              </p>
+            </div>
+          </div>
 
-          {/* Primary CTA - Continue as Guest */}
+          {/* Primary CTA */}
           <Button 
             onClick={handleContinueAsGuest} 
-            className="w-full h-[56px] rounded-full text-[17px] font-semibold transition-all active:scale-[0.98] bg-white text-[#2196F3] hover:bg-white/95"
+            className="w-full h-[56px] rounded-full text-[17px] font-bold transition-all active:scale-[0.98] bg-white text-[#2196F3] hover:bg-white/95"
             style={{
-              boxShadow: '0 8px 30px -6px rgba(0, 0, 0, 0.2)'
+              boxShadow: '0 8px 30px -6px rgba(0, 0, 0, 0.25)'
             }}
           >
-            המשך כאורח
+            התחל עכשיו
           </Button>
 
-          {/* Secondary CTA - Sign in */}
+          {/* Secondary CTA */}
           <Button 
             onClick={handleSignIn}
             variant="outline"
