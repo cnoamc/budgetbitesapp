@@ -213,12 +213,10 @@ export const Profile: React.FC = () => {
           <input ref={fileInputRef} type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={handleFileChange} />
 
           <div className="flex items-center justify-center gap-1 mt-2">
-            <h1 className="text-xl font-bold">{isGuest ? 'אורח' : displayName}</h1>
-            {!isGuest && (
-              <button onClick={() => setIsEditingName(true)} className="p-1 hover:bg-muted rounded-full">
-                <Pencil className="w-3 h-3 text-muted-foreground" />
-              </button>
-            )}
+            <h1 className="text-xl font-bold">{displayName}</h1>
+            <button onClick={() => setIsEditingName(true)} className="p-1 hover:bg-muted rounded-full">
+              <Pencil className="w-3 h-3 text-muted-foreground" />
+            </button>
           </div>
           
           <p className="text-sm text-muted-foreground">
