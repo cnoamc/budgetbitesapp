@@ -33,7 +33,7 @@ const Chat = lazy(() => import("./pages/Chat"));
 const RateMeal = lazy(() => import("./pages/RateMeal"));
 const Progress = lazy(() => import("./pages/Progress"));
 const Profile = lazy(() => import("./pages/Profile"));
-const Premium = lazy(() => import("./pages/Premium"));
+
 const ImportRecipe = lazy(() => import("./pages/ImportRecipe"));
 const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
 const TermsOfService = lazy(() => import("./pages/TermsOfService"));
@@ -78,7 +78,7 @@ function AnimatedRoutes(): React.ReactElement {
             <Route path="/loading" element={<PageTransition><LoadingSavings /></PageTransition>} />
             <Route path="/signin" element={<PageTransition><SignIn /></PageTransition>} />
             <Route path="/onboarding" element={<PageTransition><Onboarding /></PageTransition>} />
-            <Route path="/premium" element={<PageTransition><Premium /></PageTransition>} />
+            
             <Route path="/home" element={<PageTransition><Home /></PageTransition>} />
             <Route path="/recipes" element={<PageTransition><Recipes /></PageTransition>} />
             <Route path="/recipe/:id" element={<PageTransition><RecipeDetail /></PageTransition>} />

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -15,7 +15,8 @@ import confetti from 'canvas-confetti';
 const SignIn: React.FC = () => {
   const navigate = useNavigate();
   const { user, loading, signUp, signIn, signInWithGoogle } = useAuth();
-  const { exitGuestMode } = useGuest();
+  const { exitGuestMode, openPremiumPopup, premiumPopupSeen, markPopupSeen } = useGuest();
+  const hasShownPopup = useRef(false);
   
   const [isSignUp, setIsSignUp] = useState(false);
   const [email, setEmail] = useState('');
@@ -24,14 +25,23 @@ const SignIn: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isNewSignup, setIsNewSignup] = useState(false);
 
-  // Redirect logged in users to home
+  // Redirect logged in users to home and show premium popup for new signups
   useEffect(() => {
     if (user && !loading) {
       // Exit guest mode when logging in
       exitGuestMode();
       navigate('/home', { replace: true });
+      
+      // Show premium popup after navigating (for new signups or first login)
+      if (!premiumPopupSeen && !hasShownPopup.current) {
+        hasShownPopup.current = true;
+        setTimeout(() => {
+          openPremiumPopup();
+          markPopupSeen();
+        }, 600);
+      }
     }
-  }, [user, loading, navigate, exitGuestMode]);
+  }, [user, loading, navigate, exitGuestMode, openPremiumPopup, premiumPopupSeen, markPopupSeen]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
