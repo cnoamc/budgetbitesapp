@@ -24,11 +24,12 @@
 /* Scrollable container with safe area awareness */
 .scroll-container {
   flex: 1;
-  overflow-y: auto;
+  overflow-y: auto !important;
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
   overscroll-behavior-y: contain;
   overscroll-behavior-x: none;
+  touch-action: pan-y;
 }
 
 /* Safe area padding utilities */

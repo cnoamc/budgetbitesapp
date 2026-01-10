@@ -42,17 +42,25 @@ export const BottomNav: React.FC = () => {
 
   return (
     <div 
-      className="fixed bottom-0 left-0 right-0 z-50 flex justify-center"
+      className="fixed bottom-0 left-0 right-0 z-50 flex justify-center pointer-events-none"
       style={{ paddingBottom: 'max(0.75rem, var(--safe-bottom))' }}
     >
-      <nav>
+      <nav className="pointer-events-auto">
         <div 
           ref={navRef}
-          className="relative inline-flex justify-center items-center py-3 px-3 rounded-full backdrop-blur-md bg-white/50 dark:bg-neutral-900/50 border border-white/60 dark:border-white/15"
+          className="relative inline-flex justify-center items-center py-3 px-3 rounded-full backdrop-blur-md bg-white/50 dark:bg-neutral-900/50 border border-white/60 dark:border-white/15 overflow-hidden"
           style={{
-            boxShadow: '0 8px 32px -8px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.4), inset 0 -1px 0 rgba(0, 0, 0, 0.05)'
+            boxShadow: '0 8px 32px -8px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.5), inset 0 -1px 0 rgba(0, 0, 0, 0.05)'
           }}
         >
+          {/* Glass reflection effect */}
+          <div 
+            className="absolute inset-0 rounded-full pointer-events-none"
+            style={{
+              background: 'linear-gradient(135deg, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0) 50%, rgba(255,255,255,0.05) 100%)',
+            }}
+          />
+          
           {/* Animated indicator */}
           {activeIndex >= 0 && (
             <motion.div
