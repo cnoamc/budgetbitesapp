@@ -96,7 +96,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
             });
             
             // Update display name and photo
-            const dbDisplayName = newData.display_name || 'השף הביתי';
+            const dbDisplayName = newData.display_name || user.user_metadata?.full_name || user.email?.split('@')[0] || 'השף הביתי';
             const dbPhotoUrl = newData.photo_url || null;
             setDisplayName(dbDisplayName);
             setPhotoUrl(dbPhotoUrl);
@@ -117,9 +117,10 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     } else {
       setProfile(defaultUserProfile);
       setProgress(defaultUserProgress);
-      // Load from localStorage for non-authenticated users
+      // Load from localStorage for non-authenticated users (guests)
       const bbProfile = getBBProfile();
-      setDisplayName(bbProfile.displayName);
+      // For guests, use 'אורח' (Guest) as the default name
+      setDisplayName(bbProfile.displayName === 'השף הביתי' ? 'אורח' : bbProfile.displayName);
       setPhotoUrl(bbProfile.photoDataUrl);
       setLoading(false);
     }
@@ -185,8 +186,13 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         }
         
         // Load display name and photo from database
-        const dbDisplayName = (profileData as any).display_name || 'השף הביתי';
-        const dbPhotoUrl = (profileData as any).photo_url || null;
+        // Fallback to user metadata (from Google OAuth) or email prefix
+        const dbDisplayName = (profileData as any).display_name || 
+          user.user_metadata?.full_name || 
+          user.user_metadata?.name ||
+          user.email?.split('@')[0] || 
+          'השף הביתי';
+        const dbPhotoUrl = (profileData as any).photo_url || user.user_metadata?.avatar_url || null;
         setDisplayName(dbDisplayName);
         setPhotoUrl(dbPhotoUrl);
         
