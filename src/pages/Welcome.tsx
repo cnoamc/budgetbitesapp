@@ -5,12 +5,14 @@ import { ChefHat, TrendingDown, Sparkles } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useGuest } from '@/contexts/GuestContext';
 import { FixedScreenLayout } from '@/components/layouts';
+import { useInAppBrowser } from '@/hooks/useInAppBrowser';
 import appIcon from '@/assets/app-icon.png';
 
 const Welcome: React.FC = () => {
   const navigate = useNavigate();
   const { user, loading } = useAuth();
   const { isGuest, enterAsGuest, premiumPopupSeen, openPremiumPopup, markPopupSeen } = useGuest();
+  const { isInAppBrowser, reduceAnimations } = useInAppBrowser();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -56,6 +58,10 @@ const Welcome: React.FC = () => {
     );
   }
 
+  // Animation classes - reduced for in-app browsers
+  const animationSpeed = reduceAnimations ? 'duration-100' : 'duration-700';
+  const animationDelay = (ms: number) => reduceAnimations ? '0ms' : `${ms}ms`;
+
   return (
     <FixedScreenLayout>
       {/* Blue gradient background */}
@@ -66,25 +72,27 @@ const Welcome: React.FC = () => {
         }} 
       />
 
-      {/* Subtle radial glow */}
-      <div 
-        className="absolute w-[600px] h-[600px] rounded-full blur-3xl opacity-30 pointer-events-none"
-        style={{
-          background: 'radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%)',
-          top: '10%',
-          left: '50%',
-          transform: 'translateX(-50%)'
-        }}
-      />
+      {/* Subtle radial glow - hidden in in-app browsers for performance */}
+      {!isInAppBrowser && (
+        <div 
+          className="absolute w-[600px] h-[600px] rounded-full blur-3xl opacity-30 pointer-events-none"
+          style={{
+            background: 'radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%)',
+            top: '10%',
+            left: '50%',
+            transform: 'translateX(-50%)'
+          }}
+        />
+      )}
 
       {/* Content */}
-      <div className="relative z-10 flex-1 flex flex-col" dir="rtl">
+      <div className="relative z-10 flex-1 flex flex-col welcome-hero" dir="rtl">
         
         {/* Hero section */}
         <div className="flex-1 flex flex-col items-center justify-center px-6">
           {/* App icon with animation */}
           <div 
-            className={`relative transition-all duration-700 ease-out ${
+            className={`relative transition-all ${animationSpeed} ease-out ${
               mounted ? 'scale-100 opacity-100' : 'scale-50 opacity-0'
             }`}
           >
@@ -104,10 +112,10 @@ const Welcome: React.FC = () => {
 
           {/* Main headline */}
           <div 
-            className={`mt-8 text-center transition-all duration-700 ${
+            className={`mt-8 text-center transition-all ${animationSpeed} ${
               mounted ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
             }`}
-            style={{ transitionDelay: '150ms' }}
+            style={{ transitionDelay: animationDelay(150) }}
           >
             <h1 className="text-4xl font-extrabold text-white mb-3">
               שפי עושה סדר במטבח
@@ -119,10 +127,10 @@ const Welcome: React.FC = () => {
 
           {/* Feature cards */}
           <div 
-            className={`mt-8 w-full max-w-xs space-y-3 transition-all duration-700 ${
+            className={`mt-8 w-full max-w-xs space-y-3 transition-all ${animationSpeed} ${
               mounted ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'
             }`}
-            style={{ transitionDelay: '300ms' }}
+            style={{ transitionDelay: animationDelay(300) }}
           >
             <div className="bg-white/15 backdrop-blur-sm rounded-2xl p-4 flex items-center gap-4">
               <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
@@ -155,10 +163,10 @@ const Welcome: React.FC = () => {
 
         {/* Bottom CTA section */}
         <div 
-          className={`px-6 pb-10 pt-6 transition-all duration-700 ${
+          className={`px-6 pb-10 pt-6 welcome-cta transition-all ${animationSpeed} ${
             mounted ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
           }`}
-          style={{ transitionDelay: '450ms' }}
+          style={{ transitionDelay: animationDelay(450) }}
         >
           {/* Launch badge */}
           <div className="flex justify-center mb-5">
