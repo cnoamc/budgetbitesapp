@@ -454,3 +454,115 @@
     transform: rotate(360deg) translateX(0);
   }
 }
+
+/* ============================================
+   IN-APP BROWSER OPTIMIZATIONS
+   Instagram, Facebook, TikTok, etc.
+   ============================================ */
+
+/* Base in-app browser fixes */
+html.in-app-browser {
+  /* Use svh for better viewport handling */
+  height: 100svh;
+  height: -webkit-fill-available;
+}
+
+html.in-app-browser body {
+  /* Prevent double scrolling */
+  min-height: 100svh;
+  min-height: -webkit-fill-available;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior-y: none;
+}
+
+/* Extra top padding for in-app browser headers */
+html.in-app-browser .screen-container {
+  padding-top: max(env(safe-area-inset-top), 20px);
+}
+
+html.iab-instagram .screen-container {
+  padding-top: max(env(safe-area-inset-top), 44px);
+}
+
+html.iab-facebook .screen-container {
+  padding-top: max(env(safe-area-inset-top), 44px);
+}
+
+html.iab-tiktok .screen-container {
+  padding-top: max(env(safe-area-inset-top), 44px);
+}
+
+/* Reduce animations in in-app browsers for performance */
+html.in-app-browser .animate-fade-in,
+html.in-app-browser .animate-scale-in,
+html.in-app-browser .animate-slide-up,
+html.in-app-browser .animate-bounce-soft {
+  animation-duration: 0.1s !important;
+}
+
+/* Delay non-critical animations until interaction */
+html.in-app-browser .transition-all {
+  transition-duration: 0.15s !important;
+}
+
+/* Replace fixed positioning with sticky where possible */
+html.in-app-browser .fixed-no-bounce {
+  position: sticky;
+}
+
+/* Ensure bottom nav stays visible */
+html.in-app-browser nav[class*="fixed bottom-0"] {
+  position: sticky;
+  bottom: 0;
+}
+
+/* Extra bottom padding for home indicator */
+html.in-app-browser .pb-nav {
+  padding-bottom: calc(120px + env(safe-area-inset-bottom, 0px) + 24px);
+}
+
+html.in-app-browser .pb-safe-24 {
+  padding-bottom: calc(120px + env(safe-area-inset-bottom, 0px) + 20px);
+}
+
+/* Welcome page specific fixes for in-app browsers */
+html.in-app-browser .welcome-hero {
+  min-height: calc(100svh - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* Ensure CTAs are always above the fold */
+html.in-app-browser .welcome-cta {
+  position: sticky;
+  bottom: env(safe-area-inset-bottom, 20px);
+}
+
+/* iOS-specific in-app browser fixes */
+html.iab-ios {
+  /* Better handling of iOS keyboard */
+  min-height: -webkit-fill-available;
+}
+
+html.iab-ios body {
+  /* Prevent iOS rubber-banding in problematic areas */
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Android-specific in-app browser fixes */
+html.iab-android {
+  /* Android status bar handling */
+  padding-top: 0;
+}
+
+html.iab-android .screen-container {
+  /* Extra padding for Android system UI */
+  padding-top: max(env(safe-area-inset-top), 24px);
+}
+
+/* When banner is showing, add extra top space */
+html.in-app-browser.banner-visible .screen-container {
+  padding-top: calc(max(env(safe-area-inset-top), 44px) + 52px);
+}

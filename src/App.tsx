@@ -1,4 +1,4 @@
-import React, { Suspense, lazy } from "react";
+import React, { Suspense, lazy, useEffect } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -17,6 +17,8 @@ import { GuestLoginModal } from "@/components/GuestLoginModal";
 import { PageTransition } from "@/components/PageTransition";
 import { BottomNav } from "@/components/BottomNav";
 import { PageSkeleton } from "@/components/ui/skeleton";
+import { InAppBrowserBanner } from "@/components/InAppBrowserBanner";
+import { detectInAppBrowser } from "@/lib/inAppBrowser";
 
 // Eager load critical pages
 import Welcome from "./pages/Welcome";
@@ -103,6 +105,18 @@ function AnimatedRoutes(): React.ReactElement {
 }
 
 function App(): React.ReactElement {
+  // Apply in-app browser detection classes on mount
+  useEffect(() => {
+    const browserInfo = detectInAppBrowser();
+    if (browserInfo.isInAppBrowser) {
+      document.documentElement.classList.add('in-app-browser');
+      if (browserInfo.browser) {
+        document.documentElement.classList.add(`iab-${browserInfo.browser}`);
+      }
+      document.documentElement.classList.add(`iab-${browserInfo.platform}`);
+    }
+  }, []);
+
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
@@ -116,6 +130,7 @@ function App(): React.ReactElement {
                     <Sonner />
                     <NotificationBanner />
                     <PremiumPopup />
+                    <InAppBrowserBanner />
                     <BrowserRouter>
                       <GuestLoginModal />
                       <div className="screen-container bg-background">
