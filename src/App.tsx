@@ -13,6 +13,7 @@ import { NotificationProvider } from "@/contexts/NotificationContext";
 import { SubscriptionProvider } from "@/contexts/SubscriptionContext";
 import { NotificationBanner } from "@/components/NotificationBanner";
 import { PremiumPopup } from "@/components/PremiumPopup";
+import { GuestLoginModal } from "@/components/GuestLoginModal";
 import { PageTransition } from "@/components/PageTransition";
 import { BottomNav } from "@/components/BottomNav";
 import { PageSkeleton } from "@/components/ui/skeleton";
@@ -115,6 +116,7 @@ function App(): React.ReactElement {
                     <Sonner />
                     <NotificationBanner />
                     <PremiumPopup />
+                    <GuestLoginModal />
                     <BrowserRouter>
                       <div className="screen-container bg-background">
                         <AnimatedRoutes />
