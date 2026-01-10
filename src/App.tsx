@@ -6,11 +6,13 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { GuestProvider } from "@/contexts/GuestContext";
 import { AppProvider } from "@/contexts/AppContext";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { NotificationProvider } from "@/contexts/NotificationContext";
 import { SubscriptionProvider } from "@/contexts/SubscriptionContext";
 import { NotificationBanner } from "@/components/NotificationBanner";
+import { PremiumPopup } from "@/components/PremiumPopup";
 import { PageTransition } from "@/components/PageTransition";
 import { BottomNav } from "@/components/BottomNav";
 import { PageSkeleton } from "@/components/ui/skeleton";
@@ -104,22 +106,25 @@ function App(): React.ReactElement {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
         <AuthProvider>
-          <SubscriptionProvider>
-            <AppProvider>
-              <NotificationProvider>
-                <TooltipProvider>
-                  <Toaster />
-                  <Sonner />
-                  <NotificationBanner />
-                  <BrowserRouter>
-                    <div className="screen-container bg-background">
-                      <AnimatedRoutes />
-                    </div>
-                  </BrowserRouter>
-                </TooltipProvider>
-              </NotificationProvider>
-            </AppProvider>
-          </SubscriptionProvider>
+          <GuestProvider>
+            <SubscriptionProvider>
+              <AppProvider>
+                <NotificationProvider>
+                  <TooltipProvider>
+                    <Toaster />
+                    <Sonner />
+                    <NotificationBanner />
+                    <PremiumPopup />
+                    <BrowserRouter>
+                      <div className="screen-container bg-background">
+                        <AnimatedRoutes />
+                      </div>
+                    </BrowserRouter>
+                  </TooltipProvider>
+                </NotificationProvider>
+              </AppProvider>
+            </SubscriptionProvider>
+          </GuestProvider>
         </AuthProvider>
       </ThemeProvider>
     </QueryClientProvider>

@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Settings, RefreshCw, MapPin, LogOut, Pencil, Camera, X, Bell, Crown, FileText, HelpCircle, Shield, User, Sparkles } from 'lucide-react';
+import { Settings, RefreshCw, MapPin, LogOut, Pencil, Camera, X, Bell, Crown, FileText, HelpCircle, Shield, User, Sparkles, UserPlus } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import appLogo from '@/assets/app-logo.png';
 import { Button } from '@/components/ui/button';
@@ -9,6 +9,7 @@ import { SyncIndicator } from '@/components/SyncIndicator';
 import { TrialReminderBanner } from '@/components/PremiumPaywall';
 import { useApp } from '@/contexts/AppContext';
 import { useAuth } from '@/contexts/AuthContext';
+import { useGuest } from '@/contexts/GuestContext';
 import { useNotifications } from '@/contexts/NotificationContext';
 import { useSubscription } from '@/contexts/SubscriptionContext';
 import { NotificationSettings } from '@/components/NotificationSettings';
@@ -36,6 +37,7 @@ export const Profile: React.FC = () => {
   const navigate = useNavigate();
   const { profile, progress, displayName, photoUrl, updateDisplayName, updatePhotoUrl, syncing } = useApp();
   const { user, signOut } = useAuth();
+  const { isGuest, isPremium, openPremiumPopup, exitGuestMode } = useGuest();
   const { unreadCount } = useNotifications();
   const { daysLeftInTrial, isTrialActive, subscription, toggleCancelReminder } = useSubscription();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -53,16 +55,18 @@ export const Profile: React.FC = () => {
 
   const handleSignOut = async () => {
     try {
-      await signOut();
-      toast.success('התנתקת בהצלחה');
-      navigate('/signin');
+      if (isGuest) {
+        exitGuestMode();
+        toast.success('יצאת ממצב אורח');
+        navigate('/');
+      } else {
+        await signOut();
+        toast.success('התנתקת בהצלחה');
+        navigate('/');
+      }
     } catch (error) {
       toast.error('שגיאה בהתנתקות');
     }
-  };
-
-  const handleRestartOnboarding = () => {
-    navigate('/onboarding');
   };
 
   const handleSaveName = async () => {
@@ -155,8 +159,30 @@ export const Profile: React.FC = () => {
         className="scroll-container scrollbar-hide p-4 pt-safe"
         style={{ paddingBottom: 'calc(110px + env(safe-area-inset-bottom, 0px) + 16px)' }}
       >
+        {/* Guest Mode Banner */}
+        {isGuest && (
+          <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center">
+                <User className="w-5 h-5 text-amber-600" />
+              </div>
+              <div className="flex-1">
+                <p className="font-semibold text-amber-900">מצב אורח</p>
+                <p className="text-sm text-amber-700">צור חשבון כדי לשמור מתכונים והתקדמות</p>
+              </div>
+            </div>
+            <Button 
+              onClick={() => navigate('/signin')} 
+              className="w-full mt-3 bg-amber-600 hover:bg-amber-700"
+            >
+              <UserPlus className="w-4 h-4 ml-2" />
+              התחברות / הרשמה
+            </Button>
+          </div>
+        )}
+
         {/* Trial Reminder Banner */}
-        {isTrialActive && (
+        {isTrialActive && !isGuest && (
           <TrialReminderBanner
             daysLeft={daysLeftInTrial}
             reminderEnabled={subscription?.cancel_reminder_enabled ?? true}
@@ -193,28 +219,40 @@ export const Profile: React.FC = () => {
           <input ref={fileInputRef} type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={handleFileChange} />
 
           <div className="flex items-center justify-center gap-1 mt-2">
-            <h1 className="text-xl font-bold">{displayName}</h1>
-            <button onClick={() => setIsEditingName(true)} className="p-1 hover:bg-muted rounded-full">
-              <Pencil className="w-3 h-3 text-muted-foreground" />
-            </button>
+            <h1 className="text-xl font-bold">{isGuest ? 'אורח' : displayName}</h1>
+            {!isGuest && (
+              <button onClick={() => setIsEditingName(true)} className="p-1 hover:bg-muted rounded-full">
+                <Pencil className="w-3 h-3 text-muted-foreground" />
+              </button>
+            )}
           </div>
           
           <p className="text-sm text-muted-foreground">
             {skillLabels[progress.skillLevel - 1]} • {progress.totalMealsCooked} ארוחות
           </p>
-          {user && <p className="text-xs text-muted-foreground" dir="ltr">{user.email}</p>}
+          {user && !isGuest && <p className="text-xs text-muted-foreground" dir="ltr">{user.email}</p>}
           
-          {/* Subscription Badge */}
-          {isTrialActive && (
+          {/* Premium Badge */}
+          {isPremium && (
+            <div className="inline-flex items-center gap-1 mt-1 px-2 py-0.5 rounded-full bg-primary/10 text-primary text-xs font-medium">
+              <Crown className="w-3 h-3" />
+              Premium • חינם עד סוף פברואר
+            </div>
+          )}
+          
+          {/* Subscription Badge for logged in users */}
+          {isTrialActive && !isGuest && (
             <div className="inline-flex items-center gap-1 mt-1 px-2 py-0.5 rounded-full bg-primary/10 text-primary text-xs font-medium">
               <Crown className="w-3 h-3" />
               Premium • תקופת ניסיון
             </div>
           )}
           
-          <div className="flex justify-center mt-2">
-            <SyncIndicator syncing={syncing} />
-          </div>
+          {!isGuest && (
+            <div className="flex justify-center mt-2">
+              <SyncIndicator syncing={syncing} />
+            </div>
+          )}
         </div>
 
         {/* Settings Card - Compact */}
@@ -264,24 +302,25 @@ export const Profile: React.FC = () => {
             )}
           </Button>
           
-          <Button variant="outline" size="sm" className="w-full justify-start h-10" onClick={handleRestartOnboarding}>
-            <RefreshCw className="w-4 h-4" />
-            מילוי שאלון מחדש
-          </Button>
-          
+          {/* Premium Button */}
           <Button 
             variant="outline" 
             size="sm" 
             className="w-full justify-start h-10" 
-            onClick={() => navigate('/premium')}
+            onClick={openPremiumPopup}
           >
             <Sparkles className="w-4 h-4" />
-            Premium בקרוב
+            {isPremium ? 'Premium פעיל' : 'Premium בקרוב'}
           </Button>
           
-          <Button variant="ghost" size="sm" className="w-full justify-start h-10 text-destructive hover:text-destructive hover:bg-destructive/10" onClick={() => setIsSignOutDialogOpen(true)}>
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className="w-full justify-start h-10 text-destructive hover:text-destructive hover:bg-destructive/10" 
+            onClick={() => setIsSignOutDialogOpen(true)}
+          >
             <LogOut className="w-4 h-4" />
-            התנתק
+            {isGuest ? 'יציאה ממצב אורח' : 'התנתק'}
           </Button>
         </div>
 
@@ -325,12 +364,19 @@ export const Profile: React.FC = () => {
       <AlertDialog open={isSignOutDialogOpen} onOpenChange={setIsSignOutDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>התנתקות מהחשבון</AlertDialogTitle>
-            <AlertDialogDescription>האם אתה בטוח שברצונך להתנתק?</AlertDialogDescription>
+            <AlertDialogTitle>{isGuest ? 'יציאה ממצב אורח' : 'התנתקות מהחשבון'}</AlertDialogTitle>
+            <AlertDialogDescription>
+              {isGuest 
+                ? 'האם אתה בטוח? ההתקדמות שלך לא תישמר.' 
+                : 'האם אתה בטוח שברצונך להתנתק?'
+              }
+            </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter className="flex gap-2">
             <AlertDialogCancel>ביטול</AlertDialogCancel>
-            <AlertDialogAction onClick={handleSignOut} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">התנתק</AlertDialogAction>
+            <AlertDialogAction onClick={handleSignOut} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+              {isGuest ? 'יציאה' : 'התנתק'}
+            </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

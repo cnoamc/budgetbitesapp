@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { TrendingUp, Star, Target, Trophy, Flame, UtensilsCrossed, Plus, ChefHat, Share2, Gift, CheckCircle2 } from 'lucide-react';
+import { TrendingUp, Star, Target, Trophy, Flame, UtensilsCrossed, Plus, ChefHat, Share2, Gift, CheckCircle2, UserPlus } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
 import { GradientBackground } from '@/components/ui/GradientBackground';
@@ -8,6 +8,8 @@ import { PremiumCard } from '@/components/ui/PremiumCard';
 import { StarRating } from '@/components/StarRating';
 import { Button } from '@/components/ui/button';
 import { useApp } from '@/contexts/AppContext';
+import { useAuth } from '@/contexts/AuthContext';
+import { useGuest } from '@/contexts/GuestContext';
 import { getRecipeById, recipes } from '@/lib/recipes';
 import { toast } from 'sonner';
 import { getRecipeImage } from '@/lib/recipeImages';
@@ -79,6 +81,8 @@ const countWeeklyMeals = (cookedMeals: { date: string }[]) => {
 export const Progress: React.FC = () => {
   const navigate = useNavigate();
   const { progress, monthlySavings, addCookedMeal } = useApp();
+  const { user } = useAuth();
+  const { isGuest, isPremium } = useGuest();
   const celebratedRef = useRef<Set<number>>(new Set());
   const [isLogDialogOpen, setIsLogDialogOpen] = useState(false);
   const [selectedRecipeId, setSelectedRecipeId] = useState<string | null>(null);
@@ -180,6 +184,28 @@ export const Progress: React.FC = () => {
           style={{ paddingBottom: 'calc(110px + env(safe-area-inset-bottom, 0px) + 16px)' }}
         >
         <div className="p-6">
+          {/* Guest Mode Banner */}
+          {isGuest && !user && (
+            <PremiumCard className="p-4 mb-4 bg-amber-50 border-amber-200">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center">
+                  <UserPlus className="w-5 h-5 text-amber-600" />
+                </div>
+                <div className="flex-1">
+                  <p className="text-sm text-amber-900 font-medium">כדי לשמור התקדמות ולהסתנכרן</p>
+                  <p className="text-xs text-amber-700">התחבר לחשבון</p>
+                </div>
+              </div>
+              <Button 
+                onClick={() => navigate('/signin')} 
+                size="sm"
+                className="w-full mt-3 bg-amber-600 hover:bg-amber-700"
+              >
+                התחברות / הרשמה
+              </Button>
+            </PremiumCard>
+          )}
+
           <div className="flex items-center justify-between mb-6">
             <h1 className="text-2xl font-bold">ההתקדמות שלי</h1>
             <div className="w-10 h-10 bg-black/5 rounded-xl flex items-center justify-center">
