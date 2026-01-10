@@ -154,25 +154,24 @@ export const Profile: React.FC = () => {
         className="scroll-container scrollbar-hide p-4 pt-safe"
         style={{ paddingBottom: 'calc(110px + env(safe-area-inset-bottom, 0px) + 16px)' }}
       >
-        {/* Guest Mode Banner */}
+        {/* Compact Guest Login CTA - Header Card */}
         {isGuest && (
-          <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-4">
+          <div className="bg-gradient-to-l from-primary/10 to-primary/5 border border-primary/20 rounded-xl p-3 mb-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center">
-                <User className="w-5 h-5 text-amber-600" />
+              <div className="w-9 h-9 bg-primary/20 rounded-full flex items-center justify-center">
+                <UserPlus className="w-4 h-4 text-primary" />
               </div>
-              <div className="flex-1">
-                <p className="font-semibold text-amber-900">מצב אורח</p>
-                <p className="text-sm text-amber-700">צור חשבון כדי לשמור מתכונים והתקדמות</p>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium truncate">שמור מתכונים והתקדמות</p>
               </div>
+              <Button 
+                onClick={() => navigate('/signin')} 
+                size="sm"
+                className="shrink-0"
+              >
+                התחבר
+              </Button>
             </div>
-            <Button 
-              onClick={() => navigate('/signin')} 
-              className="w-full mt-3 bg-amber-600 hover:bg-amber-700"
-            >
-              <UserPlus className="w-4 h-4 ml-2" />
-              התחברות / הרשמה
-            </Button>
           </div>
         )}
 
