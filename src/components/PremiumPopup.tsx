@@ -34,9 +34,15 @@ export const PremiumPopup: React.FC = () => {
   return (
     <Dialog open={showPremiumPopup} onOpenChange={(open) => !open && handleNotNow()}>
       <DialogContent 
-        className="w-[calc(100vw-32px)] max-w-[360px] rounded-3xl p-0 border-0 shadow-2xl overflow-hidden max-h-[85vh] flex flex-col"
+        className="w-[calc(100vw-32px)] max-w-[360px] rounded-3xl p-0 border-0 shadow-2xl overflow-hidden max-h-[85vh] flex flex-col data-[state=open]:animate-none"
         dir="rtl"
       >
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95, y: 10 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+          className="flex flex-col h-full"
+        >
         {/* Close button */}
         <button 
           onClick={handleNotNow}
@@ -178,6 +184,7 @@ export const PremiumPopup: React.FC = () => {
             </p>
           </div>
         </div>
+        </motion.div>
       </DialogContent>
     </Dialog>
   );
