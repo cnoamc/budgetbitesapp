@@ -74,8 +74,20 @@ export const Profile: React.FC = () => {
       toast.error('השם יכול להכיל עד 24 תווים');
       return;
     }
+    
+    // Check if this is the first time setting a nickname (for guests)
+    const isFirstNickname = isGuest && (displayName === 'אורח' || !localStorage.getItem('bb_nickname_set'));
+    
     await updateDisplayName(trimmed);
     setIsEditingName(false);
+    
+    if (isFirstNickname) {
+      localStorage.setItem('bb_nickname_set', 'true');
+      toast.success(`נעים להכיר, ${trimmed}! 👋🍳`, {
+        description: 'עכשיו אתה חלק מהמשפחה',
+        duration: 4000,
+      });
+    }
   };
 
   const handleCancelEdit = () => {
