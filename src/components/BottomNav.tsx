@@ -63,15 +63,26 @@ export const BottomNav: React.FC = () => {
       className="fixed bottom-0 left-0 right-0 z-50 pointer-events-none in-app-browser:sticky"
     >
       <nav 
-        className="pointer-events-auto bg-background/95 backdrop-blur-sm border-t border-border"
-        style={{ paddingBottom: 'max(0.5rem, env(safe-area-inset-bottom))' }}
+        className="pointer-events-auto backdrop-blur-xl border-t border-white/20"
+        style={{ 
+          paddingBottom: 'max(0.5rem, env(safe-area-inset-bottom))',
+          background: 'linear-gradient(to top, hsl(var(--background) / 0.85), hsl(var(--background) / 0.7))',
+          boxShadow: '0 -1px 20px 0 hsl(var(--foreground) / 0.05), inset 0 1px 0 0 hsl(var(--background) / 0.5)'
+        }}
       >
         <div className="flex items-end justify-around px-2 pt-1">
           {/* Left nav items */}
           {leftNavItems.map(renderNavItem)}
 
-          {/* Center raised button - שפי */}
+          {/* Center raised button - שפי with glow */}
           <div className="relative flex flex-col items-center flex-1">
+            {/* Glow effect behind button */}
+            <div 
+              className="absolute top-0 w-20 h-20 -mt-6 rounded-full blur-xl opacity-50 pointer-events-none"
+              style={{
+                background: 'radial-gradient(circle, hsl(var(--primary) / 0.6) 0%, transparent 70%)'
+              }}
+            />
             <motion.button
               onClick={() => handleNavClick(centerItem.path)}
               whileTap={{ scale: 0.95 }}
@@ -81,7 +92,7 @@ export const BottomNav: React.FC = () => {
               )}
               style={{
                 background: 'linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(210, 80%, 45%) 100%)',
-                boxShadow: '0 8px 24px -4px hsla(var(--primary), 0.4), 0 4px 8px -2px hsla(var(--primary), 0.2)'
+                boxShadow: '0 8px 24px -4px hsla(var(--primary), 0.5), 0 4px 12px -2px hsla(var(--primary), 0.3), 0 0 20px 2px hsla(var(--primary), 0.2)'
               }}
             >
               <img 
