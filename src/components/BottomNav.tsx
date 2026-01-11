@@ -76,11 +76,29 @@ export const BottomNav: React.FC = () => {
 
           {/* Center raised button - שפי with glow */}
           <div className="relative flex flex-col items-center flex-1">
-            {/* Glow effect behind button */}
-            <div 
-              className="absolute top-0 w-20 h-20 -mt-6 rounded-full blur-xl opacity-50 pointer-events-none"
+            {/* Animated pulsing glow effect behind button */}
+            <motion.div 
+              className="absolute top-0 w-24 h-24 -mt-7 rounded-full pointer-events-none"
+              animate={{
+                opacity: [0.4, 0.7, 0.4],
+                scale: [1, 1.15, 1],
+              }}
+              transition={{
+                duration: 2.5,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
               style={{
-                background: 'radial-gradient(circle, hsl(var(--primary) / 0.6) 0%, transparent 70%)'
+                background: 'radial-gradient(circle, hsl(210, 100%, 55%) 0%, hsl(210, 100%, 50% / 0.5) 40%, transparent 70%)',
+                filter: 'blur(12px)'
+              }}
+            />
+            {/* Static inner glow */}
+            <div 
+              className="absolute top-0 w-18 h-18 -mt-5 rounded-full pointer-events-none opacity-60"
+              style={{
+                background: 'radial-gradient(circle, hsl(210, 100%, 60% / 0.8) 0%, transparent 60%)',
+                filter: 'blur(8px)'
               }}
             />
             <motion.button
@@ -88,11 +106,11 @@ export const BottomNav: React.FC = () => {
               whileTap={{ scale: 0.95 }}
               className={cn(
                 "relative flex items-center justify-center w-14 h-14 -mt-4 rounded-full shadow-lg transition-all duration-200 overflow-hidden",
-                isCenterActive && "ring-2 ring-primary/30 ring-offset-2 ring-offset-background"
+                isCenterActive && "ring-2 ring-white/40 ring-offset-2 ring-offset-background"
               )}
               style={{
-                background: 'linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(210, 80%, 45%) 100%)',
-                boxShadow: '0 8px 24px -4px hsla(var(--primary), 0.5), 0 4px 12px -2px hsla(var(--primary), 0.3), 0 0 20px 2px hsla(var(--primary), 0.2)'
+                background: 'linear-gradient(135deg, hsl(210, 100%, 55%) 0%, hsl(210, 80%, 45%) 100%)',
+                boxShadow: '0 0 30px 8px hsla(210, 100%, 55%, 0.4), 0 8px 24px -4px hsla(210, 100%, 50%, 0.5), 0 4px 12px -2px hsla(210, 100%, 50%, 0.3)'
               }}
             >
               <img 
