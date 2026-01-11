@@ -1,19 +1,63 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowRight, Clock, ChefHat, ShoppingCart, MessageCircle } from 'lucide-react';
+import { ArrowRight, Clock, ChefHat, ShoppingCart, MessageCircle, Minus, Plus, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { SavingsComparisonCard } from '@/components/notifications';
 import { getRecipeById, categoryLabels } from '@/lib/recipes';
 import { getRecipeImage } from '@/lib/recipeImages';
 import { ScrollablePageLayout } from '@/components/layouts';
+import type { Ingredient } from '@/lib/types';
+
+// Helper to scale ingredient amounts
+const scaleIngredientAmount = (amount: string, multiplier: number): string => {
+  // Match numbers including fractions like ½, ¼, ¾
+  const fractionMap: Record<string, number> = {
+    '½': 0.5, '¼': 0.25, '¾': 0.75, '⅓': 0.33, '⅔': 0.67,
+    '⅛': 0.125, '⅜': 0.375, '⅝': 0.625, '⅞': 0.875
+  };
+  
+  let result = amount;
+  
+  // Replace fractions with decimals, scale, then format back
+  Object.entries(fractionMap).forEach(([frac, val]) => {
+    if (amount.includes(frac)) {
+      const scaled = val * multiplier;
+      const formatted = scaled % 1 === 0 ? scaled.toString() : scaled.toFixed(1);
+      result = result.replace(frac, formatted);
+    }
+  });
+  
+  // Scale regular numbers
+  result = result.replace(/(\d+\.?\d*)/g, (match) => {
+    const num = parseFloat(match);
+    const scaled = num * multiplier;
+    return scaled % 1 === 0 ? scaled.toString() : scaled.toFixed(1);
+  });
+  
+  return result;
+};
 
 export const RecipeDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<'ingredients' | 'savings'>('ingredients');
+  const [servings, setServings] = useState(2); // Default 2 servings
   
   const recipe = getRecipeById(id || '');
   const recipeImage = recipe ? getRecipeImage(recipe.id) : undefined;
+  
+  // Scale ingredients based on servings (base is 2 servings)
+  const baseServings = 2;
+  const multiplier = servings / baseServings;
+  
+  const scaledIngredients = useMemo(() => {
+    if (!recipe) return [];
+    return recipe.ingredients.map((ing: Ingredient) => ({
+      ...ing,
+      amount: scaleIngredientAmount(ing.amount, multiplier),
+      cost: Math.round(ing.cost * multiplier * 10) / 10
+    }));
+  }, [recipe, multiplier]);
 
   if (!recipe) {
     return (
@@ -72,6 +116,31 @@ export const RecipeDetail: React.FC = () => {
             </div>
           </div>
 
+          {/* Servings Selector */}
+          <div className="flex items-center justify-between bg-secondary/50 rounded-xl p-3 mb-4">
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <Users className="w-4 h-4" />
+              <span>מנות</span>
+            </div>
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => setServings(Math.max(1, servings - 1))}
+                disabled={servings <= 1}
+                className="w-8 h-8 rounded-full bg-card border border-border flex items-center justify-center disabled:opacity-40 disabled:cursor-not-allowed transition-all active:scale-95"
+              >
+                <Minus className="w-4 h-4" />
+              </button>
+              <span className="w-8 text-center font-bold text-lg">{servings}</span>
+              <button
+                onClick={() => setServings(Math.min(20, servings + 1))}
+                disabled={servings >= 20}
+                className="w-8 h-8 rounded-full bg-card border border-border flex items-center justify-center disabled:opacity-40 disabled:cursor-not-allowed transition-all active:scale-95"
+              >
+                <Plus className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+
           {/* Tabs */}
           <div className="flex gap-2 mb-4">
             <button
@@ -99,7 +168,7 @@ export const RecipeDetail: React.FC = () => {
 
           {activeTab === 'ingredients' ? (
             <div className="space-y-2">
-              {recipe.ingredients.map((ingredient, index) => (
+              {scaledIngredients.map((ingredient, index) => (
                 <div 
                   key={index}
                   className="flex items-center justify-between p-3 bg-secondary rounded-lg"
