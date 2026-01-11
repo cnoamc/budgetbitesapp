@@ -34,14 +34,14 @@ export const PremiumPopup: React.FC = () => {
   return (
     <Dialog open={showPremiumPopup} onOpenChange={(open) => !open && handleNotNow()}>
       <DialogContent 
-        className="w-[calc(100vw-32px)] max-w-[360px] rounded-3xl p-0 border-0 shadow-2xl overflow-hidden max-h-[80vh] flex flex-col data-[state=open]:animate-none"
+        className="w-[calc(100vw-32px)] max-w-[360px] rounded-3xl p-0 border-0 shadow-2xl overflow-hidden max-h-[85vh] flex flex-col data-[state=open]:animate-none"
         dir="rtl"
       >
         <motion.div
           initial={{ opacity: 0, scale: 0.95, y: 10 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-          className="flex flex-col h-full"
+          className="flex flex-col min-h-0 max-h-[85vh]"
         >
         {/* Close button */}
         <button 
@@ -115,7 +115,9 @@ export const PremiumPopup: React.FC = () => {
         </div>
 
         {/* Scrollable content */}
-        <div className="flex-1 overflow-y-auto bg-white">
+        <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain bg-white"
+          style={{ WebkitOverflowScrolling: 'touch' }}
+        >
           {/* Free Banner */}
           <div className="px-5 pt-5 pb-3">
             <div 
