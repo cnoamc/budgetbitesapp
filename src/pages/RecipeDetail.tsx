@@ -9,54 +9,109 @@ import { ScrollablePageLayout } from '@/components/layouts';
 import type { Ingredient } from '@/lib/types';
 
 // Units that indicate weight/volume where decimals make sense
-const decimalUnits = ['גרם', 'ג\'', 'מ"ל', 'מל', 'ליטר', 'כוס', 'כפית', 'כף', 'קילו', 'kg', 'g', 'ml', 'l'];
+const decimalUnits = [
+  'גרם', 'גרמים', 'ג\'',
+  'מ"ל', 'מ״ל', 'מל', 'ml',
+  'ליטר', 'ל', 'l',
+  'כוס', 'כוסות',
+  'כף', 'כפות',
+  'כפית', 'כפיות',
+  'קילו', 'kg', 'g'
+];
+
+const round1 = (n: number) => Math.round(n * 10) / 10;
+const formatNumber = (n: number) => {
+  const v = round1(n);
+  return Number.isInteger(v) ? String(v) : String(v);
+};
 
 // Helper to scale ingredient amounts
 const scaleIngredientAmount = (amount: string, multiplier: number): string => {
-  // Match numbers including fractions like ½, ¼, ¾
-  const fractionMap: Record<string, number> = {
-    '½': 0.5, '¼': 0.25, '¾': 0.75, '⅓': 0.33, '⅔': 0.67,
-    '⅛': 0.125, '⅜': 0.375, '⅝': 0.625, '⅞': 0.875
+  const input = amount.trim();
+
+  // If there are no numeric hints at all, leave as-is (e.g. "עלים", "פרוסה")
+  const hasNumberish =
+    /\d/.test(input) ||
+    /[½¼¾⅓⅔⅛⅜⅝⅞]/.test(input) ||
+    /(חצי|רבע|שליש)/.test(input) ||
+    /\d+\s*\/\s*\d+/.test(input);
+  if (!hasNumberish) return input;
+
+  const hasFractionHint =
+    /[½¼¾⅓⅔⅛⅜⅝⅞]/.test(input) ||
+    /(חצי|רבע|שליש)/.test(input) ||
+    /\d+\s*\/\s*\d+/.test(input);
+  const hasDecimalUnit = decimalUnits.some((unit) => input.includes(unit));
+  const allowFractional = hasDecimalUnit || hasFractionHint;
+
+  const scaleValue = (v: number) => {
+    const scaled = v * multiplier;
+    if (allowFractional) return round1(scaled);
+    // Countable items: keep whole numbers (no 0.5 buns)
+    return Math.max(1, Math.ceil(scaled));
   };
-  
-  // Check if amount contains a unit that allows decimals
-  const allowsDecimals = decimalUnits.some(unit => amount.includes(unit));
-  
-  let result = amount;
-  
-  // Replace fractions with decimals, scale, then format back
-  Object.entries(fractionMap).forEach(([frac, val]) => {
-    if (amount.includes(frac)) {
-      const scaled = val * multiplier;
-      const finalValue = allowsDecimals ? scaled : Math.max(1, Math.round(scaled));
-      const formatted = finalValue % 1 === 0 ? finalValue.toString() : finalValue.toFixed(1);
-      result = result.replace(frac, formatted);
+
+  let normalized = input;
+
+  // Hebrew words → numeric (unscaled)
+  normalized = normalized
+    .replace(/שני\s*שליש/g, '0.67')
+    .replace(/שליש/g, '0.33')
+    .replace(/רבע/g, '0.25')
+    .replace(/חצי/g, '0.5');
+
+  // Unicode fractions → decimals (unscaled)
+  const unicodeFractionMap: Record<string, number> = {
+    '½': 0.5,
+    '¼': 0.25,
+    '¾': 0.75,
+    '⅓': 0.333,
+    '⅔': 0.667,
+    '⅛': 0.125,
+    '⅜': 0.375,
+    '⅝': 0.625,
+    '⅞': 0.875,
+  };
+
+  Object.entries(unicodeFractionMap).forEach(([frac, val]) => {
+    if (normalized.includes(frac)) {
+      normalized = normalized.split(frac).join(String(val));
     }
   });
-  
-  // Scale regular numbers
-  result = result.replace(/(\d+\.?\d*)/g, (match) => {
-    const num = parseFloat(match);
-    const scaled = num * multiplier;
-    // For countable items (no decimal units), round to nearest whole number (min 1)
-    const finalValue = allowsDecimals ? scaled : Math.max(1, Math.round(scaled));
-    return finalValue % 1 === 0 ? finalValue.toString() : finalValue.toFixed(1);
+
+  // Slash fractions like 1/2 → decimals (unscaled)
+  normalized = normalized.replace(/(\d+)\s*\/\s*(\d+)/g, (_, a, b) => {
+    const val = Number(a) / Number(b);
+    return String(round1(val));
   });
-  
-  return result;
+
+  // Scale numbers + ranges in a single pass (prevents double-scaling)
+  normalized = normalized.replace(
+    /(\d+\.?\d*)\s*[-–]\s*(\d+\.?\d*)|(\d+\.?\d*)/g,
+    (_, a, b, single) => {
+      if (a && b) {
+        const left = formatNumber(scaleValue(Number(a)));
+        const right = formatNumber(scaleValue(Number(b)));
+        return `${left}-${right}`;
+      }
+      return formatNumber(scaleValue(Number(single)));
+    },
+  );
+
+  return normalized;
 };
 
 export const RecipeDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<'ingredients' | 'savings'>('ingredients');
-  const [servings, setServings] = useState(2); // Default 2 servings
+  const [servings, setServings] = useState(1); // Base recipe amounts are for 1 serving
   
   const recipe = getRecipeById(id || '');
   const recipeImage = recipe ? getRecipeImage(recipe.id) : undefined;
   
-  // Scale ingredients based on servings (base is 2 servings)
-  const baseServings = 2;
+  // Scale ingredients based on servings (base is 1 serving)
+  const baseServings = 1;
   const multiplier = servings / baseServings;
   
   const scaledIngredients = useMemo(() => {
