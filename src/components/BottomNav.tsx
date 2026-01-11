@@ -76,28 +76,32 @@ export const BottomNav: React.FC = () => {
 
           {/* Center raised button - שפי with glow */}
           <div className="relative flex flex-col items-center flex-1">
-            {/* Animated pulsing glow effect behind button */}
+            {/* Animated pulsing glow effect behind button - changes color when active */}
             <motion.div 
               className="absolute top-0 w-24 h-24 -mt-7 rounded-full pointer-events-none"
               animate={{
-                opacity: [0.4, 0.7, 0.4],
-                scale: [1, 1.15, 1],
+                opacity: isCenterActive ? [0.6, 0.9, 0.6] : [0.4, 0.7, 0.4],
+                scale: isCenterActive ? [1.05, 1.25, 1.05] : [1, 1.15, 1],
               }}
               transition={{
-                duration: 2.5,
+                duration: isCenterActive ? 2 : 2.5,
                 repeat: Infinity,
                 ease: "easeInOut"
               }}
               style={{
-                background: 'radial-gradient(circle, hsl(210, 100%, 55%) 0%, hsl(210, 100%, 50% / 0.5) 40%, transparent 70%)',
+                background: isCenterActive 
+                  ? 'radial-gradient(circle, hsl(160, 100%, 45%) 0%, hsl(160, 100%, 40% / 0.5) 40%, transparent 70%)'
+                  : 'radial-gradient(circle, hsl(210, 100%, 55%) 0%, hsl(210, 100%, 50% / 0.5) 40%, transparent 70%)',
                 filter: 'blur(12px)'
               }}
             />
-            {/* Static inner glow */}
+            {/* Static inner glow - changes color when active */}
             <div 
               className="absolute top-0 w-18 h-18 -mt-5 rounded-full pointer-events-none opacity-60"
               style={{
-                background: 'radial-gradient(circle, hsl(210, 100%, 60% / 0.8) 0%, transparent 60%)',
+                background: isCenterActive
+                  ? 'radial-gradient(circle, hsl(160, 100%, 50% / 0.8) 0%, transparent 60%)'
+                  : 'radial-gradient(circle, hsl(210, 100%, 60% / 0.8) 0%, transparent 60%)',
                 filter: 'blur(8px)'
               }}
             />
@@ -109,8 +113,12 @@ export const BottomNav: React.FC = () => {
                 isCenterActive && "ring-2 ring-white/40 ring-offset-2 ring-offset-background"
               )}
               style={{
-                background: 'linear-gradient(135deg, hsl(210, 100%, 55%) 0%, hsl(210, 80%, 45%) 100%)',
-                boxShadow: '0 0 30px 8px hsla(210, 100%, 55%, 0.4), 0 8px 24px -4px hsla(210, 100%, 50%, 0.5), 0 4px 12px -2px hsla(210, 100%, 50%, 0.3)'
+                background: isCenterActive
+                  ? 'linear-gradient(135deg, hsl(160, 100%, 45%) 0%, hsl(160, 80%, 35%) 100%)'
+                  : 'linear-gradient(135deg, hsl(210, 100%, 55%) 0%, hsl(210, 80%, 45%) 100%)',
+                boxShadow: isCenterActive
+                  ? '0 0 30px 8px hsla(160, 100%, 45%, 0.5), 0 8px 24px -4px hsla(160, 100%, 40%, 0.5), 0 4px 12px -2px hsla(160, 100%, 40%, 0.3)'
+                  : '0 0 30px 8px hsla(210, 100%, 55%, 0.4), 0 8px 24px -4px hsla(210, 100%, 50%, 0.5), 0 4px 12px -2px hsla(210, 100%, 50%, 0.3)'
               }}
             >
               <img 
