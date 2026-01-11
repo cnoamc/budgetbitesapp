@@ -8,6 +8,9 @@ import { getRecipeImage } from '@/lib/recipeImages';
 import { ScrollablePageLayout } from '@/components/layouts';
 import type { Ingredient } from '@/lib/types';
 
+// Units that indicate weight/volume where decimals make sense
+const decimalUnits = ['גרם', 'ג\'', 'מ"ל', 'מל', 'ליטר', 'כוס', 'כפית', 'כף', 'קילו', 'kg', 'g', 'ml', 'l'];
+
 // Helper to scale ingredient amounts
 const scaleIngredientAmount = (amount: string, multiplier: number): string => {
   // Match numbers including fractions like ½, ¼, ¾
@@ -16,13 +19,17 @@ const scaleIngredientAmount = (amount: string, multiplier: number): string => {
     '⅛': 0.125, '⅜': 0.375, '⅝': 0.625, '⅞': 0.875
   };
   
+  // Check if amount contains a unit that allows decimals
+  const allowsDecimals = decimalUnits.some(unit => amount.includes(unit));
+  
   let result = amount;
   
   // Replace fractions with decimals, scale, then format back
   Object.entries(fractionMap).forEach(([frac, val]) => {
     if (amount.includes(frac)) {
       const scaled = val * multiplier;
-      const formatted = scaled % 1 === 0 ? scaled.toString() : scaled.toFixed(1);
+      const finalValue = allowsDecimals ? scaled : Math.max(1, Math.round(scaled));
+      const formatted = finalValue % 1 === 0 ? finalValue.toString() : finalValue.toFixed(1);
       result = result.replace(frac, formatted);
     }
   });
@@ -31,7 +38,9 @@ const scaleIngredientAmount = (amount: string, multiplier: number): string => {
   result = result.replace(/(\d+\.?\d*)/g, (match) => {
     const num = parseFloat(match);
     const scaled = num * multiplier;
-    return scaled % 1 === 0 ? scaled.toString() : scaled.toFixed(1);
+    // For countable items (no decimal units), round to nearest whole number (min 1)
+    const finalValue = allowsDecimals ? scaled : Math.max(1, Math.round(scaled));
+    return finalValue % 1 === 0 ? finalValue.toString() : finalValue.toFixed(1);
   });
   
   return result;
