@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { ChefHat, TrendingDown, Sparkles } from 'lucide-react';
+import { ChefHat } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useGuest } from '@/contexts/GuestContext';
 import { FixedScreenLayout } from '@/components/layouts';
@@ -125,40 +125,6 @@ const Welcome: React.FC = () => {
             </p>
           </div>
 
-          {/* Feature cards */}
-          <div 
-            className={`mt-8 w-full max-w-xs space-y-3 transition-all ${animationSpeed} ${
-              mounted ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'
-            }`}
-            style={{ transitionDelay: animationDelay(300) }}
-          >
-            <div className="bg-white/15 backdrop-blur-sm rounded-2xl p-4 flex items-center gap-4">
-              <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
-                <ChefHat className="w-6 h-6 text-white" />
-              </div>
-              <div className="flex-1">
-                <p className="font-semibold text-white text-sm">שפי – עוזר בישול חכם צעד־אחר־צעד</p>
-              </div>
-            </div>
-
-            <div className="bg-white/15 backdrop-blur-sm rounded-2xl p-4 flex items-center gap-4">
-              <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
-                <Sparkles className="w-6 h-6 text-white" />
-              </div>
-              <div className="flex-1">
-                <p className="font-semibold text-white text-sm">מאות מתכונים זמינים בכל רגע</p>
-              </div>
-            </div>
-
-            <div className="bg-white/15 backdrop-blur-sm rounded-2xl p-4 flex items-center gap-4">
-              <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
-                <TrendingDown className="w-6 h-6 text-white" />
-              </div>
-              <div className="flex-1">
-                <p className="font-semibold text-white text-sm">עלות מצרכים ברורה לפני שמבשלים</p>
-              </div>
-            </div>
-          </div>
         </div>
 
         {/* Bottom CTA section */}
