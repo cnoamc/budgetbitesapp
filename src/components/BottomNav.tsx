@@ -90,7 +90,7 @@ export const BottomNav: React.FC = () => {
                   ease: "easeInOut"
                 }}
                 style={{
-                  background: 'radial-gradient(circle, hsl(195, 100%, 55%) 0%, hsl(195, 100%, 50% / 0.5) 40%, transparent 70%)',
+                  background: 'radial-gradient(circle, hsl(210, 100%, 50%) 0%, hsl(210, 100%, 45% / 0.5) 40%, transparent 70%)',
                   filter: 'blur(12px)'
                 }}
               />
@@ -100,7 +100,7 @@ export const BottomNav: React.FC = () => {
               <div 
                 className="absolute top-0 w-18 h-18 -mt-5 rounded-full pointer-events-none opacity-60"
                 style={{
-                  background: 'radial-gradient(circle, hsl(195, 100%, 60% / 0.8) 0%, transparent 60%)',
+                  background: 'radial-gradient(circle, hsl(210, 100%, 55% / 0.8) 0%, transparent 60%)',
                   filter: 'blur(8px)'
                 }}
               />
@@ -117,7 +117,7 @@ export const BottomNav: React.FC = () => {
                   ? 'linear-gradient(135deg, hsl(195, 100%, 55%) 0%, hsl(195, 85%, 45%) 100%)'
                   : 'linear-gradient(135deg, hsl(210, 100%, 50%) 0%, hsl(210, 80%, 40%) 100%)',
                 boxShadow: isCenterActive
-                  ? '0 0 30px 8px hsla(195, 100%, 55%, 0.5), 0 8px 24px -4px hsla(195, 100%, 50%, 0.5), 0 4px 12px -2px hsla(195, 100%, 50%, 0.3)'
+                  ? '0 0 30px 8px hsla(210, 100%, 50%, 0.5), 0 8px 24px -4px hsla(210, 100%, 45%, 0.5), 0 4px 12px -2px hsla(210, 100%, 45%, 0.3)'
                   : '0 8px 16px -4px hsla(210, 100%, 40%, 0.3)'
               }}
             >
