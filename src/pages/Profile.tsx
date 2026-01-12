@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Settings, MapPin, LogOut, Pencil, Camera, X, Crown, FileText, HelpCircle, Shield, User, Sparkles, UserPlus, Smartphone, ChevronLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import appLogo from '@/assets/app-logo.png';
+import appIcon from '@/assets/app-icon.png';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
@@ -278,7 +278,7 @@ export const Profile: React.FC = () => {
             <div className="flex items-center justify-between py-1.5">
               <div className="flex items-center gap-2">
                 <div className="w-4 h-4 rounded overflow-hidden">
-                  <img src={appLogo} alt="Skill" className="w-full h-full object-cover" />
+                  <img src={appIcon} alt="Skill" className="w-full h-full object-cover" />
                 </div>
                 <span className="text-sm">רמת מיומנות</span>
               </div>
