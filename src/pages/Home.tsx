@@ -123,7 +123,7 @@ export const Home: React.FC = () => {
       <div className="screen-container" dir="rtl">
         <div 
           className="scroll-container scrollbar-hide pt-safe"
-          style={{ paddingBottom: 'calc(110px + env(safe-area-inset-bottom, 0px) + 16px)' }}
+          style={{ paddingBottom: 'calc(110px + 16px)' }}
         >
           {/* Header */}
           <div className="px-4 pt-3 pb-2">
