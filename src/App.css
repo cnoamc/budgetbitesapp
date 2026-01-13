@@ -32,9 +32,9 @@
   touch-action: pan-y;
 }
 
-/* Safe area padding utilities */
+/* Safe area padding utilities - with minimum for iOS status bar */
 .pt-safe {
-  padding-top: env(safe-area-inset-top, 0px);
+  padding-top: max(12px, env(safe-area-inset-top, 0px));
 }
 
 .pb-safe {
