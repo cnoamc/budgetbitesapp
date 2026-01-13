@@ -33,7 +33,7 @@ export const ScrollablePageLayout: React.FC<ScrollablePageLayoutProps> = ({
         style={{ 
           WebkitOverflowScrolling: 'touch',
           paddingBottom: hasBottomNav 
-            ? 'calc(110px + env(safe-area-inset-bottom, 0px) + 12px)' 
+            ? 'calc(110px + 12px)'
             : 'calc(env(safe-area-inset-bottom, 0px) + 12px)'
         }}
       >

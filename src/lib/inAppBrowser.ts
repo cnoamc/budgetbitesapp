@@ -24,6 +24,25 @@ export function detectInAppBrowser(): InAppBrowserInfo {
     platform = 'android';
   }
 
+  // IMPORTANT: Do NOT treat installed PWAs or Capacitor native apps as "in-app browsers"
+  // (we only want this for IG/FB/TikTok/etc. because it changes layout + adds padding).
+  const isStandalonePwa =
+    (typeof window !== 'undefined' &&
+      typeof window.matchMedia === 'function' &&
+      window.matchMedia('(display-mode: standalone)').matches) ||
+    // iOS Safari standalone
+    (typeof navigator !== 'undefined' && (navigator as any).standalone === true);
+
+  const isCapacitorNative =
+    typeof window !== 'undefined' &&
+    !!(window as any).Capacitor &&
+    (typeof (window as any).Capacitor.isNativePlatform !== 'function' ||
+      (window as any).Capacitor.isNativePlatform());
+
+  if (isStandalonePwa || isCapacitorNative) {
+    return { isInAppBrowser: false, browser: null, platform };
+  }
+
   // Instagram detection
   if (uaLower.includes('instagram')) {
     return { isInAppBrowser: true, browser: 'instagram', platform };
@@ -49,8 +68,8 @@ export function detectInAppBrowser(): InAppBrowserInfo {
     return { isInAppBrowser: true, browser: 'twitter', platform };
   }
 
-  // Generic WebView detection (fallback)
-  const isWebView = 
+  // Generic WebView detection (fallback) - ONLY when it's not Capacitor/PWA
+  const isWebView =
     // iOS UIWebView or WKWebView
     (platform === 'ios' && !ua.includes('Safari')) ||
     // Android WebView
