@@ -34,7 +34,7 @@
 
 /* Safe area padding utilities */
 .pt-safe {
-  padding-top: max(1rem, var(--safe-top));
+  padding-top: env(safe-area-inset-top, 0px);
 }
 
 .pb-safe {
