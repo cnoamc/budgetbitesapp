@@ -5,9 +5,9 @@ const config: CapacitorConfig = {
   appName: 'BudgetBites',
   webDir: 'dist',
   bundledWebRuntime: false,
-  // Production: loads from local assets (no server.url)
   ios: {
-    contentInset: 'automatic',
+    contentInset: 'always',
+    scrollEnabled: true,
     backgroundColor: '#FFFFFF',
     preferredContentMode: 'mobile',
   },
@@ -32,6 +32,7 @@ const config: CapacitorConfig = {
     StatusBar: {
       style: 'DARK',
       backgroundColor: '#FFFFFF',
+      overlaysWebView: true,
     },
   },
 };

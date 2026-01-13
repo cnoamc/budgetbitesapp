@@ -65,8 +65,8 @@ export const BottomNav: React.FC = () => {
       <nav 
         className="pointer-events-auto backdrop-blur-xl border-t border-white/20"
         style={{ 
-          paddingBottom: 'max(0.5rem, env(safe-area-inset-bottom))',
-          background: 'linear-gradient(to top, hsl(var(--background) / 0.85), hsl(var(--background) / 0.7))',
+          paddingBottom: 'env(safe-area-inset-bottom, 0px)',
+          background: 'linear-gradient(to top, hsl(var(--background) / 0.95), hsl(var(--background) / 0.85))',
           boxShadow: '0 -1px 20px 0 hsl(var(--foreground) / 0.05), inset 0 1px 0 0 hsl(var(--background) / 0.5)'
         }}
       >
