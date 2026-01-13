@@ -23,7 +23,6 @@ export const FixedScreenLayout: React.FC<FixedScreenLayoutProps> = ({
     <div 
       className={cn(
         "fixed inset-0 flex flex-col overflow-hidden",
-        "pt-[var(--safe-top)] pb-[var(--safe-bottom)]",
         className
       )}
       style={style}
