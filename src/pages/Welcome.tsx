@@ -52,7 +52,7 @@ const Welcome: React.FC = () => {
     return (
       <FixedScreenLayout className="items-center justify-center" style={{ background: 'linear-gradient(180deg, #2196F3 0%, #00BCD4 100%)' }}>
         <div className="w-24 h-24 rounded-[28px] overflow-hidden shadow-2xl animate-pulse">
-          <img src={appIcon} alt="BudgetBites" className="w-full h-full object-cover" />
+          <img src={appIcon} alt="שפי – Chefi" className="w-full h-full object-cover" />
         </div>
       </FixedScreenLayout>
     );
@@ -104,7 +104,7 @@ const Welcome: React.FC = () => {
             >
               <img 
                 src={appIcon} 
-                alt="BudgetBites" 
+                alt="שפי – Chefi" 
                 className="w-full h-full object-cover"
               />
             </div>
@@ -121,7 +121,10 @@ const Welcome: React.FC = () => {
               שפי עושה סדר במטבח
             </h1>
             <p className="text-base text-white/80 font-medium leading-relaxed">
-              פחות בלגן, פחות התלבטויות, יותר זמן לעצמך.
+              העוזר האישי שלך לבישול חכם, חסכון בכסף ופחות בלגן
+            </p>
+            <p className="text-xs text-white/50 mt-2">
+              מבית BudgetBites
             </p>
           </div>
 

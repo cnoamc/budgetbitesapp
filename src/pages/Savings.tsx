@@ -23,8 +23,8 @@ export const Savings: React.FC = () => {
   ];
 
   const shareText = hasCooked 
-    ? `🍳 חסכתי ₪${actualMonthlySavings} החודש בבישול ביתי עם BudgetBites!\n\n💰 סה"כ ${progress.totalMealsCooked} ארוחות שהכנתי בבית.\n\nהצטרפו גם אתם לחיסכון!`
-    : `💰 גיליתי שאני יכול לחסוך ₪${potentialMonthlySavings} בחודש אם אבשל בבית!\n\n📊 זה ₪${potentialYearlySavings} בשנה!\n\nהצטרפו ל-BudgetBites לגלות כמה אתם יכולים לחסוך!`;
+    ? `🍳 חסכתי ₪${actualMonthlySavings} החודש בבישול ביתי עם שפי!\n\n💰 סה"כ ${progress.totalMealsCooked} ארוחות שהכנתי בבית.\n\nהצטרפו גם אתם לחיסכון!`
+    : `💰 גיליתי שאני יכול לחסוך ₪${potentialMonthlySavings} בחודש אם אבשל בבית!\n\n📊 זה ₪${potentialYearlySavings} בשנה!\n\nגלו כמה אתם יכולים לחסוך עם שפי!`;
 
   return (
     <GradientBackground variant="fresh">

@@ -109,7 +109,7 @@ export const Progress: React.FC = () => {
   
   // Share streak function
   const handleShareStreak = async () => {
-    const shareText = `🔥 יש לי רצף בישול של ${streak} ימים ב-BudgetBites!\n\n✨ כבר חסכתי ₪${progress.totalSavings} בבישול ביתי.\n\nהצטרפו גם אתם לחיסכון! 🍳`;
+    const shareText = `🔥 יש לי רצף בישול של ${streak} ימים עם שפי!\n\n✨ כבר חסכתי ₪${progress.totalSavings} בבישול ביתי.\n\nהצטרפו גם אתם לחיסכון! 🍳`;
     
     if (navigator.share) {
       try {

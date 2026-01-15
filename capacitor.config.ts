@@ -2,7 +2,7 @@ import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
   appId: 'app.lovable.c034698cdde14f42bd36c9d8740a134f',
-  appName: 'BudgetBites',
+  appName: 'שפי – Chefi',
   webDir: 'dist',
   bundledWebRuntime: false,
   ios: {

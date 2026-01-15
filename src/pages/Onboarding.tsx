@@ -144,9 +144,9 @@ export const Onboarding: React.FC = () => {
             className="w-12 sm:w-14 h-12 sm:h-14 rounded-[16px] mx-auto overflow-hidden mb-2"
             style={{ boxShadow: '0 8px 24px -8px rgba(0, 0, 0, 0.3)' }}
           >
-            <img src={appIcon} alt="BudgetBites" className="w-full h-full object-cover" />
+            <img src={appIcon} alt="שפי – Chefi" className="w-full h-full object-cover" />
           </div>
-          <p className="text-xs sm:text-sm font-medium text-white/70 tracking-[0.15em] uppercase">BUDGETBITES</p>
+          <p className="text-xs sm:text-sm font-medium text-white/70 tracking-[0.15em] uppercase">שפי – CHEFI</p>
         </div>
 
         {/* Progress dots */}

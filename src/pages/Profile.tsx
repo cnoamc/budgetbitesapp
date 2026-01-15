@@ -346,7 +346,8 @@ export const Profile: React.FC = () => {
 
         {/* App Info */}
         <div className="mt-auto pt-2 text-center text-xs text-muted-foreground">
-          <p>BudgetBites • נבנה באהבה 🧡</p>
+          <p>שפי – Chefi • נבנה באהבה 🧡</p>
+          <p className="text-[10px] opacity-70 mt-0.5">© BudgetBites</p>
         </div>
       </div>
 

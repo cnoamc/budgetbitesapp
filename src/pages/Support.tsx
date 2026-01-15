@@ -93,8 +93,8 @@ export const Support: React.FC = () => {
 
         {/* App Version */}
         <div className="mt-6 text-center text-xs text-muted-foreground">
-          <p>BudgetBites גרסה 1.0.0</p>
-          <p className="mt-1">© 2024 BudgetBites. כל הזכויות שמורות.</p>
+          <p>שפי – Chefi גרסה 1.0.0</p>
+          <p className="mt-1">© 2025 BudgetBites. כל הזכויות שמורות.</p>
         </div>
       </div>
     </div>

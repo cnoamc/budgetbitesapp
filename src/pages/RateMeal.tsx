@@ -69,7 +69,7 @@ export const RateMeal: React.FC = () => {
           <div className="mb-6 animate-slide-up" style={{ animationDelay: '0.05s' }}>
             <SocialShareButton
               title="הכנתי ארוחה וחסכתי!"
-              text={`🍳 הכנתי ${recipe.name} בבית וחסכתי ₪${savings}!\n\n💰 בישול ביתי משתלם!\n\nהצטרפו גם אתם ל-BudgetBites!`}
+              text={`🍳 הכנתי ${recipe.name} בבית וחסכתי ₪${savings}!\n\n💰 בישול ביתי משתלם!\n\nהצטרפו גם אתם לשפי!`}
               variant="outline"
               className="w-full rounded-xl"
             >

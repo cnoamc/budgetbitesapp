@@ -105,7 +105,7 @@ const Install: React.FC = () => {
             transition={{ duration: 0.4 }}
             className="w-24 h-24 mx-auto mb-4 rounded-[24px] overflow-hidden shadow-elevated"
           >
-            <img src={appIcon} alt="BudgetBites" className="w-full h-full object-cover" />
+            <img src={appIcon} alt="שפי – Chefi" className="w-full h-full object-cover" />
           </motion.div>
           
           <motion.h2
