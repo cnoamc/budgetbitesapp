@@ -17,9 +17,9 @@ export default defineConfig(({ mode }) => ({
       registerType: "autoUpdate",
       includeAssets: ["favicon.png", "favicon.svg"],
       manifest: {
-        name: "BudgetBites - שפי עושה סדר במטבח",
-        short_name: "BudgetBites",
-        description: "עוזר בישול חכם שחוסך לך כסף וזמן",
+        name: "שפי – Chefi | העוזר האישי שלך לבישול",
+        short_name: "שפי – Chefi",
+        description: "העוזר האישי שלך לבישול חכם, חסכון בכסף ופחות בלגן",
         theme_color: "#2196F3",
         background_color: "#ffffff",
         display: "standalone",

@@ -24,7 +24,7 @@ export const PremiumPaywall: React.FC<PremiumPaywallProps> = ({ onStartTrial, is
         <div className="w-20 h-20 mx-auto mb-4 rounded-3xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center">
           <span className="text-4xl">👨‍🍳</span>
         </div>
-        <h1 className="text-2xl font-bold mb-2">BudgetBites Premium</h1>
+        <h1 className="text-2xl font-bold mb-2">שפי Premium</h1>
         <p className="text-muted-foreground">התחל לחסוך עם חודש ראשון חינם</p>
       </div>
 

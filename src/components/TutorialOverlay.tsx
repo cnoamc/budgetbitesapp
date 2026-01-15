@@ -15,8 +15,8 @@ interface TutorialStep {
 const tutorialSteps: TutorialStep[] = [
   {
     emoji: '👋',
-    title: 'ברוכים הבאים ל-BudgetBites!',
-    description: 'האפליקציה שתעזור לך לחסוך כסף ולהתחיל לבשל בקלות. בוא נעשה סיור קצר.',
+    title: 'ברוכים הבאים לשפי!',
+    description: 'העוזר האישי שלך לבישול חכם, חסכון בכסף ופחות בלגן. בוא נעשה סיור קצר.',
   },
   {
     emoji: '💰',
