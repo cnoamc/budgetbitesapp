@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Settings, MapPin, LogOut, Pencil, Camera, X, Crown, FileText, HelpCircle, Shield, User, Sparkles, UserPlus, Smartphone, ChevronLeft } from 'lucide-react';
+import { Settings, MapPin, LogOut, Pencil, Camera, X, Crown, FileText, HelpCircle, Shield, User, Sparkles, UserPlus, Smartphone, ChevronLeft, Info } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import appIcon from '@/assets/app-icon.png';
 import { Button } from '@/components/ui/button';
@@ -327,6 +327,23 @@ export const Profile: React.FC = () => {
             {isGuest ? 'יציאה ממצב אורח' : 'התנתק'}
           </Button>
         </div>
+
+        {/* About Link */}
+        <button
+          onClick={() => navigate('/about')}
+          className="w-full bg-card rounded-xl p-4 shadow-card border border-border/50 mb-3 flex items-center justify-between hover:bg-muted/50 transition-colors"
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 bg-primary/10 rounded-full flex items-center justify-center">
+              <Info className="w-4 h-4 text-primary" />
+            </div>
+            <div className="text-right">
+              <p className="text-sm font-medium">אודות שפי</p>
+              <p className="text-xs text-muted-foreground">הסיפור שלנו והצוות</p>
+            </div>
+          </div>
+          <ChevronLeft className="w-5 h-5 text-muted-foreground" />
+        </button>
 
         {/* Legal Links */}
         <div className="flex justify-center gap-4 text-xs text-muted-foreground mt-2">
