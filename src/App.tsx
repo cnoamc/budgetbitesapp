@@ -39,6 +39,7 @@ const Profile = lazy(() => import("./pages/Profile"));
 
 const ImportRecipe = lazy(() => import("./pages/ImportRecipe"));
 const Install = lazy(() => import("./pages/Install"));
+const About = lazy(() => import("./pages/About"));
 const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
 const TermsOfService = lazy(() => import("./pages/TermsOfService"));
 const Support = lazy(() => import("./pages/Support"));
@@ -94,6 +95,7 @@ function AnimatedRoutes(): React.ReactElement {
             <Route path="/profile" element={<PageTransition><Profile /></PageTransition>} />
             <Route path="/import" element={<PageTransition><ImportRecipe /></PageTransition>} />
             <Route path="/install" element={<PageTransition><Install /></PageTransition>} />
+            <Route path="/about" element={<PageTransition><About /></PageTransition>} />
             <Route path="/privacy" element={<PageTransition><PrivacyPolicy /></PageTransition>} />
             <Route path="/terms" element={<PageTransition><TermsOfService /></PageTransition>} />
             <Route path="/support" element={<PageTransition><Support /></PageTransition>} />
