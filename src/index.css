@@ -166,6 +166,22 @@
 }
 
 @layer utilities {
+  /* Safe area utilities for iOS notch */
+  .pt-safe {
+    padding-top: max(12px, env(safe-area-inset-top, 0px));
+  }
+  
+  .pt-safe-header {
+    padding-top: max(16px, calc(env(safe-area-inset-top, 0px) + 12px));
+  }
+  
+  .pb-safe {
+    padding-bottom: max(12px, env(safe-area-inset-bottom, 0px));
+  }
+  
+  .pb-safe-nav {
+    padding-bottom: calc(110px + max(12px, env(safe-area-inset-bottom, 0px)));
+  }
   /* Gradient utilities */
   .gradient-primary {
     background: var(--gradient-primary);
