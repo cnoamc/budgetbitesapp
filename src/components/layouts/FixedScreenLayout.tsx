@@ -25,7 +25,12 @@ export const FixedScreenLayout: React.FC<FixedScreenLayoutProps> = ({
         "fixed inset-0 flex flex-col overflow-hidden",
         className
       )}
-      style={style}
+      style={{
+        // Ensure content respects safe areas on all sides
+        paddingLeft: 'env(safe-area-inset-left, 0px)',
+        paddingRight: 'env(safe-area-inset-right, 0px)',
+        ...style,
+      }}
       dir={dir}
     >
       {children}

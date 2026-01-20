@@ -177,8 +177,11 @@ export const CookingAssistant: React.FC = () => {
 
   return (
     <FixedScreenLayout className="bg-background">
-      {/* Header */}
-      <div className="bg-card border-b border-border/50 p-4 sticky top-0 z-10">
+      {/* Header with safe area for notch */}
+      <div 
+        className="bg-card border-b border-border/50 px-4 pb-4 sticky top-0 z-10"
+        style={{ paddingTop: 'max(16px, calc(env(safe-area-inset-top, 0px) + 12px))' }}
+      >
         <div className="flex items-center gap-3 mb-3">
           <button
             onClick={() => navigate(-1)}
