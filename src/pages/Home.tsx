@@ -306,15 +306,6 @@ export const Home: React.FC = () => {
           </div>
         </div>
       </div>
-
-      {/* Floating Ask Shefi Button */}
-      <button
-        onClick={handleAskShefi}
-        className="fixed bottom-24 left-4 z-40 bg-primary text-primary-foreground px-4 py-2.5 rounded-full shadow-lg flex items-center gap-2 text-sm font-medium hover:scale-105 transition-transform"
-      >
-        <ChefHat className="w-4 h-4" />
-        שאל את שפי
-      </button>
     </GradientBackground>
   );
 };
