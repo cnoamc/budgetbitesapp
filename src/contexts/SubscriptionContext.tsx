@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+import { useReviewMode } from '@/contexts/ReviewModeContext';
 
 interface Subscription {
   id: string;
@@ -25,6 +26,7 @@ const SubscriptionContext = createContext<SubscriptionContextType | undefined>(u
 
 export const SubscriptionProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const { user } = useAuth();
+  const { isReviewMode } = useReviewMode();
   const [subscription, setSubscription] = useState<Subscription | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -58,16 +60,19 @@ export const SubscriptionProvider: React.FC<{ children: ReactNode }> = ({ childr
     fetchSubscription();
   }, [user]);
 
-  const isTrialActive = subscription 
+  // Review mode overrides trial status to always be active
+  const isTrialActive = isReviewMode || (subscription 
     ? subscription.status === 'trial' && new Date(subscription.trial_end) > new Date()
-    : false;
+    : false);
 
-  // User has started trial if subscription_start is set
-  const hasStartedTrial = subscription?.subscription_start !== null;
+  // User has started trial if subscription_start is set (or in review mode)
+  const hasStartedTrial = isReviewMode || subscription?.subscription_start !== null;
 
-  const daysLeftInTrial = subscription
-    ? Math.max(0, Math.ceil((new Date(subscription.trial_end).getTime() - Date.now()) / (1000 * 60 * 60 * 24)))
-    : 0;
+  const daysLeftInTrial = isReviewMode 
+    ? 999 
+    : (subscription
+      ? Math.max(0, Math.ceil((new Date(subscription.trial_end).getTime() - Date.now()) / (1000 * 60 * 60 * 24)))
+      : 0);
 
   const startTrial = async () => {
     if (!subscription || !user) return;

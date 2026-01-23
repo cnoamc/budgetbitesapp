@@ -11,6 +11,7 @@ import { AppProvider } from "@/contexts/AppContext";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { NotificationProvider } from "@/contexts/NotificationContext";
 import { SubscriptionProvider } from "@/contexts/SubscriptionContext";
+import { ReviewModeProvider } from "@/contexts/ReviewModeContext";
 import { NotificationBanner } from "@/components/NotificationBanner";
 import { PremiumPopup } from "@/components/PremiumPopup";
 import { GuestLoginModal } from "@/components/GuestLoginModal";
@@ -125,10 +126,11 @@ function App(): React.ReactElement {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
         <AuthProvider>
-          <GuestProvider>
-            <SubscriptionProvider>
-              <AppProvider>
-                <NotificationProvider>
+          <ReviewModeProvider>
+            <GuestProvider>
+              <SubscriptionProvider>
+                <AppProvider>
+                  <NotificationProvider>
                   <TooltipProvider>
                     <Toaster />
                     <Sonner />
@@ -142,10 +144,11 @@ function App(): React.ReactElement {
                       </div>
                     </BrowserRouter>
                   </TooltipProvider>
-                </NotificationProvider>
-              </AppProvider>
-            </SubscriptionProvider>
-          </GuestProvider>
+                  </NotificationProvider>
+                </AppProvider>
+              </SubscriptionProvider>
+            </GuestProvider>
+          </ReviewModeProvider>
         </AuthProvider>
       </ThemeProvider>
     </QueryClientProvider>
