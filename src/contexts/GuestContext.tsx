@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
+import React, { createContext, useContext, useState, ReactNode, useCallback } from 'react';
+import { useReviewMode } from '@/contexts/ReviewModeContext';
 
 // Local storage keys
 const GUEST_MODE_KEY = 'bb_guest_mode';
@@ -29,11 +30,13 @@ interface GuestContextType {
 const GuestContext = createContext<GuestContextType | undefined>(undefined);
 
 export const GuestProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const { isReviewMode } = useReviewMode();
+  
   const [isGuest, setIsGuest] = useState<boolean>(() => {
     return localStorage.getItem(GUEST_MODE_KEY) === 'true';
   });
   
-  const [isPremium, setIsPremium] = useState<boolean>(() => {
+  const [isPremiumState, setIsPremiumState] = useState<boolean>(() => {
     return localStorage.getItem(GUEST_PREMIUM_KEY) === 'true';
   });
   
@@ -43,6 +46,9 @@ export const GuestProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   
   const [showPremiumPopup, setShowPremiumPopup] = useState(false);
   const [pendingAction, setPendingAction] = useState<(() => void) | null>(null);
+
+  // Review mode overrides premium status
+  const isPremium = isReviewMode || isPremiumState;
 
   const guestUser: GuestUser | null = isGuest ? {
     role: 'guest',
@@ -60,13 +66,13 @@ export const GuestProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     localStorage.removeItem(GUEST_PREMIUM_KEY);
     localStorage.removeItem(PREMIUM_POPUP_SEEN_KEY);
     setIsGuest(false);
-    setIsPremium(false);
+    setIsPremiumState(false);
     setPremiumPopupSeen(false);
   }, []);
 
   const activatePremium = useCallback(() => {
     localStorage.setItem(GUEST_PREMIUM_KEY, 'true');
-    setIsPremium(true);
+    setIsPremiumState(true);
     setShowPremiumPopup(false);
     
     // Execute pending action if exists

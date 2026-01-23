@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Settings, MapPin, LogOut, Pencil, Camera, X, Crown, FileText, HelpCircle, Shield, User, Sparkles, UserPlus, Smartphone, ChevronLeft, Info } from 'lucide-react';
+import { Settings, MapPin, LogOut, Pencil, Camera, X, Crown, FileText, HelpCircle, Shield, User, Sparkles, UserPlus, Smartphone, ChevronLeft, Info, RotateCcw, Bug } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import appIcon from '@/assets/app-icon.png';
 import { Button } from '@/components/ui/button';
@@ -11,6 +11,7 @@ import { useApp } from '@/contexts/AppContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { useGuest } from '@/contexts/GuestContext';
 import { useSubscription } from '@/contexts/SubscriptionContext';
+import { useReviewMode } from '@/contexts/ReviewModeContext';
 import { toast } from 'sonner';
 import {
   Dialog,
@@ -36,6 +37,7 @@ export const Profile: React.FC = () => {
   const { user, signOut } = useAuth();
   const { isGuest, isPremium, openPremiumPopup, exitGuestMode } = useGuest();
   const { daysLeftInTrial, isTrialActive, subscription, toggleCancelReminder } = useSubscription();
+  const { isReviewMode, resetReviewMode } = useReviewMode();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [isEditingName, setIsEditingName] = useState(false);
@@ -236,8 +238,16 @@ export const Profile: React.FC = () => {
           </p>
           {user && !isGuest && <p className="text-xs text-muted-foreground" dir="ltr">{user.email}</p>}
           
+          {/* Review Mode Badge */}
+          {isReviewMode && (
+            <div className="inline-flex items-center gap-1 mt-1 px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-600 text-xs font-medium">
+              <Bug className="w-3 h-3" />
+              Review Mode Enabled
+            </div>
+          )}
+          
           {/* Premium Badge */}
-          {isPremium && (
+          {isPremium && !isReviewMode && (
             <div className="inline-flex items-center gap-1 mt-1 px-2 py-0.5 rounded-full bg-primary/10 text-primary text-xs font-medium">
               <Crown className="w-3 h-3" />
               Premium • חינם עד סוף פברואר
@@ -245,7 +255,7 @@ export const Profile: React.FC = () => {
           )}
           
           {/* Subscription Badge for logged in users */}
-          {isTrialActive && !isGuest && (
+          {isTrialActive && !isGuest && !isReviewMode && (
             <div className="inline-flex items-center gap-1 mt-1 px-2 py-0.5 rounded-full bg-primary/10 text-primary text-xs font-medium">
               <Crown className="w-3 h-3" />
               Premium • תקופת ניסיון
@@ -316,6 +326,19 @@ export const Profile: React.FC = () => {
             <Sparkles className="w-4 h-4" />
             {isPremium ? 'Premium פעיל' : 'Premium בקרוב'}
           </Button>
+
+          {/* Reset Review Mode Button - Only visible in review mode */}
+          {isReviewMode && (
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="w-full justify-start h-10 border-amber-500/50 text-amber-600 hover:bg-amber-500/10" 
+              onClick={resetReviewMode}
+            >
+              <RotateCcw className="w-4 h-4" />
+              Reset Review Mode
+            </Button>
+          )}
           
           <Button 
             variant="ghost" 
