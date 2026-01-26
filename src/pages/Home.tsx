@@ -1,6 +1,6 @@
 import React, { useMemo, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Sparkles, ArrowLeft, Clock, ChefHat, Send, Play, TrendingUp, Globe, Link as LinkIcon } from 'lucide-react';
+import { Sparkles, ArrowLeft, Clock, ChefHat, Send, Play, TrendingUp, Globe, Link as LinkIcon, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { RecipeCard } from '@/components/RecipeCard';
@@ -43,6 +43,7 @@ export const Home: React.FC = () => {
   const [searchInput, setSearchInput] = useState('');
   const [activeFilter, setActiveFilter] = useState<string>('healthy'); // Auto-select first category
   const [heroTitleIndex, setHeroTitleIndex] = useState(0);
+  const [shuffleKey, setShuffleKey] = useState(0); // Used to trigger recipe shuffle
 
   // Rotate hero title daily
   useEffect(() => {
@@ -67,8 +68,14 @@ export const Home: React.FC = () => {
       filtered = recipes.filter(r => r.category === 'cheap' || r.category === 'fast');
     }
     
-    return filtered.slice(0, 4);
-  }, [activeFilter]);
+    // Shuffle the filtered recipes
+    const shuffled = [...filtered].sort(() => Math.random() - 0.5);
+    return shuffled.slice(0, 4);
+  }, [activeFilter, shuffleKey]);
+
+  const handleShuffle = () => {
+    setShuffleKey(prev => prev + 1);
+  };
 
   // Check for in-progress recipe
   const inProgressRecipe = useMemo(() => {
@@ -259,22 +266,31 @@ export const Home: React.FC = () => {
             {/* Quick Meals */}
             <div>
               {/* Filter Chips - always one selected */}
-              <div className="flex gap-1.5 mb-2 overflow-x-auto scrollbar-hide">
-                {QUICK_FILTERS.map((filter) => (
-                  <button
-                    key={filter.id}
-                    onClick={() => setActiveFilter(filter.id)}
-                    className={cn(
-                      "px-2.5 py-1 rounded-full text-xs font-medium whitespace-nowrap transition-all flex items-center gap-1",
-                      activeFilter === filter.id
-                        ? "bg-primary text-primary-foreground"
-                        : "bg-secondary/60 text-muted-foreground hover:bg-secondary"
-                    )}
-                  >
-                    <span>{filter.emoji}</span>
-                    <span>{filter.label}</span>
-                  </button>
-                ))}
+              <div className="flex items-center gap-1.5 mb-2">
+                <div className="flex gap-1.5 overflow-x-auto scrollbar-hide flex-1">
+                  {QUICK_FILTERS.map((filter) => (
+                    <button
+                      key={filter.id}
+                      onClick={() => setActiveFilter(filter.id)}
+                      className={cn(
+                        "px-2.5 py-1 rounded-full text-xs font-medium whitespace-nowrap transition-all flex items-center gap-1",
+                        activeFilter === filter.id
+                          ? "bg-primary text-primary-foreground"
+                          : "bg-secondary/60 text-muted-foreground hover:bg-secondary"
+                      )}
+                    >
+                      <span>{filter.emoji}</span>
+                      <span>{filter.label}</span>
+                    </button>
+                  ))}
+                </div>
+                <button
+                  onClick={handleShuffle}
+                  className="p-1.5 rounded-full bg-secondary/60 text-muted-foreground hover:bg-secondary hover:text-foreground transition-all shrink-0 active:scale-95"
+                  aria-label="ערבב מתכונים"
+                >
+                  <RefreshCw className="w-3.5 h-3.5" />
+                </button>
               </div>
               
               <div className="space-y-1.5">
