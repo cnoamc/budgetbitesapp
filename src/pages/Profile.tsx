@@ -1,17 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Settings, MapPin, LogOut, Pencil, Camera, X, Crown, FileText, HelpCircle, Shield, User, Sparkles, UserPlus, Smartphone, ChevronLeft, Info, RotateCcw, Bug, Trash2 } from 'lucide-react';
+import { Settings, MapPin, Pencil, Camera, X, User, Smartphone, ChevronLeft, Info, Heart, Leaf } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import appIcon from '@/assets/app-icon.png';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { DeleteAccountDialog } from '@/components/DeleteAccountDialog';
-import { SyncIndicator } from '@/components/SyncIndicator';
-import { TrialReminderBanner } from '@/components/PremiumPaywall';
 import { useApp } from '@/contexts/AppContext';
-import { useAuth } from '@/contexts/AuthContext';
-import { useGuest } from '@/contexts/GuestContext';
-import { useSubscription } from '@/contexts/SubscriptionContext';
-import { useReviewMode } from '@/contexts/ReviewModeContext';
+import { useLocalProfile } from '@/contexts/LocalProfileContext';
 import { toast } from 'sonner';
 import {
   Dialog,
@@ -20,54 +14,43 @@ import {
   DialogTitle,
   DialogFooter,
 } from '@/components/ui/dialog';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
+import { cn } from '@/lib/utils';
+
+const COOKING_LEVELS = [
+  { value: 1, label: 'מתחיל', emoji: '🥚' },
+  { value: 2, label: 'בסיסי', emoji: '🍳' },
+  { value: 3, label: 'מתקדם', emoji: '👨‍🍳' },
+  { value: 4, label: 'מומחה', emoji: '⭐' },
+  { value: 5, label: 'שף!', emoji: '👑' },
+];
+
+const DIETARY_OPTIONS = [
+  { value: 'all', label: 'הכל', emoji: '🍽️' },
+  { value: 'vegetarian', label: 'צמחוני', emoji: '🥗' },
+  { value: 'vegan', label: 'טבעוני', emoji: '🌱' },
+  { value: 'kosher', label: 'כשר', emoji: '✡️' },
+];
 
 export const Profile: React.FC = () => {
   const navigate = useNavigate();
-  const { profile, progress, displayName, photoUrl, updateDisplayName, updatePhotoUrl, syncing } = useApp();
-  const { user, signOut } = useAuth();
-  const { isGuest, isPremium, openPremiumPopup, exitGuestMode } = useGuest();
-  const { daysLeftInTrial, isTrialActive, subscription, toggleCancelReminder } = useSubscription();
-  const { isReviewMode, resetReviewMode } = useReviewMode();
+  const { profile, progress, displayName, photoUrl, updateDisplayName, updatePhotoUrl } = useApp();
+  const { profile: localProfile, updateProfile: updateLocalProfile } = useLocalProfile();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const [isEditingName, setIsEditingName] = useState(false);
-  const [isSignOutDialogOpen, setIsSignOutDialogOpen] = useState(false);
-  const [isDeleteAccountDialogOpen, setIsDeleteAccountDialogOpen] = useState(false);
+  const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [editedName, setEditedName] = useState(displayName);
+  const [editedCookingLevel, setEditedCookingLevel] = useState(localProfile?.cookingLevel || 1);
+  const [editedDietary, setEditedDietary] = useState(localProfile?.dietaryPreference || 'all');
 
   const skillLabels = ['מתחיל', 'בסיסי', 'מתקדם', 'מומחה', 'שף!'];
 
   useEffect(() => {
     setEditedName(displayName);
-  }, [displayName]);
+    setEditedCookingLevel(localProfile?.cookingLevel || 1);
+    setEditedDietary(localProfile?.dietaryPreference || 'all');
+  }, [displayName, localProfile]);
 
-  const handleSignOut = async () => {
-    try {
-      if (isGuest) {
-        exitGuestMode();
-        toast.success('יצאת ממצב אורח');
-        navigate('/');
-      } else {
-        await signOut();
-        toast.success('התנתקת בהצלחה');
-        navigate('/');
-      }
-    } catch (error) {
-      toast.error('שגיאה בהתנתקות');
-    }
-  };
-
-  const handleSaveName = async () => {
+  const handleSaveProfile = async () => {
     const trimmed = editedName.trim();
     if (trimmed.length < 2) {
       toast.error('השם חייב להכיל לפחות 2 תווים');
@@ -78,24 +61,22 @@ export const Profile: React.FC = () => {
       return;
     }
     
-    // Check if this is the first time setting a nickname (for guests)
-    const isFirstNickname = isGuest && (displayName === 'אורח' || !localStorage.getItem('bb_nickname_set'));
-    
     await updateDisplayName(trimmed);
-    setIsEditingName(false);
+    updateLocalProfile({
+      name: trimmed,
+      cookingLevel: editedCookingLevel,
+      dietaryPreference: editedDietary,
+    });
     
-    if (isFirstNickname) {
-      localStorage.setItem('bb_nickname_set', 'true');
-      toast.success(`נעים להכיר, ${trimmed}! 👋🍳`, {
-        description: 'עכשיו אתה חלק מהמשפחה',
-        duration: 4000,
-      });
-    }
+    setIsEditingProfile(false);
+    toast.success('הפרופיל נשמר ✓');
   };
 
   const handleCancelEdit = () => {
     setEditedName(displayName);
-    setIsEditingName(false);
+    setEditedCookingLevel(localProfile?.cookingLevel || 1);
+    setEditedDietary(localProfile?.dietaryPreference || 'all');
+    setIsEditingProfile(false);
   };
 
   const handlePhotoClick = () => {
@@ -150,6 +131,7 @@ export const Profile: React.FC = () => {
     try {
       const dataUrl = await compressImage(file);
       await updatePhotoUrl(dataUrl);
+      toast.success('התמונה נשמרה ✓');
     } catch (error) {
       toast.error('שגיאה בעיבוד התמונה');
     }
@@ -161,7 +143,10 @@ export const Profile: React.FC = () => {
 
   const handleRemovePhoto = async () => {
     await updatePhotoUrl(null);
+    toast.success('התמונה הוסרה ✓');
   };
+
+  const currentDietary = DIETARY_OPTIONS.find(d => d.value === (localProfile?.dietaryPreference || 'all'));
 
   return (
     <div className="screen-container bg-background" dir="rtl">
@@ -169,56 +154,26 @@ export const Profile: React.FC = () => {
         className="scroll-container scrollbar-hide p-4 pt-safe"
         style={{ paddingBottom: 'calc(110px + env(safe-area-inset-bottom, 0px) + 16px)' }}
       >
-        {/* Compact Guest Login CTA - Header Card */}
-        {isGuest && (
-          <div className="bg-gradient-to-l from-primary/10 to-primary/5 border border-primary/20 rounded-xl p-3 mb-4">
-            <div className="flex items-center gap-3">
-              <div className="w-9 h-9 bg-primary/20 rounded-full flex items-center justify-center">
-                <UserPlus className="w-4 h-4 text-primary" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium truncate">שמור מתכונים והתקדמות</p>
-              </div>
-              <Button 
-                onClick={() => navigate('/signin')} 
-                size="sm"
-                className="shrink-0"
-              >
-                התחבר
-              </Button>
-            </div>
-          </div>
-        )}
-
-        {/* Trial Reminder Banner */}
-        {isTrialActive && !isGuest && (
-          <TrialReminderBanner
-            daysLeft={daysLeftInTrial}
-            reminderEnabled={subscription?.cancel_reminder_enabled ?? true}
-            onToggleReminder={toggleCancelReminder}
-          />
-        )}
-
         {/* Profile Header - Compact */}
-        <div className="text-center mb-3">
+        <div className="text-center mb-4">
           <div className="relative inline-block">
             <div 
-              className="w-16 h-16 gradient-primary rounded-full mx-auto flex items-center justify-center shadow-glow cursor-pointer overflow-hidden group"
+              className="w-20 h-20 gradient-primary rounded-full mx-auto flex items-center justify-center shadow-glow cursor-pointer overflow-hidden group"
               onClick={handlePhotoClick}
             >
               {photoUrl ? (
                 <img src={photoUrl} alt="Profile" className="w-full h-full object-cover" />
               ) : (
-                <User className="w-8 h-8 text-primary-foreground" />
+                <User className="w-10 h-10 text-primary-foreground" />
               )}
               <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity rounded-full">
-                <Camera className="w-5 h-5 text-white" />
+                <Camera className="w-6 h-6 text-white" />
               </div>
             </div>
             {photoUrl && (
               <button
                 onClick={(e) => { e.stopPropagation(); handleRemovePhoto(); }}
-                className="absolute -top-1 -right-1 w-5 h-5 bg-destructive rounded-full flex items-center justify-center shadow-md"
+                className="absolute -top-1 -right-1 w-6 h-6 bg-destructive rounded-full flex items-center justify-center shadow-md"
               >
                 <X className="w-3 h-3 text-destructive-foreground" />
               </button>
@@ -227,47 +182,34 @@ export const Profile: React.FC = () => {
           
           <input ref={fileInputRef} type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={handleFileChange} />
 
-          <div className="flex items-center justify-center gap-1 mt-2">
+          <div className="flex items-center justify-center gap-1 mt-3">
             <h1 className="text-xl font-bold">{displayName}</h1>
-            <button onClick={() => setIsEditingName(true)} className="p-1 hover:bg-muted rounded-full">
-              <Pencil className="w-3 h-3 text-muted-foreground" />
+            <button onClick={() => setIsEditingProfile(true)} className="p-1 hover:bg-muted rounded-full">
+              <Pencil className="w-3.5 h-3.5 text-muted-foreground" />
             </button>
           </div>
           
           <p className="text-sm text-muted-foreground">
-            {skillLabels[progress.skillLevel - 1]} • {progress.totalMealsCooked} ארוחות
+            {skillLabels[(localProfile?.cookingLevel || 1) - 1]} • {progress.totalMealsCooked} ארוחות
           </p>
-          {user && !isGuest && <p className="text-xs text-muted-foreground" dir="ltr">{user.email}</p>}
-          
-          {/* Review Mode Badge */}
-          {isReviewMode && (
-            <div className="inline-flex items-center gap-1 mt-1 px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-600 text-xs font-medium">
-              <Bug className="w-3 h-3" />
-              Review Mode Enabled
+        </div>
+
+        {/* Stats Card */}
+        <div className="bg-card rounded-xl p-4 shadow-card border border-border/50 mb-3">
+          <div className="grid grid-cols-3 gap-4 text-center">
+            <div>
+              <p className="text-2xl font-bold text-primary">{progress.totalMealsCooked}</p>
+              <p className="text-xs text-muted-foreground">ארוחות</p>
             </div>
-          )}
-          
-          {/* Premium Badge */}
-          {isPremium && !isReviewMode && (
-            <div className="inline-flex items-center gap-1 mt-1 px-2 py-0.5 rounded-full bg-primary/10 text-primary text-xs font-medium">
-              <Crown className="w-3 h-3" />
-              Premium • חינם עד סוף פברואר
+            <div>
+              <p className="text-2xl font-bold text-savings">₪{progress.totalSavings}</p>
+              <p className="text-xs text-muted-foreground">חיסכון</p>
             </div>
-          )}
-          
-          {/* Subscription Badge for logged in users */}
-          {isTrialActive && !isGuest && !isReviewMode && (
-            <div className="inline-flex items-center gap-1 mt-1 px-2 py-0.5 rounded-full bg-primary/10 text-primary text-xs font-medium">
-              <Crown className="w-3 h-3" />
-              Premium • תקופת ניסיון
+            <div>
+              <p className="text-2xl font-bold">{localProfile?.cookingLevel || 1}/5</p>
+              <p className="text-xs text-muted-foreground">רמה</p>
             </div>
-          )}
-          
-          {!isGuest && (
-            <div className="flex justify-center mt-2">
-              <SyncIndicator syncing={syncing} />
-            </div>
-          )}
+          </div>
         </div>
 
         {/* Settings Card - Compact */}
@@ -286,15 +228,42 @@ export const Profile: React.FC = () => {
               <span className="text-sm text-muted-foreground">ישראל</span>
             </div>
             
-            <div className="flex items-center justify-between py-1.5">
+            <div className="flex items-center justify-between py-1.5 border-b border-border/50">
               <div className="flex items-center gap-2">
                 <div className="w-4 h-4 rounded overflow-hidden">
                   <img src={appIcon} alt="Skill" className="w-full h-full object-cover" />
                 </div>
                 <span className="text-sm">רמת מיומנות</span>
               </div>
-              <span className="text-sm text-muted-foreground">{profile.cookingSkill}/5</span>
+              <span className="text-sm text-muted-foreground">{localProfile?.cookingLevel || 1}/5</span>
             </div>
+
+            <div className="flex items-center justify-between py-1.5">
+              <div className="flex items-center gap-2">
+                <Leaf className="w-4 h-4 text-muted-foreground" />
+                <span className="text-sm">העדפת תזונה</span>
+              </div>
+              <span className="text-sm text-muted-foreground flex items-center gap-1">
+                <span>{currentDietary?.emoji}</span>
+                <span>{currentDietary?.label}</span>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Support Chefi Card */}
+        <div className="bg-gradient-to-l from-pink-50 to-rose-50 dark:from-pink-950/20 dark:to-rose-950/20 border border-pink-200 dark:border-pink-800/30 rounded-xl p-4 mb-3">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-pink-100 dark:bg-pink-900/30 rounded-full flex items-center justify-center">
+              <Heart className="w-5 h-5 text-pink-500" />
+            </div>
+            <div className="flex-1">
+              <p className="font-semibold text-sm">תמיכה בשפי 💝</p>
+              <p className="text-xs text-muted-foreground">בקרוב תוכלו לתמוך בפיתוח</p>
+            </div>
+            <span className="text-xs text-pink-500 font-medium bg-pink-100 dark:bg-pink-900/30 px-2 py-1 rounded-full">
+              בקרוב
+            </span>
           </div>
         </div>
 
@@ -315,63 +284,6 @@ export const Profile: React.FC = () => {
           <ChevronLeft className="w-5 h-5 text-muted-foreground" />
         </button>
 
-        {/* Actions - Compact */}
-        <div className="space-y-2">
-          {/* Premium Button */}
-          <Button 
-            variant="outline" 
-            size="sm" 
-            className="w-full justify-start h-10" 
-            onClick={openPremiumPopup}
-          >
-            <Sparkles className="w-4 h-4" />
-            {isPremium ? 'Premium פעיל' : 'Premium בקרוב'}
-          </Button>
-
-          {/* Reset Review Mode Button - Only visible in review mode */}
-          {isReviewMode && (
-            <Button 
-              variant="outline" 
-              size="sm" 
-              className="w-full justify-start h-10 border-amber-500/50 text-amber-600 hover:bg-amber-500/10" 
-              onClick={resetReviewMode}
-            >
-              <RotateCcw className="w-4 h-4" />
-              Reset Review Mode
-            </Button>
-          )}
-          
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            className="w-full justify-start h-10 text-destructive hover:text-destructive hover:bg-destructive/10" 
-            onClick={() => setIsSignOutDialogOpen(true)}
-          >
-            <LogOut className="w-4 h-4" />
-            {isGuest ? 'יציאה ממצב אורח' : 'התנתק'}
-          </Button>
-        </div>
-
-        {/* Account Section - Only for logged in users */}
-        {user && !isGuest && (
-          <div className="bg-card rounded-xl p-3 shadow-card border border-border/50 mt-3">
-            <h3 className="font-semibold text-sm mb-2 flex items-center gap-2">
-              <User className="w-4 h-4" />
-              חשבון
-            </h3>
-            
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              className="w-full justify-start h-10 text-destructive hover:text-destructive hover:bg-destructive/10" 
-              onClick={() => setIsDeleteAccountDialogOpen(true)}
-            >
-              <Trash2 className="w-4 h-4" />
-              מחיקת חשבון
-            </Button>
-          </div>
-        )}
-
         {/* About Link */}
         <button
           onClick={() => navigate('/about')}
@@ -389,22 +301,6 @@ export const Profile: React.FC = () => {
           <ChevronLeft className="w-5 h-5 text-muted-foreground" />
         </button>
 
-        {/* Legal Links */}
-        <div className="flex justify-center gap-4 text-xs text-muted-foreground mt-2">
-          <button onClick={() => navigate('/privacy')} className="hover:underline flex items-center gap-1">
-            <Shield className="w-3 h-3" />
-            פרטיות
-          </button>
-          <button onClick={() => navigate('/terms')} className="hover:underline flex items-center gap-1">
-            <FileText className="w-3 h-3" />
-            תנאי שימוש
-          </button>
-          <button onClick={() => navigate('/support')} className="hover:underline flex items-center gap-1">
-            <HelpCircle className="w-3 h-3" />
-            תמיכה
-          </button>
-        </div>
-
         {/* App Info */}
         <div className="mt-auto pt-2 text-center text-xs text-muted-foreground">
           <p>שפי – Chefi • נבנה באהבה 🧡</p>
@@ -412,45 +308,75 @@ export const Profile: React.FC = () => {
         </div>
       </div>
 
-      {/* Dialogs */}
-      <Dialog open={isEditingName} onOpenChange={setIsEditingName}>
-        <DialogContent className="max-w-sm">
-          <DialogHeader><DialogTitle>עריכת שם תצוגה</DialogTitle></DialogHeader>
-          <div className="py-4">
-            <Input value={editedName} onChange={(e) => setEditedName(e.target.value)} placeholder="הכנס שם תצוגה" maxLength={24} className="text-right" dir="rtl" />
-            <p className="text-xs text-muted-foreground mt-2">2-24 תווים</p>
+      {/* Edit Profile Dialog */}
+      <Dialog open={isEditingProfile} onOpenChange={setIsEditingProfile}>
+        <DialogContent className="max-w-sm max-h-[85vh] overflow-y-auto">
+          <DialogHeader><DialogTitle>עריכת פרופיל</DialogTitle></DialogHeader>
+          <div className="py-4 space-y-5">
+            {/* Name */}
+            <div>
+              <label className="block text-sm font-medium mb-2">שם</label>
+              <Input 
+                value={editedName} 
+                onChange={(e) => setEditedName(e.target.value)} 
+                placeholder="הכנס שם" 
+                maxLength={24} 
+                className="text-right" 
+                dir="rtl" 
+              />
+              <p className="text-xs text-muted-foreground mt-1">2-24 תווים</p>
+            </div>
+
+            {/* Cooking Level */}
+            <div>
+              <label className="block text-sm font-medium mb-2">רמת בישול</label>
+              <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1">
+                {COOKING_LEVELS.map((level) => (
+                  <button
+                    key={level.value}
+                    onClick={() => setEditedCookingLevel(level.value)}
+                    className={cn(
+                      "flex flex-col items-center gap-1 px-3 py-2 rounded-xl transition-all shrink-0",
+                      editedCookingLevel === level.value
+                        ? "bg-primary text-primary-foreground shadow-md"
+                        : "bg-muted/50 text-muted-foreground hover:bg-muted"
+                    )}
+                  >
+                    <span className="text-lg">{level.emoji}</span>
+                    <span className="text-xs font-medium whitespace-nowrap">{level.label}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Dietary Preference */}
+            <div>
+              <label className="block text-sm font-medium mb-2">העדפת תזונה</label>
+              <div className="grid grid-cols-4 gap-2">
+                {DIETARY_OPTIONS.map((option) => (
+                  <button
+                    key={option.value}
+                    onClick={() => setEditedDietary(option.value)}
+                    className={cn(
+                      "flex flex-col items-center gap-1 px-2 py-3 rounded-xl transition-all",
+                      editedDietary === option.value
+                        ? "bg-primary text-primary-foreground shadow-md"
+                        : "bg-muted/50 text-muted-foreground hover:bg-muted"
+                    )}
+                  >
+                    <span className="text-xl">{option.emoji}</span>
+                    <span className="text-xs font-medium">{option.label}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
           <DialogFooter className="flex gap-2">
             <Button variant="outline" onClick={handleCancelEdit}>ביטול</Button>
-            <Button onClick={handleSaveName}>שמור</Button>
+            <Button onClick={handleSaveProfile}>שמור</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
-
-      <AlertDialog open={isSignOutDialogOpen} onOpenChange={setIsSignOutDialogOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>{isGuest ? 'יציאה ממצב אורח' : 'התנתקות מהחשבון'}</AlertDialogTitle>
-            <AlertDialogDescription>
-              {isGuest 
-                ? 'האם אתה בטוח? ההתקדמות שלך לא תישמר.' 
-                : 'האם אתה בטוח שברצונך להתנתק?'
-              }
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter className="flex gap-2">
-            <AlertDialogCancel>ביטול</AlertDialogCancel>
-            <AlertDialogAction onClick={handleSignOut} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
-              {isGuest ? 'יציאה' : 'התנתק'}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-
-      <DeleteAccountDialog 
-        open={isDeleteAccountDialogOpen} 
-        onOpenChange={setIsDeleteAccountDialogOpen} 
-      />
     </div>
   );
 };
