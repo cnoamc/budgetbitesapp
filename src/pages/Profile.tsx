@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Settings, MapPin, Pencil, Camera, X, User, Smartphone, ChevronLeft, Info, Heart, Leaf } from 'lucide-react';
+import { Settings, MapPin, Pencil, Camera, X, User, Smartphone, ChevronLeft, Info, Heart, Leaf, RotateCcw } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import appIcon from '@/assets/app-icon.png';
 import { Button } from '@/components/ui/button';
@@ -13,6 +13,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
+  DialogDescription,
 } from '@/components/ui/dialog';
 import { cn } from '@/lib/utils';
 
@@ -38,6 +39,7 @@ export const Profile: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [isEditingProfile, setIsEditingProfile] = useState(false);
+  const [isResetDialogOpen, setIsResetDialogOpen] = useState(false);
   const [editedName, setEditedName] = useState(displayName);
   const [editedCookingLevel, setEditedCookingLevel] = useState(localProfile?.cookingLevel || 1);
   const [editedDietary, setEditedDietary] = useState(localProfile?.dietaryPreference || 'all');
@@ -77,6 +79,23 @@ export const Profile: React.FC = () => {
     setEditedCookingLevel(localProfile?.cookingLevel || 1);
     setEditedDietary(localProfile?.dietaryPreference || 'all');
     setIsEditingProfile(false);
+  };
+
+  const handleResetApp = () => {
+    // Clear all local storage data
+    localStorage.removeItem('chefi_profile');
+    localStorage.removeItem('chefi_progress');
+    localStorage.removeItem('chefi_cooked_meals');
+    localStorage.removeItem('chefi_favorites');
+    localStorage.removeItem('chefi_custom_recipes');
+    localStorage.removeItem('chefi_photo');
+    localStorage.removeItem('chefi_display_name');
+    
+    toast.success('האפליקציה אופסה בהצלחה');
+    
+    // Navigate to welcome screen and reload
+    navigate('/', { replace: true });
+    window.location.reload();
   };
 
   const handlePhotoClick = () => {
@@ -301,6 +320,23 @@ export const Profile: React.FC = () => {
           <ChevronLeft className="w-5 h-5 text-muted-foreground" />
         </button>
 
+        {/* Reset App */}
+        <button
+          onClick={() => setIsResetDialogOpen(true)}
+          className="w-full bg-card rounded-xl p-4 shadow-card border border-destructive/30 mb-3 flex items-center justify-between hover:bg-destructive/5 transition-colors"
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 bg-destructive/10 rounded-full flex items-center justify-center">
+              <RotateCcw className="w-4 h-4 text-destructive" />
+            </div>
+            <div className="text-right">
+              <p className="text-sm font-medium text-destructive">איפוס האפליקציה</p>
+              <p className="text-xs text-muted-foreground">התחל מחדש מההתחלה</p>
+            </div>
+          </div>
+          <ChevronLeft className="w-5 h-5 text-muted-foreground" />
+        </button>
+
         {/* App Info */}
         <div className="mt-auto pt-2 text-center text-xs text-muted-foreground">
           <p>שפי – Chefi • נבנה באהבה 🧡</p>
@@ -374,6 +410,22 @@ export const Profile: React.FC = () => {
           <DialogFooter className="flex gap-2">
             <Button variant="outline" onClick={handleCancelEdit}>ביטול</Button>
             <Button onClick={handleSaveProfile}>שמור</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Reset App Confirmation Dialog */}
+      <Dialog open={isResetDialogOpen} onOpenChange={setIsResetDialogOpen}>
+        <DialogContent className="max-w-sm">
+          <DialogHeader>
+            <DialogTitle className="text-destructive">איפוס האפליקציה</DialogTitle>
+            <DialogDescription className="text-right">
+              פעולה זו תמחק את כל הנתונים שלך כולל הפרופיל, המתכונים השמורים והמועדפים. האם להמשיך?
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="flex gap-2 mt-4">
+            <Button variant="outline" onClick={() => setIsResetDialogOpen(false)}>ביטול</Button>
+            <Button variant="destructive" onClick={handleResetApp}>איפוס</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
