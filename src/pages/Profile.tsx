@@ -1,10 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Settings, MapPin, LogOut, Pencil, Camera, X, Crown, FileText, HelpCircle, Shield, User, Sparkles, UserPlus, Smartphone, ChevronLeft, Info, RotateCcw, Bug } from 'lucide-react';
+import { Settings, MapPin, LogOut, Pencil, Camera, X, Crown, FileText, HelpCircle, Shield, User, Sparkles, UserPlus, Smartphone, ChevronLeft, Info, RotateCcw, Bug, Trash2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import appIcon from '@/assets/app-icon.png';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-
+import { DeleteAccountDialog } from '@/components/DeleteAccountDialog';
 import { SyncIndicator } from '@/components/SyncIndicator';
 import { TrialReminderBanner } from '@/components/PremiumPaywall';
 import { useApp } from '@/contexts/AppContext';
@@ -42,6 +42,7 @@ export const Profile: React.FC = () => {
 
   const [isEditingName, setIsEditingName] = useState(false);
   const [isSignOutDialogOpen, setIsSignOutDialogOpen] = useState(false);
+  const [isDeleteAccountDialogOpen, setIsDeleteAccountDialogOpen] = useState(false);
   const [editedName, setEditedName] = useState(displayName);
 
   const skillLabels = ['מתחיל', 'בסיסי', 'מתקדם', 'מומחה', 'שף!'];
@@ -351,6 +352,26 @@ export const Profile: React.FC = () => {
           </Button>
         </div>
 
+        {/* Account Section - Only for logged in users */}
+        {user && !isGuest && (
+          <div className="bg-card rounded-xl p-3 shadow-card border border-border/50 mt-3">
+            <h3 className="font-semibold text-sm mb-2 flex items-center gap-2">
+              <User className="w-4 h-4" />
+              חשבון
+            </h3>
+            
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="w-full justify-start h-10 text-destructive hover:text-destructive hover:bg-destructive/10" 
+              onClick={() => setIsDeleteAccountDialogOpen(true)}
+            >
+              <Trash2 className="w-4 h-4" />
+              מחיקת חשבון
+            </Button>
+          </div>
+        )}
+
         {/* About Link */}
         <button
           onClick={() => navigate('/about')}
@@ -425,6 +446,11 @@ export const Profile: React.FC = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      <DeleteAccountDialog 
+        open={isDeleteAccountDialogOpen} 
+        onOpenChange={setIsDeleteAccountDialogOpen} 
+      />
     </div>
   );
 };
