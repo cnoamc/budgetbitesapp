@@ -3,6 +3,9 @@ project_id = "awgblmeyyvrevnncfqho"
 [functions.cooking-assistant]
 verify_jwt = false
 
+[functions.delete-account]
+verify_jwt = false
+
 [functions.import-recipe]
 verify_jwt = false
 
