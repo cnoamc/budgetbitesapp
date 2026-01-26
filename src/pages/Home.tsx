@@ -41,7 +41,7 @@ export const Home: React.FC = () => {
   const { progress, displayName, photoUrl } = useApp();
   
   const [searchInput, setSearchInput] = useState('');
-  const [activeFilter, setActiveFilter] = useState<string | null>(null);
+  const [activeFilter, setActiveFilter] = useState<string>('healthy'); // Auto-select first category
   const [heroTitleIndex, setHeroTitleIndex] = useState(0);
 
   // Rotate hero title daily
@@ -53,9 +53,9 @@ export const Home: React.FC = () => {
   // Memoize recipe selection
   const todayRecipe = useMemo(() => recipes[getDailyRecipeIndex()], []);
   
-  // Filter quick recipes based on active filter
+  // Filter quick recipes based on active filter - always show 4 recipes
   const quickRecipes = useMemo(() => {
-    let filtered = recipes.filter(r => r.prepTime + r.cookTime <= 20);
+    let filtered: typeof recipes = [];
     
     if (activeFilter === 'healthy') {
       filtered = recipes.filter(r => r.category === 'vegetarian' || r.category === 'protein');
@@ -67,7 +67,7 @@ export const Home: React.FC = () => {
       filtered = recipes.filter(r => r.category === 'cheap' || r.category === 'fast');
     }
     
-    return filtered.slice(0, 3);
+    return filtered.slice(0, 4);
   }, [activeFilter]);
 
   // Check for in-progress recipe
@@ -258,12 +258,12 @@ export const Home: React.FC = () => {
 
             {/* Quick Meals */}
             <div>
-              {/* Filter Chips */}
+              {/* Filter Chips - always one selected */}
               <div className="flex gap-1.5 mb-2 overflow-x-auto scrollbar-hide">
                 {QUICK_FILTERS.map((filter) => (
                   <button
                     key={filter.id}
-                    onClick={() => setActiveFilter(activeFilter === filter.id ? null : filter.id)}
+                    onClick={() => setActiveFilter(filter.id)}
                     className={cn(
                       "px-2.5 py-1 rounded-full text-xs font-medium whitespace-nowrap transition-all flex items-center gap-1",
                       activeFilter === filter.id
@@ -278,11 +278,11 @@ export const Home: React.FC = () => {
               </div>
               
               <div className="space-y-1.5">
-                {quickRecipes.slice(0, 2).map((recipe, index) => (
+                {quickRecipes.map((recipe, index) => (
                   <div 
                     key={recipe.id}
                     className="animate-slide-up"
-                    style={{ animationDelay: `${index * 0.1}s` }}
+                    style={{ animationDelay: `${index * 0.05}s` }}
                   >
                     <RecipeCard
                       recipe={recipe}
