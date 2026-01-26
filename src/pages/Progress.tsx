@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { TrendingUp, Star, Target, Trophy, Flame, UtensilsCrossed, Plus, ChefHat, Share2, Gift, CheckCircle2, UserPlus } from 'lucide-react';
+import { TrendingUp, Star, Target, Trophy, Flame, UtensilsCrossed, Plus, ChefHat, Share2, Gift, CheckCircle2 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
 import { GradientBackground } from '@/components/ui/GradientBackground';
@@ -8,8 +8,6 @@ import { PremiumCard } from '@/components/ui/PremiumCard';
 import { StarRating } from '@/components/StarRating';
 import { Button } from '@/components/ui/button';
 import { useApp } from '@/contexts/AppContext';
-import { useAuth } from '@/contexts/AuthContext';
-import { useGuest } from '@/contexts/GuestContext';
 import { getRecipeById, recipes } from '@/lib/recipes';
 import { toast } from 'sonner';
 import { getRecipeImage } from '@/lib/recipeImages';
@@ -81,8 +79,6 @@ const countWeeklyMeals = (cookedMeals: { date: string }[]) => {
 export const Progress: React.FC = () => {
   const navigate = useNavigate();
   const { progress, monthlySavings, addCookedMeal } = useApp();
-  const { user } = useAuth();
-  const { isGuest, isPremium } = useGuest();
   const celebratedRef = useRef<Set<number>>(new Set());
   const [isLogDialogOpen, setIsLogDialogOpen] = useState(false);
   const [selectedRecipeId, setSelectedRecipeId] = useState<string | null>(null);

@@ -1,17 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { ChefHat } from 'lucide-react';
-import { useAuth } from '@/contexts/AuthContext';
-import { useGuest } from '@/contexts/GuestContext';
 import { FixedScreenLayout } from '@/components/layouts';
 import { useInAppBrowser } from '@/hooks/useInAppBrowser';
+import { useLocalProfile } from '@/contexts/LocalProfileContext';
 import appIcon from '@/assets/app-icon.png';
 
 const Welcome: React.FC = () => {
   const navigate = useNavigate();
-  const { user, loading } = useAuth();
-  const { isGuest, enterAsGuest, premiumPopupSeen, openPremiumPopup, markPopupSeen } = useGuest();
+  const { hasProfile, loading } = useLocalProfile();
   const { isInAppBrowser, reduceAnimations } = useInAppBrowser();
   const [mounted, setMounted] = useState(false);
 
@@ -19,33 +16,15 @@ const Welcome: React.FC = () => {
     setMounted(true);
   }, []);
 
-  // If already logged in or guest, redirect to home
+  // If already has profile, redirect to home
   useEffect(() => {
-    if (!loading) {
-      if (user) {
-        navigate('/home', { replace: true });
-      } else if (isGuest) {
-        navigate('/home', { replace: true });
-      }
+    if (!loading && hasProfile) {
+      navigate('/home', { replace: true });
     }
-  }, [user, loading, isGuest, navigate]);
+  }, [hasProfile, loading, navigate]);
 
-  const handleContinueAsGuest = () => {
-    enterAsGuest();
-    
-    // Show premium popup after entering as guest (if not seen before)
-    setTimeout(() => {
-      if (!premiumPopupSeen) {
-        openPremiumPopup();
-        markPopupSeen();
-      }
-    }, 500);
-    
-    navigate('/home');
-  };
-
-  const handleSignIn = () => {
-    navigate('/signin');
+  const handleStart = () => {
+    navigate('/create-profile');
   };
 
   if (loading) {
@@ -137,38 +116,20 @@ const Welcome: React.FC = () => {
           }`}
           style={{ transitionDelay: animationDelay(450) }}
         >
-          {/* Launch badge */}
-          <div className="flex justify-center mb-5">
-            <div className="bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full">
-              <p className="text-white text-sm font-medium">
-                🎉 חינם בתקופת ההשקה
-              </p>
-            </div>
-          </div>
-
           {/* Primary CTA */}
           <Button 
-            onClick={handleContinueAsGuest} 
+            onClick={handleStart} 
             className="w-full h-[56px] rounded-full text-[17px] font-bold transition-all active:scale-[0.98] bg-white text-[#2196F3] hover:bg-white/95"
             style={{
               boxShadow: '0 8px 30px -6px rgba(0, 0, 0, 0.25)'
             }}
           >
-            התחל עכשיו
-          </Button>
-
-          {/* Secondary CTA */}
-          <Button 
-            onClick={handleSignIn}
-            variant="outline"
-            className="w-full h-[52px] rounded-full text-[16px] font-medium mt-3 bg-white/10 border-white/30 text-white hover:bg-white/20 hover:text-white"
-          >
-            התחברות / הרשמה
+            התחל עכשיו 🚀
           </Button>
 
           {/* Helper text */}
           <p className="text-center text-sm text-white/60 mt-4">
-            אפשר להתחיל עכשיו בלי חשבון
+            ללא הרשמה, ללא כרטיס אשראי
           </p>
         </div>
       </div>

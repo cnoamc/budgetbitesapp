@@ -5,16 +5,11 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
-import { AuthProvider } from "@/contexts/AuthContext";
-import { GuestProvider } from "@/contexts/GuestContext";
+import { LocalProfileProvider } from "@/contexts/LocalProfileContext";
 import { AppProvider } from "@/contexts/AppContext";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { NotificationProvider } from "@/contexts/NotificationContext";
-import { SubscriptionProvider } from "@/contexts/SubscriptionContext";
-import { ReviewModeProvider } from "@/contexts/ReviewModeContext";
 import { NotificationBanner } from "@/components/NotificationBanner";
-import { PremiumPopup } from "@/components/PremiumPopup";
-import { GuestLoginModal } from "@/components/GuestLoginModal";
 import { PageTransition } from "@/components/PageTransition";
 import { BottomNav } from "@/components/BottomNav";
 import { PageSkeleton } from "@/components/ui/skeleton";
@@ -23,11 +18,9 @@ import { detectInAppBrowser } from "@/lib/inAppBrowser";
 
 // Eager load critical pages
 import Welcome from "./pages/Welcome";
-import SignIn from "./pages/SignIn";
+import CreateProfile from "./pages/CreateProfile";
 
 // Lazy load non-critical pages for faster initial load
-const LoadingSavings = lazy(() => import("./pages/LoadingSavings"));
-const Onboarding = lazy(() => import("./pages/Onboarding"));
 const Home = lazy(() => import("./pages/Home"));
 const Recipes = lazy(() => import("./pages/Recipes"));
 const RecipeDetail = lazy(() => import("./pages/RecipeDetail"));
@@ -81,9 +74,7 @@ function AnimatedRoutes(): React.ReactElement {
         <Suspense fallback={<PageLoader />}>
           <Routes location={location} key={location.pathname}>
             <Route path="/" element={<PageTransition><Welcome /></PageTransition>} />
-            <Route path="/loading" element={<PageTransition><LoadingSavings /></PageTransition>} />
-            <Route path="/signin" element={<PageTransition><SignIn /></PageTransition>} />
-            <Route path="/onboarding" element={<PageTransition><Onboarding /></PageTransition>} />
+            <Route path="/create-profile" element={<PageTransition><CreateProfile /></PageTransition>} />
             
             <Route path="/home" element={<PageTransition><Home /></PageTransition>} />
             <Route path="/recipes" element={<PageTransition><Recipes /></PageTransition>} />
@@ -125,31 +116,23 @@ function App(): React.ReactElement {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
-        <AuthProvider>
-          <ReviewModeProvider>
-            <GuestProvider>
-              <SubscriptionProvider>
-                <AppProvider>
-                  <NotificationProvider>
-                  <TooltipProvider>
-                    <Toaster />
-                    <Sonner />
-                    <NotificationBanner />
-                    <PremiumPopup />
-                    <InAppBrowserBanner />
-                    <BrowserRouter>
-                      <GuestLoginModal />
-                      <div className="screen-container bg-background">
-                        <AnimatedRoutes />
-                      </div>
-                    </BrowserRouter>
-                  </TooltipProvider>
-                  </NotificationProvider>
-                </AppProvider>
-              </SubscriptionProvider>
-            </GuestProvider>
-          </ReviewModeProvider>
-        </AuthProvider>
+        <LocalProfileProvider>
+          <AppProvider>
+            <NotificationProvider>
+              <TooltipProvider>
+                <Toaster />
+                <Sonner />
+                <NotificationBanner />
+                <InAppBrowserBanner />
+                <BrowserRouter>
+                  <div className="screen-container bg-background">
+                    <AnimatedRoutes />
+                  </div>
+                </BrowserRouter>
+              </TooltipProvider>
+            </NotificationProvider>
+          </AppProvider>
+        </LocalProfileProvider>
       </ThemeProvider>
     </QueryClientProvider>
   );
