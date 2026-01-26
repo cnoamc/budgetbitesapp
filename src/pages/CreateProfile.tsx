@@ -97,69 +97,69 @@ const CreateProfile: React.FC = () => {
         </div>
 
         {/* Form Card */}
-        <div className="flex-1 bg-background rounded-t-3xl px-6 pt-6 pb-8 overflow-y-auto">
+        <div className="flex-1 bg-background rounded-t-3xl px-5 pt-5 pb-6 overflow-y-auto">
           {/* Name Input */}
-          <div className="mb-6">
-            <label className="block text-sm font-medium mb-2">איך קוראים לך?</label>
+          <div className="mb-5">
+            <label className="block text-sm font-medium mb-2 text-foreground">איך קוראים לך?</label>
             <Input
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="השם שלך"
-              className="h-12 text-base bg-muted/50 border-0"
+              className="h-12 text-base bg-muted/50 border border-border/50 rounded-xl w-full"
               maxLength={24}
               dir="rtl"
             />
           </div>
 
           {/* Cooking Level */}
-          <div className="mb-6">
-            <label className="block text-sm font-medium mb-2">רמת הבישול שלך (אופציונלי)</label>
-            <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1">
+          <div className="mb-5">
+            <label className="block text-sm font-medium mb-2 text-foreground">רמת הבישול שלך (אופציונלי)</label>
+            <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1 -mx-1 px-1">
               {COOKING_LEVELS.map((level) => (
                 <button
                   key={level.value}
                   onClick={() => setCookingLevel(level.value)}
                   className={cn(
-                    "flex flex-col items-center gap-1 px-3 py-2 rounded-xl transition-all shrink-0",
+                    "flex flex-col items-center justify-center gap-1 min-w-[56px] h-[60px] px-2 py-2 rounded-xl transition-all shrink-0 border",
                     cookingLevel === level.value
-                      ? "bg-primary text-primary-foreground shadow-md scale-105"
-                      : "bg-muted/50 text-muted-foreground hover:bg-muted"
+                      ? "bg-primary text-primary-foreground shadow-md border-primary"
+                      : "bg-muted/50 text-muted-foreground hover:bg-muted border-border/50"
                   )}
                 >
-                  <span className="text-lg">{level.emoji}</span>
-                  <span className="text-xs font-medium whitespace-nowrap">{level.label}</span>
+                  <span className="text-lg leading-none">{level.emoji}</span>
+                  <span className="text-[10px] font-medium whitespace-nowrap leading-none">{level.label}</span>
                 </button>
               ))}
             </div>
           </div>
 
           {/* Dietary Preference */}
-          <div className="mb-8">
-            <label className="block text-sm font-medium mb-2">העדפת תזונה (אופציונלי)</label>
+          <div className="mb-6">
+            <label className="block text-sm font-medium mb-2 text-foreground">העדפת תזונה (אופציונלי)</label>
             <div className="grid grid-cols-4 gap-2">
               {DIETARY_OPTIONS.map((option) => (
                 <button
                   key={option.value}
                   onClick={() => setDietaryPreference(option.value)}
                   className={cn(
-                    "flex flex-col items-center gap-1 px-2 py-3 rounded-xl transition-all",
+                    "flex flex-col items-center justify-center gap-1 h-[68px] px-1 py-2 rounded-xl transition-all border",
                     dietaryPreference === option.value
-                      ? "bg-primary text-primary-foreground shadow-md"
-                      : "bg-muted/50 text-muted-foreground hover:bg-muted"
+                      ? "bg-primary text-primary-foreground shadow-md border-primary"
+                      : "bg-muted/50 text-muted-foreground hover:bg-muted border-border/50"
                   )}
                 >
-                  <span className="text-xl">{option.emoji}</span>
-                  <span className="text-xs font-medium">{option.label}</span>
+                  <span className="text-xl leading-none">{option.emoji}</span>
+                  <span className="text-[10px] font-medium leading-none">{option.label}</span>
                 </button>
               ))}
             </div>
           </div>
 
           {/* Buttons */}
-          <div className="space-y-3">
+          <div className="space-y-3 mt-auto">
             <Button
               onClick={handleStart}
-              className="w-full h-14 rounded-2xl text-lg font-bold"
+              className="w-full h-14 rounded-2xl text-lg font-bold shadow-lg"
               disabled={!name.trim()}
             >
               התחל 🚀
@@ -168,7 +168,7 @@ const CreateProfile: React.FC = () => {
             <Button
               variant="ghost"
               onClick={handleSkip}
-              className="w-full h-12 text-muted-foreground"
+              className="w-full h-11 text-muted-foreground hover:bg-muted/50"
             >
               דלג
             </Button>
