@@ -14,6 +14,7 @@ import { PageTransition } from "@/components/PageTransition";
 import { BottomNav } from "@/components/BottomNav";
 import { PageSkeleton } from "@/components/ui/skeleton";
 import { InAppBrowserBanner } from "@/components/InAppBrowserBanner";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { detectInAppBrowser } from "@/lib/inAppBrowser";
 
 // Eager load critical pages
@@ -52,13 +53,13 @@ const queryClient = new QueryClient({
 // Pages that show the bottom navigation
 const NAV_PAGES = ['/home', '/recipes', '/chat', '/progress', '/profile'];
 
-function PersistentBottomNav(): React.ReactElement | null {
+const PersistentBottomNav = React.memo(function PersistentBottomNav(): React.ReactElement | null {
   const location = useLocation();
   const showNav = NAV_PAGES.includes(location.pathname);
   
   if (!showNav) return null;
   return <BottomNav />;
-}
+});
 
 // Loading fallback component
 function PageLoader(): React.ReactElement {
@@ -114,27 +115,29 @@ function App(): React.ReactElement {
   }, []);
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider>
-        <LocalProfileProvider>
-          <AppProvider>
-            <NotificationProvider>
-              <TooltipProvider>
-                <Toaster />
-                <Sonner />
-                <NotificationBanner />
-                <InAppBrowserBanner />
-                <BrowserRouter>
-                  <div className="screen-container bg-background">
-                    <AnimatedRoutes />
-                  </div>
-                </BrowserRouter>
-              </TooltipProvider>
-            </NotificationProvider>
-          </AppProvider>
-        </LocalProfileProvider>
-      </ThemeProvider>
-    </QueryClientProvider>
+    <ErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider>
+          <LocalProfileProvider>
+            <AppProvider>
+              <NotificationProvider>
+                <TooltipProvider>
+                  <Toaster />
+                  <Sonner />
+                  <NotificationBanner />
+                  <InAppBrowserBanner />
+                  <BrowserRouter>
+                    <div className="screen-container bg-background">
+                      <AnimatedRoutes />
+                    </div>
+                  </BrowserRouter>
+                </TooltipProvider>
+              </NotificationProvider>
+            </AppProvider>
+          </LocalProfileProvider>
+        </ThemeProvider>
+      </QueryClientProvider>
+    </ErrorBoundary>
   );
 }
 
