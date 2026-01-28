@@ -22,13 +22,16 @@ export const FixedScreenLayout: React.FC<FixedScreenLayoutProps> = ({
   return (
     <div 
       className={cn(
-        "fixed inset-0 flex flex-col overflow-hidden",
+        "fixed inset-0 flex flex-col overflow-hidden max-w-[430px] mx-auto",
         className
       )}
       style={{
         // Ensure content respects safe areas on all sides
         paddingLeft: 'env(safe-area-inset-left, 0px)',
         paddingRight: 'env(safe-area-inset-right, 0px)',
+        // Center on larger screens
+        left: '50%',
+        transform: 'translateX(-50%)',
         ...style,
       }}
       dir={dir}
