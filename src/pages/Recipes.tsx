@@ -61,9 +61,9 @@ export const Recipes: React.FC = () => {
           style={{ paddingBottom: 'calc(110px + env(safe-area-inset-bottom, 0px) + 16px)' }}
         >
         {/* Header */}
-        <div className="p-4 sm:p-6 pb-4">
-          <div className="flex items-center justify-between mb-4 sm:mb-6">
-            <h1 className="text-xl sm:text-2xl font-bold">מתכונים</h1>
+        <div className="p-4 pb-4">
+          <div className="flex items-center justify-between mb-4">
+            <h1 className="text-xl font-bold">מתכונים</h1>
             <div className="w-10 h-10 rounded-xl overflow-hidden">
               <img 
                 src={photoUrl || appLogo} 
@@ -74,25 +74,25 @@ export const Recipes: React.FC = () => {
           </div>
 
           {/* Search */}
-          <div className="relative mb-4 sm:mb-5">
+          <div className="relative mb-4">
             <Search className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
             <input
               type="text"
               placeholder="חיפוש מתכון..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full h-12 sm:h-14 pr-12 pl-4 bg-card rounded-2xl border border-border/50 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all shadow-soft text-base"
+              className="w-full h-12 pr-12 pl-4 bg-card rounded-2xl border border-border/50 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all shadow-soft text-base"
             />
           </div>
 
           {/* Categories */}
-          <div className="flex gap-2 overflow-x-auto pb-2 -mx-4 sm:-mx-6 px-4 sm:px-6 scrollbar-hide">
+          <div className="flex gap-2 overflow-x-auto pb-2 -mx-4 px-4 scrollbar-hide">
             {categories.map((category) => (
               <button
                 key={category}
                 onClick={() => setActiveCategory(category)}
                 className={cn(
-                  "px-3 sm:px-5 py-2 sm:py-2.5 rounded-full whitespace-nowrap transition-all duration-300 text-xs sm:text-sm font-medium btn-press flex items-center gap-1 sm:gap-1.5",
+                  "px-3 py-2 rounded-full whitespace-nowrap transition-all duration-300 text-xs font-medium btn-press flex items-center gap-1",
                   activeCategory === category
                     ? "bg-black text-white shadow-soft"
                     : "bg-card text-muted-foreground hover:bg-secondary border border-border/50"
@@ -129,7 +129,7 @@ export const Recipes: React.FC = () => {
 
         {/* My Recipes Section */}
         {(activeCategory === 'all' || activeCategory === 'my-recipes') && (
-          <div className="px-4 sm:px-6 mb-4">
+          <div className="px-4 mb-4">
             {/* Custom Recipes List */}
             {filteredCustomRecipes.length > 0 && (
               <div className="space-y-3 mb-4">
@@ -195,7 +195,7 @@ export const Recipes: React.FC = () => {
 
         {/* Standard Recipe List */}
         {activeCategory !== 'my-recipes' && (
-          <div className="px-4 sm:px-6 space-y-3">
+          <div className="px-4 space-y-3">
             {activeCategory === 'all' && filteredCustomRecipes.length > 0 && (
               <h2 className="text-sm font-medium text-muted-foreground">כל המתכונים</h2>
             )}

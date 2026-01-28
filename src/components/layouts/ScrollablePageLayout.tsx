@@ -21,7 +21,7 @@ export const ScrollablePageLayout: React.FC<ScrollablePageLayoutProps> = ({
   return (
     <div 
       className={cn(
-        "h-full w-full flex flex-col overflow-hidden",
+        "h-full w-full max-w-[430px] mx-auto flex flex-col overflow-hidden",
         className
       )}
       dir="rtl"

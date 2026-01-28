@@ -5,11 +5,17 @@ export default {
   content: ["./pages/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}", "./app/**/*.{ts,tsx}", "./src/**/*.{ts,tsx}"],
   prefix: "",
   theme: {
+    // Force iPhone-only layout - no tablet/desktop breakpoints
+    screens: {
+      // Only keep a small breakpoint for minor adjustments, no tablet/desktop
+      'xs': '375px',
+    },
     container: {
       center: true,
       padding: "1rem",
       screens: {
-        "2xl": "1400px",
+        // Max width constraint for iPhone
+        DEFAULT: '100%',
       },
     },
     extend: {
