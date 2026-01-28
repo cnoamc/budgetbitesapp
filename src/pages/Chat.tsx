@@ -279,12 +279,12 @@ export const Chat: React.FC = () => {
 
   return (
     <div 
-      className="fixed inset-0 flex flex-col bg-background max-w-[430px] mx-auto"
+      className="fixed inset-0 flex flex-col bg-background"
       style={{ 
         paddingTop: 'var(--safe-top)', 
         paddingBottom: 'var(--safe-bottom)',
-        left: '50%',
-        transform: 'translateX(-50%)'
+        paddingLeft: 'env(safe-area-inset-left, 0px)',
+        paddingRight: 'env(safe-area-inset-right, 0px)',
       }}
       dir="rtl"
     >
