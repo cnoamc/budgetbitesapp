@@ -1,4 +1,5 @@
 import { useState, useCallback, useRef } from 'react';
+import { toast } from 'sonner';
 
 const LOG_TAG = '[PROFILE_PHOTO]';
 
@@ -11,57 +12,6 @@ interface ImagePickerOptions {
 interface ImagePickerResult {
   dataUrl: string | null;
   error: string | null;
-}
-
-/**
- * Detect if device is iPad or tablet
- */
-export function isTabletDevice(): boolean {
-  try {
-    const ua = navigator.userAgent.toLowerCase();
-    
-    // iPad detection (including iPadOS 13+ which reports as Mac)
-    const isIPad = /ipad/.test(ua) || 
-      (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1) ||
-      (/macintosh/.test(ua) && navigator.maxTouchPoints > 1);
-    
-    // Android tablet detection (has android but not mobile)
-    const isAndroidTablet = /android/.test(ua) && !/mobile/.test(ua);
-    
-    // Generic tablet detection based on screen size
-    const isLargeScreen = Math.min(window.screen.width, window.screen.height) >= 600;
-    const hasTouch = navigator.maxTouchPoints > 0 || 'ontouchstart' in window;
-    
-    return isIPad || isAndroidTablet || (isLargeScreen && hasTouch && !/mobile/.test(ua));
-  } catch (e) {
-    console.error(LOG_TAG, 'Error detecting tablet:', e);
-    return false;
-  }
-}
-
-/**
- * Check if camera capture is supported on this device
- */
-export function isCameraCaptureSupported(): boolean {
-  try {
-    // Tablets often have issues with capture attribute
-    if (isTabletDevice()) {
-      console.log(LOG_TAG, 'Tablet detected - disabling direct camera capture');
-      return false;
-    }
-    
-    // Check if we're on a mobile device that supports capture
-    const ua = navigator.userAgent.toLowerCase();
-    const isMobile = /iphone|ipod|android.*mobile/.test(ua);
-    
-    // Check for MediaDevices API (camera access)
-    const hasMediaDevices = !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
-    
-    return isMobile && hasMediaDevices;
-  } catch (e) {
-    console.error(LOG_TAG, 'Error checking camera support:', e);
-    return false;
-  }
 }
 
 /**
@@ -159,7 +109,8 @@ function validateFile(file: File, maxSizeMB: number = 10): { valid: boolean; err
 }
 
 /**
- * Hook for robust image picking with camera/library options
+ * Hook for robust image picking - GALLERY ONLY (camera disabled)
+ * Camera functionality has been removed to prevent iOS crashes.
  */
 export function useImagePicker(options: ImagePickerOptions = {}) {
   const { maxSizeMB = 10, maxDimension = 512, quality = 0.8 } = options;
@@ -167,11 +118,7 @@ export function useImagePicker(options: ImagePickerOptions = {}) {
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   
-  const cameraInputRef = useRef<HTMLInputElement | null>(null);
   const libraryInputRef = useRef<HTMLInputElement | null>(null);
-  
-  const cameraSupported = isCameraCaptureSupported();
-  const isTablet = isTabletDevice();
   
   /**
    * Process a selected file
@@ -251,25 +198,7 @@ export function useImagePicker(options: ImagePickerOptions = {}) {
   }, [processFile]);
   
   /**
-   * Open camera (only if supported)
-   */
-  const openCamera = useCallback(() => {
-    if (!cameraSupported) {
-      console.warn(LOG_TAG, 'Camera not supported on this device');
-      return false;
-    }
-    
-    try {
-      cameraInputRef.current?.click();
-      return true;
-    } catch (e) {
-      console.error(LOG_TAG, 'Error opening camera:', e);
-      return false;
-    }
-  }, [cameraSupported]);
-  
-  /**
-   * Open photo library
+   * Open photo library (gallery only)
    */
   const openLibrary = useCallback(() => {
     try {
@@ -282,6 +211,18 @@ export function useImagePicker(options: ImagePickerOptions = {}) {
   }, []);
   
   /**
+   * Defensive guard: Block any camera access attempts
+   * Shows a toast and redirects to gallery instead
+   */
+  const openCamera = useCallback(() => {
+    console.warn(LOG_TAG, 'Camera access attempted but is disabled');
+    toast.error('צילום לא זמין כרגע. נא לבחור תמונה מהגלריה.');
+    // Fallback to gallery
+    openLibrary();
+    return false;
+  }, [openLibrary]);
+  
+  /**
    * Clear error state
    */
   const clearError = useCallback(() => {
@@ -292,18 +233,30 @@ export function useImagePicker(options: ImagePickerOptions = {}) {
     // State
     isProcessing,
     error,
-    cameraSupported,
-    isTablet,
+    // Camera is always disabled
+    cameraSupported: false,
+    isTablet: false,
     
-    // Refs for inputs
-    cameraInputRef,
+    // Refs for inputs - only library input available
     libraryInputRef,
+    // Provide a dummy ref for backward compatibility
+    cameraInputRef: libraryInputRef,
     
     // Actions
     processFile,
     handleFileChange,
-    openCamera,
+    openCamera, // Defensive: shows toast and opens gallery instead
     openLibrary,
     clearError,
   };
+}
+
+// Export deprecated functions that do nothing (for backward compatibility)
+export function isTabletDevice(): boolean {
+  return false;
+}
+
+export function isCameraCaptureSupported(): boolean {
+  // Always return false - camera is disabled
+  return false;
 }

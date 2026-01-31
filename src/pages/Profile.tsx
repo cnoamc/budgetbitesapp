@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Settings, MapPin, Pencil, Camera, X, User, Smartphone, ChevronLeft, Info, Heart, Leaf, RotateCcw, Loader2 } from 'lucide-react';
+import { Settings, MapPin, Pencil, ImageIcon, X, User, Smartphone, ChevronLeft, Info, Heart, Leaf, RotateCcw, Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import appIcon from '@/assets/app-icon.png';
 import { Button } from '@/components/ui/button';
@@ -41,14 +41,11 @@ export const Profile: React.FC = () => {
   const { profile, progress, displayName, photoUrl, updateDisplayName, updatePhotoUrl } = useApp();
   const { profile: localProfile, updateProfile: updateLocalProfile } = useLocalProfile();
 
-  // Image picker with robust error handling
+  // Image picker - gallery only (camera disabled to prevent iOS crashes)
   const {
     isProcessing,
-    cameraSupported,
-    cameraInputRef,
     libraryInputRef,
     handleFileChange,
-    openCamera,
     openLibrary,
   } = useImagePicker({ maxSizeMB: 10, maxDimension: 512, quality: 0.8 });
 
@@ -168,7 +165,7 @@ export const Profile: React.FC = () => {
               )}
               {!isProcessing && (
                 <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity rounded-full">
-                  <Camera className="w-6 h-6 text-white" />
+                  <ImageIcon className="w-6 h-6 text-white" />
                 </div>
               )}
             </div>
@@ -182,15 +179,7 @@ export const Profile: React.FC = () => {
             )}
           </div>
           
-          {/* Hidden file inputs for camera and library */}
-          <input 
-            ref={cameraInputRef} 
-            type="file" 
-            accept="image/*" 
-            capture="environment"
-            className="hidden" 
-            onChange={(e) => handleFileChange(e, handlePhotoSuccess, handlePhotoError)} 
-          />
+          {/* Hidden file input for gallery only - NO capture attribute to prevent camera access */}
           <input 
             ref={libraryInputRef} 
             type="file" 
@@ -211,15 +200,13 @@ export const Profile: React.FC = () => {
           </p>
         </div>
 
-        {/* Photo Picker Sheet */}
+        {/* Photo Picker Sheet - gallery only */}
         <PhotoPickerSheet
           open={isPhotoPickerOpen}
           onOpenChange={setIsPhotoPickerOpen}
-          onTakePhoto={openCamera}
           onChooseFromLibrary={openLibrary}
           onRemovePhoto={handleRemovePhoto}
           showRemove={!!photoUrl}
-          cameraSupported={cameraSupported}
           isProcessing={isProcessing}
         />
 
