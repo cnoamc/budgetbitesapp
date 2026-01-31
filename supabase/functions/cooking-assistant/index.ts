@@ -12,36 +12,33 @@ serve(async (req) => {
   }
 
   try {
-    // Authenticate user
+    // Optional authentication - allow unauthenticated users
     const authHeader = req.headers.get('Authorization');
-    if (!authHeader?.startsWith('Bearer ')) {
-      console.error('Missing or invalid authorization header');
-      return new Response(
-        JSON.stringify({ error: 'יש להתחבר כדי להשתמש בעוזר הבישול' }),
-        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
+    let userId: string | null = null;
+
+    if (authHeader?.startsWith('Bearer ')) {
+      const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+      const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY')!;
+      const token = authHeader.replace('Bearer ', '');
+      
+      // Only validate if it looks like a JWT (has 3 parts)
+      if (token.split('.').length === 3 && token !== supabaseAnonKey) {
+        const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+          global: { headers: { Authorization: authHeader } }
+        });
+
+        const { data: claimsData, error: claimsError } = await supabase.auth.getClaims(token);
+        
+        if (!claimsError && claimsData?.claims?.sub) {
+          userId = claimsData.claims.sub;
+          console.log('Authenticated user:', userId);
+        }
+      }
     }
-
-    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
-    const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY')!;
     
-    const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-      global: { headers: { Authorization: authHeader } }
-    });
-
-    const token = authHeader.replace('Bearer ', '');
-    const { data: claimsData, error: claimsError } = await supabase.auth.getClaims(token);
-    
-    if (claimsError || !claimsData?.claims) {
-      console.error('Invalid token:', claimsError);
-      return new Response(
-        JSON.stringify({ error: 'יש להתחבר מחדש' }),
-        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
+    if (!userId) {
+      console.log('Anonymous user access');
     }
-
-    const userId = claimsData.claims.sub;
-    console.log('Authenticated user:', userId);
 
     const { messages, recipeName, currentStep, totalSteps, ingredients, stepInstruction, isLastStep } = await req.json();
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
