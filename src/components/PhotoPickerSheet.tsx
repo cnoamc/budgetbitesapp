@@ -1,5 +1,5 @@
 import React from 'react';
-import { Camera, Image, X, Loader2 } from 'lucide-react';
+import { Image, X, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Drawer,
@@ -12,26 +12,24 @@ import {
 interface PhotoPickerSheetProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onTakePhoto: () => void;
+  onTakePhoto?: () => void; // Deprecated - kept for backward compatibility but never shown
   onChooseFromLibrary: () => void;
   onRemovePhoto?: () => void;
   showRemove?: boolean;
-  cameraSupported: boolean;
+  cameraSupported?: boolean; // Deprecated - camera is always disabled
   isProcessing?: boolean;
 }
 
 /**
  * Bottom sheet for photo picking options
- * Shows "Take Photo" only when camera is supported (mobile, not tablet)
+ * CAMERA DISABLED: Only gallery selection is available to prevent iOS crashes
  */
 export const PhotoPickerSheet: React.FC<PhotoPickerSheetProps> = ({
   open,
   onOpenChange,
-  onTakePhoto,
   onChooseFromLibrary,
   onRemovePhoto,
   showRemove = false,
-  cameraSupported,
   isProcessing = false,
 }) => {
   return (
@@ -49,24 +47,7 @@ export const PhotoPickerSheet: React.FC<PhotoPickerSheetProps> = ({
             </div>
           ) : (
             <>
-              {/* Take Photo - only show when supported */}
-              {cameraSupported && (
-                <Button
-                  variant="outline"
-                  className="w-full h-14 justify-start gap-4 text-base"
-                  onClick={() => {
-                    onTakePhoto();
-                    onOpenChange(false);
-                  }}
-                >
-                  <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
-                    <Camera className="w-5 h-5 text-primary" />
-                  </div>
-                  צלם תמונה
-                </Button>
-              )}
-              
-              {/* Choose from Library - always available */}
+              {/* Choose from Library - the only option available */}
               <Button
                 variant="outline"
                 className="w-full h-14 justify-start gap-4 text-base"
