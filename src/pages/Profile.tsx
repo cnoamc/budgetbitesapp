@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Settings, MapPin, Pencil, ImageIcon, X, User, Smartphone, ChevronLeft, Info, Heart, Leaf, RotateCcw, Loader2 } from 'lucide-react';
+import { Settings, MapPin, Pencil, User, Smartphone, ChevronLeft, Info, Heart, Leaf, RotateCcw } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import appIcon from '@/assets/app-icon.png';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useApp } from '@/contexts/AppContext';
 import { useLocalProfile } from '@/contexts/LocalProfileContext';
-import { useImagePicker } from '@/hooks/useImagePicker';
-import { PhotoPickerSheet } from '@/components/PhotoPickerSheet';
 import { toast } from 'sonner';
 import {
   Dialog,
@@ -41,17 +39,8 @@ export const Profile: React.FC = () => {
   const { profile, progress, displayName, photoUrl, updateDisplayName, updatePhotoUrl } = useApp();
   const { profile: localProfile, updateProfile: updateLocalProfile } = useLocalProfile();
 
-  // Image picker - gallery only (camera disabled to prevent iOS crashes)
-  const {
-    isProcessing,
-    libraryInputRef,
-    handleFileChange,
-    openLibrary,
-  } = useImagePicker({ maxSizeMB: 10, maxDimension: 512, quality: 0.8 });
-
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [isResetDialogOpen, setIsResetDialogOpen] = useState(false);
-  const [isPhotoPickerOpen, setIsPhotoPickerOpen] = useState(false);
   const [editedName, setEditedName] = useState(displayName);
   const [editedCookingLevel, setEditedCookingLevel] = useState(localProfile?.cookingLevel || 1);
   const [editedDietary, setEditedDietary] = useState(localProfile?.dietaryPreference || 'all');
@@ -110,37 +99,6 @@ export const Profile: React.FC = () => {
     window.location.reload();
   };
 
-  const handlePhotoClick = () => {
-    // Open the photo picker sheet instead of directly triggering file input
-    setIsPhotoPickerOpen(true);
-  };
-
-  const handlePhotoSuccess = async (dataUrl: string) => {
-    try {
-      console.log(LOG_TAG, 'Photo selected successfully');
-      await updatePhotoUrl(dataUrl);
-      toast.success('התמונה נשמרה ✓');
-    } catch (e) {
-      console.error(LOG_TAG, 'Error saving photo:', e);
-      toast.error('לא הצלחנו לעדכן את התמונה. נסה שוב');
-    }
-  };
-
-  const handlePhotoError = (error: string) => {
-    console.warn(LOG_TAG, 'Photo selection error:', error);
-    toast.error(error || 'לא הצלחנו לעדכן את התמונה. נסה שוב');
-  };
-
-  const handleRemovePhoto = async () => {
-    try {
-      await updatePhotoUrl(null);
-      toast.success('התמונה הוסרה ✓');
-    } catch (e) {
-      console.error(LOG_TAG, 'Error removing photo:', e);
-      toast.error('לא הצלחנו להסיר את התמונה');
-    }
-  };
-
   const currentDietary = DIETARY_OPTIONS.find(d => d.value === (localProfile?.dietaryPreference || 'all'));
 
   return (
@@ -152,41 +110,14 @@ export const Profile: React.FC = () => {
         {/* Profile Header - Compact */}
         <div className="text-center mb-4">
           <div className="relative inline-block">
-            <div 
-              className="w-20 h-20 gradient-primary rounded-full mx-auto flex items-center justify-center shadow-glow cursor-pointer overflow-hidden group"
-              onClick={handlePhotoClick}
-            >
-              {isProcessing ? (
-                <Loader2 className="w-8 h-8 text-primary-foreground animate-spin" />
-              ) : photoUrl ? (
+            <div className="w-20 h-20 gradient-primary rounded-full mx-auto flex items-center justify-center shadow-glow overflow-hidden">
+              {photoUrl ? (
                 <img src={photoUrl} alt="Profile" className="w-full h-full object-cover" />
               ) : (
                 <User className="w-10 h-10 text-primary-foreground" />
               )}
-              {!isProcessing && (
-                <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity rounded-full">
-                  <ImageIcon className="w-6 h-6 text-white" />
-                </div>
-              )}
             </div>
-            {photoUrl && !isProcessing && (
-              <button
-                onClick={(e) => { e.stopPropagation(); handleRemovePhoto(); }}
-                className="absolute -top-1 -right-1 w-6 h-6 bg-destructive rounded-full flex items-center justify-center shadow-md"
-              >
-                <X className="w-3 h-3 text-destructive-foreground" />
-              </button>
-            )}
           </div>
-          
-          {/* Hidden file input for gallery only - NO capture attribute to prevent camera access */}
-          <input 
-            ref={libraryInputRef} 
-            type="file" 
-            accept="image/jpeg,image/png,image/webp,image/heic,image/heif,.jpg,.jpeg,.png,.webp,.heic,.heif" 
-            className="hidden" 
-            onChange={(e) => handleFileChange(e, handlePhotoSuccess, handlePhotoError)} 
-          />
 
           <div className="flex items-center justify-center gap-1 mt-3">
             <h1 className="text-xl font-bold">{displayName}</h1>
@@ -199,16 +130,6 @@ export const Profile: React.FC = () => {
             {skillLabels[(localProfile?.cookingLevel || 1) - 1]} • {progress.totalMealsCooked} ארוחות
           </p>
         </div>
-
-        {/* Photo Picker Sheet - gallery only */}
-        <PhotoPickerSheet
-          open={isPhotoPickerOpen}
-          onOpenChange={setIsPhotoPickerOpen}
-          onChooseFromLibrary={openLibrary}
-          onRemovePhoto={handleRemovePhoto}
-          showRemove={!!photoUrl}
-          isProcessing={isProcessing}
-        />
 
         {/* Stats Card */}
         <div className="bg-card rounded-xl p-4 shadow-card border border-border/50 mb-3">
