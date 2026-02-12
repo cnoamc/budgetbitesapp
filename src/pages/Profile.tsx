@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Settings, MapPin, Pencil, User, ChevronLeft, Info, Heart, Leaf, RotateCcw } from 'lucide-react';
+import { Settings, MapPin, Pencil, User, ChevronLeft, Info, Heart, Leaf, RotateCcw, BookOpen } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import appIcon from '@/assets/app-icon.png';
 import { Button } from '@/components/ui/button';
@@ -186,6 +186,22 @@ export const Profile: React.FC = () => {
               </span>
             </div>
           </div>
+
+          {/* Show Tutorial Again */}
+          <button
+            onClick={() => {
+              localStorage.removeItem('bb_tutorial_completed');
+              toast.success('המדריך יוצג בפתיחה הבאה של העמוד הראשי');
+              navigate('/home');
+            }}
+            className="w-full flex items-center justify-between py-1.5"
+          >
+            <div className="flex items-center gap-2">
+              <BookOpen className="w-4 h-4 text-muted-foreground" />
+              <span className="text-sm">הצג מדריך שוב</span>
+            </div>
+            <ChevronLeft className="w-4 h-4 text-muted-foreground" />
+          </button>
         </div>
 
         {/* Support Chefi Card */}
