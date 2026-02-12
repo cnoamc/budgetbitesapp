@@ -12,6 +12,7 @@ import { recipes } from '@/lib/recipes';
 import { getRecipeImage } from '@/lib/recipeImages';
 import appLogo from '@/assets/app-logo.png';
 import { cn } from '@/lib/utils';
+import TutorialOverlay from '@/components/TutorialOverlay';
 import { toast } from 'sonner';
 
 // Quick filter categories
@@ -127,6 +128,7 @@ export const Home: React.FC = () => {
 
   return (
     <GradientBackground variant="warm">
+      <TutorialOverlay />
       <div className="screen-container" dir="rtl">
         <div 
           className="scroll-container scrollbar-hide pt-safe"
