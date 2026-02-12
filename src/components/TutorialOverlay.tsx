@@ -5,9 +5,11 @@ import {
   Dialog,
   DialogContent,
 } from '@/components/ui/dialog';
+import chefiIcon from '@/assets/shefi-icon.png';
 
 interface TutorialStep {
-  emoji: string;
+  emoji?: string;
+  image?: string;
   title: string;
   description: string;
 }
@@ -16,27 +18,27 @@ const tutorialSteps: TutorialStep[] = [
   {
     emoji: '👋',
     title: 'ברוכים הבאים לשפי!',
-    description: 'העוזר האישי שלך לבישול חכם, חסכון בכסף ופחות בלגן. בוא נעשה סיור קצר.',
+    description: 'העוזר האישי שלך לבישול חכם, חסכון בכסף ופחות בלגן.',
+  },
+  {
+    emoji: '🍳',
+    title: 'מתכונים פשוטים ומהירים',
+    description: 'מעל 100 מתכונים מותאמים למתחילים, עם הסברים צעד אחר צעד וזמני הכנה קצרים.',
   },
   {
     emoji: '💰',
-    title: 'גלה את החיסכון שלך',
-    description: 'בכל מתכון תראה כמה תחסוך לעומת משלוח. החיסכון מצטבר ומתעדכן בזמן אמת.',
+    title: 'חוסכים בכל ארוחה',
+    description: 'תראה בדיוק כמה אתה חוסך לעומת הזמנת משלוח. החיסכון מצטבר!',
   },
   {
-    emoji: '👨‍🍳',
-    title: 'מתכונים פשוטים ומהירים',
-    description: 'כל המתכונים מותאמים למתחילים עם הסברים פשוטים וזמני הכנה קצרים.',
+    emoji: '🔍',
+    title: 'חיפוש חכם',
+    description: 'כתוב מה יש לך במקרר ושפי ימצא לך מתכון מושלם.',
   },
   {
-    emoji: '🤖',
-    title: 'עוזר בישול חכם',
-    description: 'שפי, העוזר החכם שלנו, ילווה אותך צעד אחר צעד בכל מתכון כמו חבר במטבח.',
-  },
-  {
-    emoji: '📈',
-    title: 'עקוב אחרי ההתקדמות',
-    description: 'צפה בחיסכון המצטבר, דרג מתכונים ושפר את יכולות הבישול שלך.',
+    image: 'chefi',
+    title: 'שפי כאן בשבילך! 👨‍🍳',
+    description: 'אני שפי, השף האישי שלך. תמיד אפשר לשאול אותי שאלות, לבקש טיפים או עזרה בבישול. יאללה, בוא נתחיל!',
   },
 ];
 
@@ -49,8 +51,7 @@ export const TutorialOverlay: React.FC = () => {
   useEffect(() => {
     const hasCompletedTutorial = localStorage.getItem(TUTORIAL_STORAGE_KEY);
     if (!hasCompletedTutorial) {
-      // Small delay for smoother UX after page load
-      const timer = setTimeout(() => setIsOpen(true), 500);
+      const timer = setTimeout(() => setIsOpen(true), 600);
       return () => clearTimeout(timer);
     }
   }, []);
@@ -74,37 +75,45 @@ export const TutorialOverlay: React.FC = () => {
     }
   };
 
-  const handleSkip = () => {
-    handleComplete();
-  };
-
   const step = tutorialSteps[currentStep];
   const isLastStep = currentStep === tutorialSteps.length - 1;
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogContent className="w-[calc(100vw-32px)] max-w-sm p-0 overflow-hidden border-0 rounded-3xl bg-card shadow-elevated [&>button]:hidden">
-        {/* Skip button - single X */}
-        <button
-          onClick={handleSkip}
-          className="absolute top-4 left-4 z-10 p-2 rounded-full bg-secondary/50 text-muted-foreground hover:bg-secondary transition-colors"
-          aria-label="דלג"
-        >
-          <X className="w-4 h-4" />
-        </button>
+        {/* Skip button */}
+        {!isLastStep && (
+          <button
+            onClick={handleComplete}
+            className="absolute top-4 left-4 z-10 p-2 rounded-full bg-secondary/50 text-muted-foreground hover:bg-secondary transition-colors"
+            aria-label="דלג"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        )}
 
         {/* Content */}
         <div className="p-6 pt-10 text-center">
-          {/* Emoji with animated background */}
-          <div className="relative mb-6">
-            <div className="absolute inset-0 bg-gradient-to-br from-black/10 to-muted/20 rounded-full blur-2xl scale-150 animate-pulse" />
-            <div className="relative w-24 h-24 mx-auto bg-gradient-to-br from-secondary to-muted rounded-3xl flex items-center justify-center shadow-soft animate-scale-in">
-              <span className="text-5xl">{step.emoji}</span>
-            </div>
+          {/* Icon area */}
+          <div className="relative mb-5">
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-muted/20 rounded-full blur-2xl scale-150" />
+            {step.image === 'chefi' ? (
+              <div className="relative w-28 h-28 mx-auto animate-scale-in">
+                <img
+                  src={chefiIcon}
+                  alt="שפי"
+                  className="w-full h-full object-contain drop-shadow-lg"
+                />
+              </div>
+            ) : (
+              <div className="relative w-20 h-20 mx-auto bg-gradient-to-br from-secondary to-muted rounded-3xl flex items-center justify-center shadow-soft animate-scale-in">
+                <span className="text-4xl">{step.emoji}</span>
+              </div>
+            )}
           </div>
 
           {/* Title */}
-          <h2 className="text-xl font-bold mb-3 animate-fade-in">
+          <h2 className="text-xl font-bold mb-2 animate-fade-in">
             {step.title}
           </h2>
 
@@ -119,19 +128,19 @@ export const TutorialOverlay: React.FC = () => {
               <button
                 key={index}
                 onClick={() => setCurrentStep(index)}
-                className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                className={`h-2 rounded-full transition-all duration-300 ${
                   index === currentStep
-                    ? 'bg-black w-6'
+                    ? 'bg-primary w-6'
                     : index < currentStep
-                    ? 'bg-black/50'
-                    : 'bg-secondary'
+                    ? 'bg-primary/40 w-2'
+                    : 'bg-secondary w-2'
                 }`}
                 aria-label={`שלב ${index + 1}`}
               />
             ))}
           </div>
 
-          {/* Navigation buttons */}
+          {/* Navigation */}
           <div className="flex gap-3">
             {currentStep > 0 && (
               <Button
@@ -147,7 +156,7 @@ export const TutorialOverlay: React.FC = () => {
               onClick={handleNext}
               className="flex-1 h-12 rounded-xl btn-press"
             >
-              {isLastStep ? 'יאללה, מתחילים! 🚀' : 'הבא'}
+              {isLastStep ? 'יאללה, בוא נבשל! 🚀' : 'הבא'}
               {!isLastStep && <ChevronLeft className="w-4 h-4" />}
             </Button>
           </div>
