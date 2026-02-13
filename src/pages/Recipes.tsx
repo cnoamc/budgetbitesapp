@@ -36,7 +36,7 @@ export const Recipes: React.FC = () => {
     } else if (activeCategory === 'my-recipes') {
       matchesCategory = false; // Standard recipes don't show in my-recipes
     } else {
-      matchesCategory = recipe.category === activeCategory;
+      matchesCategory = recipe.category.includes(activeCategory as RecipeCategory);
     }
     
     const matchesSearch = recipe.name.includes(searchQuery);
