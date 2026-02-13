@@ -85,8 +85,11 @@ export const Recipes: React.FC = () => {
             />
           </div>
 
-          {/* Categories */}
-          <div className="flex gap-2 overflow-x-auto pb-2 -mx-4 px-4 scrollbar-hide">
+          {/* Categories with fade edges */}
+          <div className="relative -mx-4">
+            <div className="absolute left-0 top-0 bottom-2 w-6 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none" />
+            <div className="absolute right-0 top-0 bottom-2 w-6 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none" />
+            <div className="flex gap-2 overflow-x-auto pb-2 px-4 scrollbar-hide">
             {categories.map((category) => (
               <button
                 key={category}
@@ -112,10 +115,10 @@ export const Recipes: React.FC = () => {
                 )}
                 {category === 'favorites' && (
                   <>
-                    <Heart className={cn("w-4 h-4", favorites.length > 0 && "fill-current text-red-500")} />
+                    <Heart className={cn("w-4 h-4", favorites.length > 0 && "fill-current text-destructive")} />
                     מועדפים
                     {favorites.length > 0 && (
-                      <span className="bg-red-500/20 text-red-600 text-xs px-1.5 py-0.5 rounded-full">
+                      <span className="bg-destructive/20 text-destructive text-xs px-1.5 py-0.5 rounded-full">
                         {favorites.length}
                       </span>
                     )}
@@ -124,6 +127,7 @@ export const Recipes: React.FC = () => {
                 {category !== 'all' && category !== 'favorites' && category !== 'my-recipes' && `${categoryEmojis[category]} ${categoryLabels[category]}`}
               </button>
             ))}
+            </div>
           </div>
         </div>
 
@@ -195,25 +199,26 @@ export const Recipes: React.FC = () => {
 
         {/* Standard Recipe List */}
         {activeCategory !== 'my-recipes' && (
-          <div className="px-4 space-y-3">
+          <div className="px-4">
             {activeCategory === 'all' && filteredCustomRecipes.length > 0 && (
-              <h2 className="text-sm font-medium text-muted-foreground">כל המתכונים</h2>
+              <h2 className="text-sm font-medium text-muted-foreground mb-3">כל המתכונים</h2>
             )}
-            {filteredRecipes.map((recipe, index) => (
-              <div 
-                key={recipe.id} 
-                className="animate-slide-up"
-                style={{ animationDelay: `${index * 0.05}s` }}
-              >
-                <RecipeCard
-                  recipe={recipe}
-                  onClick={() => navigate(`/recipe/${recipe.id}`)}
-                  isFavorite={isFavorite(recipe.id)}
-                  onToggleFavorite={() => toggleFavorite(recipe.id)}
-                />
-              </div>
-            ))}
-
+            <div className="grid grid-cols-2 gap-3">
+              {filteredRecipes.map((recipe, index) => (
+                <div 
+                  key={recipe.id} 
+                  className="animate-slide-up"
+                  style={{ animationDelay: `${index * 0.03}s` }}
+                >
+                  <RecipeCard
+                    recipe={recipe}
+                    onClick={() => navigate(`/recipe/${recipe.id}`)}
+                    isFavorite={isFavorite(recipe.id)}
+                    onToggleFavorite={() => toggleFavorite(recipe.id)}
+                  />
+                </div>
+              ))}
+            </div>
             {filteredRecipes.length === 0 && (
               <div className="text-center py-16">
                 <div className="w-20 h-20 bg-secondary rounded-3xl flex items-center justify-center text-4xl mx-auto mb-4">

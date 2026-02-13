@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Home, BookOpen, TrendingUp, User } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { triggerHaptic } from '@/hooks/useHaptics';
 import shefiIcon from '@/assets/shefi-icon.png';
 
@@ -45,7 +45,7 @@ export const BottomNav: React.FC = () => {
         <item.icon 
           className={cn(
             "w-6 h-6 transition-all duration-200",
-            isActive ? "stroke-[2.5px]" : "stroke-[1.5px]"
+            isActive ? "stroke-[2.5px] fill-primary/15" : "stroke-[1.5px]"
           )} 
         />
         <span className={cn(
@@ -54,6 +54,18 @@ export const BottomNav: React.FC = () => {
         )}>
           {item.label}
         </span>
+        {/* Active dot indicator */}
+        <AnimatePresence>
+          {isActive && (
+            <motion.div
+              initial={{ scale: 0, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0, opacity: 0 }}
+              transition={{ duration: 0.2, ease: "easeOut" }}
+              className="absolute -bottom-0.5 w-[5px] h-[5px] rounded-full bg-primary"
+            />
+          )}
+        </AnimatePresence>
       </button>
     );
   };
@@ -63,7 +75,7 @@ export const BottomNav: React.FC = () => {
       className="fixed bottom-0 left-0 right-0 z-50 pointer-events-none w-full in-app-browser:sticky"
     >
       <nav 
-        className="pointer-events-auto backdrop-blur-xl border-t border-white/20"
+        className="pointer-events-auto backdrop-blur-xl border-t border-border/30"
         style={{ 
           paddingBottom: 'env(safe-area-inset-bottom, 0px)',
           background: 'linear-gradient(to top, hsl(var(--background) / 0.95), hsl(var(--background) / 0.85))',
@@ -123,7 +135,9 @@ export const BottomNav: React.FC = () => {
               } : undefined}
               className={cn(
                 "relative flex items-center justify-center w-14 h-14 -mt-4 rounded-full shadow-lg transition-all duration-200 overflow-hidden",
-                isCenterActive && "ring-2 ring-white/40 ring-offset-2 ring-offset-background"
+                isCenterActive 
+                  ? "ring-2 ring-white/40 ring-offset-2 ring-offset-background"
+                  : "ring-2 ring-white/20"
               )}
               style={{
                 background: isCenterActive
