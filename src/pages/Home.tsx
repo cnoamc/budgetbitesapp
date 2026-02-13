@@ -60,13 +60,13 @@ export const Home: React.FC = () => {
     let filtered: typeof recipes = [];
     
     if (activeFilter === 'healthy') {
-      filtered = recipes.filter(r => r.category === 'vegetarian' || r.category === 'protein');
+      filtered = recipes.filter(r => r.category.includes('vegetarian') || r.category.includes('protein'));
     } else if (activeFilter === 'sweet') {
-      filtered = recipes.filter(r => r.category === 'desserts');
+      filtered = recipes.filter(r => r.category.includes('desserts'));
     } else if (activeFilter === 'filling') {
-      filtered = recipes.filter(r => r.category === 'protein');
+      filtered = recipes.filter(r => r.category.includes('protein') || r.category.includes('meat'));
     } else if (activeFilter === 'students') {
-      filtered = recipes.filter(r => r.category === 'cheap' || r.category === 'fast');
+      filtered = recipes.filter(r => r.category.includes('cheap') || r.category.includes('fast'));
     }
     
     // Shuffle the filtered recipes

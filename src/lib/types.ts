@@ -12,7 +12,7 @@ export type RecipeCategory = 'easy' | 'beginner' | 'cheap' | 'fast' | 'protein' 
 export interface Recipe {
   id: string;
   name: string;
-  category: RecipeCategory;
+  category: RecipeCategory[];
   difficulty: number;
   prepTime: number;
   cookTime: number;

@@ -171,7 +171,7 @@ export const RecipeDetail: React.FC = () => {
                 </span>
                 <span className="flex items-center gap-1">
                   <ChefHat className="w-4 h-4" />
-                  {categoryLabels[recipe.category]}
+                  {recipe.category.map(c => categoryLabels[c]).join(', ')}
                 </span>
               </div>
             </div>
