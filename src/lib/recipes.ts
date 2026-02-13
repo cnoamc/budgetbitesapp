@@ -4,7 +4,7 @@ export const recipes: Recipe[] = [
   {
     id: 'hamburger',
     name: 'המבורגר ביתי',
-    category: 'easy',
+    category: 'meat',
     difficulty: 2,
     prepTime: 10,
     cookTime: 15,
@@ -122,7 +122,7 @@ export const recipes: Recipe[] = [
   {
     id: 'rice-chicken',
     name: 'עוף ואורז',
-    category: 'protein',
+    category: 'meat',
     difficulty: 2,
     prepTime: 10,
     cookTime: 30,
@@ -491,7 +491,7 @@ export const recipes: Recipe[] = [
   {
     id: 'schnitzel',
     name: 'שניצל ישראלי',
-    category: 'easy',
+    category: 'meat',
     difficulty: 2,
     prepTime: 15,
     cookTime: 15,
@@ -575,7 +575,7 @@ export const recipes: Recipe[] = [
   {
     id: 'shawarma',
     name: 'שווארמה ביתית',
-    category: 'protein',
+    category: 'meat',
     difficulty: 2,
     prepTime: 15,
     cookTime: 20,
@@ -604,7 +604,7 @@ export const recipes: Recipe[] = [
   {
     id: 'chicken-soup',
     name: 'מרק עוף',
-    category: 'beginner',
+    category: 'meat',
     difficulty: 2,
     prepTime: 15,
     cookTime: 60,
@@ -912,7 +912,7 @@ export const recipes: Recipe[] = [
   {
     id: 'fried-chicken',
     name: 'עוף קריספי',
-    category: 'protein',
+    category: 'meat',
     difficulty: 2,
     prepTime: 20,
     cookTime: 20,
@@ -1202,7 +1202,7 @@ export const recipes: Recipe[] = [
   {
     id: 'grilled-chicken',
     name: 'עוף על האש',
-    category: 'protein',
+    category: 'meat',
     difficulty: 2,
     prepTime: 15,
     cookTime: 25,
@@ -1259,7 +1259,7 @@ export const recipes: Recipe[] = [
   {
     id: 'bbq-ribs',
     name: 'צלעות ברביקיו',
-    category: 'protein',
+    category: 'meat',
     difficulty: 3,
     prepTime: 15,
     cookTime: 120,
@@ -1288,7 +1288,7 @@ export const recipes: Recipe[] = [
   {
     id: 'steak',
     name: 'סטייק פרפקט',
-    category: 'protein',
+    category: 'meat',
     difficulty: 2,
     prepTime: 10,
     cookTime: 15,
@@ -1317,7 +1317,7 @@ export const recipes: Recipe[] = [
   {
     id: 'kebabs',
     name: 'קבב על האש',
-    category: 'protein',
+    category: 'meat',
     difficulty: 2,
     prepTime: 20,
     cookTime: 15,
@@ -1373,7 +1373,7 @@ export const recipes: Recipe[] = [
   {
     id: 'tandoori-chicken',
     name: 'טנדורי צ׳יקן',
-    category: 'protein',
+    category: 'meat',
     difficulty: 2,
     prepTime: 30,
     cookTime: 30,
@@ -1402,7 +1402,7 @@ export const recipes: Recipe[] = [
   {
     id: 'butter-chicken',
     name: 'באטר צ׳יקן',
-    category: 'protein',
+    category: 'meat',
     difficulty: 2,
     prepTime: 20,
     cookTime: 30,
@@ -1431,7 +1431,7 @@ export const recipes: Recipe[] = [
   {
     id: 'biryani',
     name: 'בירייאני',
-    category: 'protein',
+    category: 'meat',
     difficulty: 3,
     prepTime: 30,
     cookTime: 45,
@@ -1488,7 +1488,7 @@ export const recipes: Recipe[] = [
   {
     id: 'buffalo-wings',
     name: 'כנפיים באפלו',
-    category: 'protein',
+    category: 'meat',
     difficulty: 2,
     prepTime: 15,
     cookTime: 45,
@@ -1544,7 +1544,7 @@ export const recipes: Recipe[] = [
   {
     id: 'greek-gyro',
     name: "ג'יירו יווני",
-    category: 'protein',
+    category: 'meat',
     difficulty: 2,
     prepTime: 20,
     cookTime: 15,
@@ -1572,7 +1572,7 @@ export const recipes: Recipe[] = [
   {
     id: 'brisket',
     name: 'בריסקט',
-    category: 'protein',
+    category: 'meat',
     difficulty: 3,
     prepTime: 20,
     cookTime: 240,
@@ -1601,7 +1601,7 @@ export const recipes: Recipe[] = [
   {
     id: 'meatballs-mash',
     name: 'קציצות ופירה',
-    category: 'easy',
+    category: 'meat',
     difficulty: 2,
     prepTime: 20,
     cookTime: 30,
@@ -1742,7 +1742,7 @@ export const recipes: Recipe[] = [
   {
     id: 'steak-sandwich',
     name: 'סנדוויץ׳ סטייק',
-    category: 'protein',
+    category: 'meat',
     difficulty: 2,
     prepTime: 10,
     cookTime: 15,
