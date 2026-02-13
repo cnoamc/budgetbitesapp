@@ -64,13 +64,6 @@ export const Recipes: React.FC = () => {
         <div className="p-4 pb-4">
           <div className="flex items-center justify-between mb-4">
             <h1 className="text-xl font-bold">מתכונים</h1>
-            <div className="w-10 h-10 rounded-xl overflow-hidden">
-              <img 
-                src={photoUrl || appLogo} 
-                alt="Profile" 
-                className="w-full h-full object-cover" 
-              />
-            </div>
           </div>
 
           {/* Search */}
