@@ -2714,6 +2714,7 @@ export const categoryLabels: Record<RecipeCategory, string> = {
   vegetarian: 'צמחוני',
   kosher: 'כשר',
   desserts: 'קינוחים',
+  meat: 'בשר',
 };
 
 export const categoryEmojis: Record<RecipeCategory, string> = {
@@ -2721,8 +2722,9 @@ export const categoryEmojis: Record<RecipeCategory, string> = {
   beginner: '👶',
   cheap: '💸',
   fast: '⏱️',
-  protein: '🥩',
+  protein: '💪',
   vegetarian: '🌱',
   kosher: '✡️',
   desserts: '🍰',
+  meat: '🥩',
 };
