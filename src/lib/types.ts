@@ -7,7 +7,7 @@ export interface UserProfile {
   onboardingComplete: boolean;
 }
 
-export type RecipeCategory = 'easy' | 'beginner' | 'cheap' | 'fast' | 'protein' | 'vegetarian' | 'kosher' | 'desserts';
+export type RecipeCategory = 'easy' | 'beginner' | 'cheap' | 'fast' | 'protein' | 'vegetarian' | 'kosher' | 'desserts' | 'meat';
 
 export interface Recipe {
   id: string;

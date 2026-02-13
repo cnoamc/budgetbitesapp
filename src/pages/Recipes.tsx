@@ -15,7 +15,7 @@ import type { RecipeCategory } from '@/lib/types';
 import appLogo from '@/assets/app-logo.png';
 
 // Simplified categories per user request: מהיר, חסכוני, חלבון, צמחוני, כשר
-const categories: Array<RecipeCategory | 'all' | 'favorites' | 'my-recipes'> = ['all', 'fast', 'cheap', 'protein', 'vegetarian', 'kosher', 'favorites', 'my-recipes'];
+const categories: Array<RecipeCategory | 'all' | 'favorites' | 'my-recipes'> = ['all', 'fast', 'cheap', 'protein', 'meat', 'vegetarian', 'kosher', 'favorites', 'my-recipes'];
 
 export const Recipes: React.FC = () => {
   const navigate = useNavigate();
