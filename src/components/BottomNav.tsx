@@ -124,7 +124,7 @@ export const BottomNav: React.FC = () => {
               <img 
                 src={shefiIcon} 
                 alt="שפי" 
-                className="w-10 h-10 object-cover rounded-full"
+                className="w-full h-full object-cover"
               />
             </motion.button>
             <span className={cn(
