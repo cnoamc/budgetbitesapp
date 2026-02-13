@@ -108,6 +108,19 @@ export const BottomNav: React.FC = () => {
             <motion.button
               onClick={() => handleNavClick(centerItem.path)}
               whileTap={{ scale: 0.95 }}
+              animate={!isCenterActive ? {
+                scale: [1, 1.06, 1],
+                boxShadow: [
+                  '0 8px 16px -4px hsla(210, 100%, 40%, 0.3)',
+                  '0 10px 24px -4px hsla(210, 100%, 45%, 0.45)',
+                  '0 8px 16px -4px hsla(210, 100%, 40%, 0.3)'
+                ]
+              } : undefined}
+              transition={!isCenterActive ? {
+                duration: 3,
+                repeat: Infinity,
+                ease: "easeInOut"
+              } : undefined}
               className={cn(
                 "relative flex items-center justify-center w-14 h-14 -mt-4 rounded-full shadow-lg transition-all duration-200 overflow-hidden",
                 isCenterActive && "ring-2 ring-white/40 ring-offset-2 ring-offset-background"
@@ -118,7 +131,7 @@ export const BottomNav: React.FC = () => {
                   : 'linear-gradient(135deg, hsl(210, 100%, 50%) 0%, hsl(210, 80%, 40%) 100%)',
                 boxShadow: isCenterActive
                   ? '0 0 30px 8px hsla(210, 100%, 50%, 0.5), 0 8px 24px -4px hsla(210, 100%, 45%, 0.5), 0 4px 12px -2px hsla(210, 100%, 45%, 0.3)'
-                  : '0 8px 16px -4px hsla(210, 100%, 40%, 0.3)'
+                  : undefined
               }}
             >
               <img 
