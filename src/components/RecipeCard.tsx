@@ -133,7 +133,7 @@ export const RecipeCard: React.FC<RecipeCardProps> = ({
             <Clock className="w-3 h-3" />
             {totalTime} דק׳
           </span>
-          <span className="font-medium text-foreground">₪{recipe.homeCost}</span>
+          <span className="font-medium text-foreground">עלות ₪{recipe.homeCost}</span>
         </div>
       </div>
     </div>
