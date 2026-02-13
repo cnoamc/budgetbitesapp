@@ -1,10 +1,8 @@
 import React from 'react';
-import { Clock, ChefHat, TrendingUp, Heart } from 'lucide-react';
-import { categoryLabels } from '@/lib/recipes';
+import { Clock, TrendingUp, Heart } from 'lucide-react';
 import { getRecipeImage } from '@/lib/recipeImages';
 import type { Recipe } from '@/lib/types';
 import { cn } from '@/lib/utils';
-import { PremiumCard } from '@/components/ui/PremiumCard';
 
 interface RecipeCardProps {
   recipe: Recipe;
@@ -34,13 +32,15 @@ export const RecipeCard: React.FC<RecipeCardProps> = ({
 
   if (compact) {
     return (
-      <PremiumCard
+      <div
         onClick={onClick}
-        hoverable
-        className={cn("p-2.5 text-right relative", className)}
+        className={cn(
+          "bg-card rounded-2xl border border-border/50 p-2.5 text-right relative cursor-pointer active:scale-[0.98] transition-all shadow-sm hover:shadow-md",
+          className
+        )}
       >
         <div className="flex gap-3">
-          <div className="w-12 h-12 rounded-xl shrink-0 shadow-soft overflow-hidden">
+          <div className="w-12 h-12 rounded-xl shrink-0 shadow-sm overflow-hidden">
             {recipeImage ? (
               <img 
                 src={recipeImage} 
@@ -70,79 +70,72 @@ export const RecipeCard: React.FC<RecipeCardProps> = ({
             </span>
           </div>
         </div>
-      </PremiumCard>
+      </div>
     );
   }
 
+  // Grid card - image on top, text below
   return (
-    <PremiumCard
+    <div
       onClick={onClick}
-      hoverable
-      className={cn("p-4 text-right relative", className)}
-    >
-      {/* Favorite button */}
-      {onToggleFavorite && (
-        <button
-          onClick={handleFavoriteClick}
-          className={cn(
-            "absolute top-3 left-3 w-9 h-9 rounded-full flex items-center justify-center transition-all duration-300 btn-press z-10",
-            isFavorite 
-              ? "bg-red-500/10 text-red-500" 
-              : "bg-secondary/80 text-muted-foreground hover:text-red-400"
-          )}
-          aria-label={isFavorite ? "הסר ממועדפים" : "הוסף למועדפים"}
-        >
-          <Heart 
-            className={cn(
-              "w-5 h-5 transition-all",
-              isFavorite && "fill-current scale-110"
-            )} 
-          />
-        </button>
+      className={cn(
+        "bg-card rounded-2xl border border-border/50 overflow-hidden cursor-pointer active:scale-[0.97] transition-all shadow-sm hover:shadow-md text-right",
+        className
       )}
+    >
+      {/* Image with overlays */}
+      <div className="relative aspect-[4/3] overflow-hidden">
+        {recipeImage ? (
+          <img 
+            src={recipeImage} 
+            alt={recipe.name}
+            className="w-full h-full object-cover"
+          />
+        ) : (
+          <div className="w-full h-full bg-gradient-to-br from-secondary to-muted flex items-center justify-center text-5xl">
+            {recipe.emoji}
+          </div>
+        )}
 
-      <div className="flex gap-4">
-        {/* Recipe image or emoji fallback */}
-        <div className="w-20 h-20 rounded-2xl shrink-0 shadow-soft overflow-hidden">
-          {recipeImage ? (
-            <img 
-              src={recipeImage} 
-              alt={recipe.name}
-              className="w-full h-full object-cover"
+        {/* Savings badge overlay - top right */}
+        <span className="absolute top-2 right-2 flex items-center gap-0.5 text-white text-[11px] font-semibold bg-black/50 backdrop-blur-sm px-2 py-1 rounded-full">
+          <TrendingUp className="w-3 h-3" />
+          ₪{savings}
+        </span>
+
+        {/* Favorite button overlay - top left */}
+        {onToggleFavorite && (
+          <button
+            onClick={handleFavoriteClick}
+            className={cn(
+              "absolute top-2 left-2 w-8 h-8 rounded-full flex items-center justify-center transition-all duration-200 backdrop-blur-sm",
+              isFavorite 
+                ? "bg-red-500/80 text-white" 
+                : "bg-black/30 text-white/80 hover:bg-black/50"
+            )}
+            aria-label={isFavorite ? "הסר ממועדפים" : "הוסף למועדפים"}
+          >
+            <Heart 
+              className={cn(
+                "w-4 h-4 transition-all",
+                isFavorite && "fill-current"
+              )} 
             />
-          ) : (
-            <div className="w-full h-full bg-gradient-to-br from-secondary to-muted flex items-center justify-center text-4xl">
-              {recipe.emoji}
-            </div>
-          )}
-        </div>
-        
-        <div className="flex-1 min-w-0">
-          <h3 className="font-semibold text-lg mb-1.5 truncate">{recipe.name}</h3>
-          
-          <div className="flex items-center gap-3 text-sm text-muted-foreground mb-3">
-            <span className="flex items-center gap-1.5 bg-secondary/50 px-2 py-0.5 rounded-full">
-              <Clock className="w-3.5 h-3.5" />
-              {totalTime} דק׳
-            </span>
-            <span className="flex items-center gap-1.5">
-              <ChefHat className="w-3.5 h-3.5" />
-              {categoryLabels[recipe.category]}
-            </span>
-          </div>
-          
-          <div className="flex items-center justify-between">
-            <div className="flex flex-col items-start">
-              <span className="text-xs text-muted-foreground">עלות מצרכים</span>
-              <span className="text-base font-light tracking-tight" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>₪{recipe.homeCost}</span>
-            </div>
-            <span className="flex items-center gap-1 text-savings text-xs font-medium bg-savings-light/60 px-2 py-0.5 rounded-full">
-              <TrendingUp className="w-3 h-3" />
-              ₪{savings}
-            </span>
-          </div>
+          </button>
+        )}
+      </div>
+      
+      {/* Text content below image */}
+      <div className="p-2.5">
+        <h3 className="font-semibold text-sm truncate mb-1">{recipe.name}</h3>
+        <div className="flex items-center justify-between text-xs text-muted-foreground">
+          <span className="flex items-center gap-1">
+            <Clock className="w-3 h-3" />
+            {totalTime} דק׳
+          </span>
+          <span className="font-medium text-foreground">₪{recipe.homeCost}</span>
         </div>
       </div>
-    </PremiumCard>
+    </div>
   );
 };
