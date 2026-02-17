@@ -104,6 +104,22 @@ import rugelachImg from '@/assets/recipes/rugelach.jpg';
 import honeyCakeImg from '@/assets/recipes/honey-cake.jpg';
 import halvaMousseImg from '@/assets/recipes/halva-mousse.jpg';
 import sufganiyotImg from '@/assets/recipes/sufganiyot.jpg';
+// Kosher recipe unique images (batch 2)
+import kosherChickenStirFryImg from '@/assets/recipes/kosher-chicken-stir-fry.jpg';
+import kosherBeefStewImg from '@/assets/recipes/kosher-beef-stew.jpg';
+import kosherChickenDrumsticksImg from '@/assets/recipes/kosher-chicken-drumsticks.jpg';
+import kosherTurkeyPattiesImg from '@/assets/recipes/kosher-turkey-patties.jpg';
+import kosherChickenLiverImg from '@/assets/recipes/kosher-chicken-liver.jpg';
+import kosherTunaSteakImg from '@/assets/recipes/kosher-tuna-steak.jpg';
+import kosherFishCakesImg from '@/assets/recipes/kosher-fish-cakes.jpg';
+import kosherBakedTilapiaImg from '@/assets/recipes/kosher-baked-tilapia.jpg';
+import kosherVegetableQuicheImg from '@/assets/recipes/kosher-vegetable-quiche.jpg';
+import kosherCheeseBlitzesImg from '@/assets/recipes/kosher-cheese-blintzes.jpg';
+import kosherEggplantParmImg from '@/assets/recipes/kosher-eggplant-parm.jpg';
+import kosherTomatoSoupImg from '@/assets/recipes/kosher-tomato-soup.jpg';
+import kosherTabboulehImg from '@/assets/recipes/kosher-tabbouleh.jpg';
+import kosherBeetSaladImg from '@/assets/recipes/kosher-beet-salad.jpg';
+import kosherBulgurImg from '@/assets/recipes/kosher-bulgur.jpg';
 
 export const recipeImages: Record<string, string> = {
   'hamburger': hamburgerImg,
@@ -209,30 +225,30 @@ export const recipeImages: Record<string, string> = {
   'kosher-chicken-shawarma': shawarmaImg,
   'kosher-meatballs-sauce': meatballsMashImg,
   'kosher-stuffed-peppers': stuffedPeppersImg,
-  'kosher-chicken-stir-fry': vegetableStirFryImg,
-  'kosher-beef-stew': brisketImg,
-  'kosher-chicken-drumsticks': grilledChickenImg,
-  'kosher-turkey-patties': hamburgerImg,
+  'kosher-chicken-stir-fry': kosherChickenStirFryImg,
+  'kosher-beef-stew': kosherBeefStewImg,
+  'kosher-chicken-drumsticks': kosherChickenDrumsticksImg,
+  'kosher-turkey-patties': kosherTurkeyPattiesImg,
   'kosher-chicken-cutlets': grilledChickenImg,
   'kosher-cholent': cholentImg,
   'kosher-jerusalem-grill': jerusalemGrillImg,
-  'kosher-chicken-liver': grilledChickenImg,
+  'kosher-chicken-liver': kosherChickenLiverImg,
   'kosher-ground-beef-pita': shawarmaImg,
   'kosher-roast-chicken': grilledChickenImg,
   // Kosher recipes - Fish
   'kosher-salmon-fillet': salmonFilletImg,
-  'kosher-tuna-steak': sashimiImg,
-  'kosher-fish-cakes': fishChipsImg,
-  'kosher-baked-tilapia': fishChipsImg,
+  'kosher-tuna-steak': kosherTunaSteakImg,
+  'kosher-fish-cakes': kosherFishCakesImg,
+  'kosher-baked-tilapia': kosherBakedTilapiaImg,
   'kosher-salmon-patties': salmonFilletImg,
   // Kosher recipes - Vegetarian/Dairy
   'kosher-cheese-bourekas': burekasImg,
   'kosher-shakshuka-green': shakshukaGreenImg,
   'kosher-mushroom-pasta': pastaAlfredoImg,
-  'kosher-vegetable-quiche': omeletteImg,
-  'kosher-cheese-blintzes': crepesImg,
+  'kosher-vegetable-quiche': kosherVegetableQuicheImg,
+  'kosher-cheese-blintzes': kosherCheeseBlitzesImg,
   'kosher-pasta-cream': pastaAlfredoImg,
-  'kosher-eggplant-parm': lasagnaImg,
+  'kosher-eggplant-parm': kosherEggplantParmImg,
   'kosher-veggie-fritters': falafelImg,
   'kosher-cheese-toast-zaatar': toastCheeseImg,
   'kosher-baked-potato': frenchFriesImg,
@@ -240,20 +256,20 @@ export const recipeImages: Record<string, string> = {
   'kosher-chicken-soup': chickenSoupImg,
   'kosher-lentil-soup': majadaraImg,
   'kosher-vegetable-soup': chickenSoupImg,
-  'kosher-tomato-soup': matbuchaImg,
+  'kosher-tomato-soup': kosherTomatoSoupImg,
   'kosher-bean-soup': majadaraImg,
   // Kosher recipes - Salads
   'kosher-israeli-salad': israeliSaladImg,
   'kosher-quinoa-salad': proteinSaladImg,
-  'kosher-tabbouleh': israeliSaladImg,
+  'kosher-tabbouleh': kosherTabboulehImg,
   'kosher-couscous-salad': couscousImg,
-  'kosher-beet-salad': proteinSaladImg,
+  'kosher-beet-salad': kosherBeetSaladImg,
   // Kosher recipes - Grains
   'kosher-rice-pilaf': riceChickenImg,
   'kosher-couscous-veggies': couscousImg,
   'kosher-ptitim': ptitimImg,
   'kosher-pasta-salad': pastaAlfredoImg,
-  'kosher-bulgur': couscousImg,
+  'kosher-bulgur': kosherBulgurImg,
   // Kosher recipes - Desserts
   'kosher-rugelach': rugelachImg,
   'kosher-honey-cake': honeyCakeImg,
