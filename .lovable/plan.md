@@ -1,54 +1,44 @@
 
 
-# שיפורים ל-NavBar ולעמוד המתכונים
+# Add 50 Kosher Recipes
 
-## 1. שיפור ה-NavBar (תפריט תחתון)
+## Summary
+Add 50 new kosher recipes to the existing recipe array in `src/lib/recipes.ts`. The "kosher" category (כשר ✡️) already exists in the app -- no schema or UI changes needed.
 
-### מה ישתנה:
-- **הוספת אינדיקטור פעיל** - נקודה צבעונית קטנה מתחת לאייקון הפעיל (במקום רק שינוי צבע), עם אנימציית כניסה חלקה
-- **הפרדה ויזואלית טובה יותר** - הוספת קו עדין דק מעל ה-navbar כדי לתת הרגשה של "מדף" נפרד
-- **אייקונים מלאים במצב פעיל** - כשכפתור פעיל, האייקון יהיה filled (מלא) ולא רק outline, כמו ב-iOS
-- **שיפור הכפתור המרכזי של שפי** - הוספת טבעת לבנה דקה (border) סביב הכפתור כדי שיבלוט יותר מהרקע
+## What Already Exists
+- Category "כשר" with emoji ✡️ is configured
+- The kosher filter works in the Recipes page
+- Only 3 recipes currently tagged as kosher (falafel, kosher sushi, kosher sashimi)
 
-### מה לא ישתנה:
-- אנימציית הנשימה שנוספה זה עתה
-- אפקט הזוהר הכחול במצב פעיל
-- המבנה הכללי של 5 כפתורים
+## What Will Be Done
 
----
+### File: `src/lib/recipes.ts`
+Add 50 new recipe objects to the `recipes` array. Each recipe will:
+- Have `'kosher'` in its `category` array, plus other relevant categories (fast, cheap, meat, vegetarian, protein, etc.)
+- Follow the existing `Recipe` interface (id, name, category, difficulty, prepTime, cookTime, homeCost, deliveryCost, emoji, image, ingredients, steps)
+- Be written entirely in Hebrew (names, ingredients, steps)
+- Be Israel-friendly, realistic, and simple
+- Contain NO forbidden foods (no pork, shellfish, etc.) -- only kosher fish (salmon, tuna, etc.)
+- Include tags for dairy/meat/pareve via category assignments (vegetarian = pareve/dairy context)
 
-## 2. שיפור עמוד המתכונים
+### Recipe Diversity (50 recipes)
+- **Meat dishes (~15):** Chicken schnitzel kosher, lamb kebab, chicken shawarma, meatballs in sauce, stuffed peppers with meat, chicken stir-fry, beef stew, chicken drumsticks, turkey patties, chicken cutlets, cholent, Jerusalem mixed grill, chicken liver, ground beef pita, etc.
+- **Fish dishes (~5):** Salmon fillet, tuna steak, fish cakes, baked tilapia, salmon patties
+- **Vegetarian/Dairy (~10):** Cheese bourekas, shakshuka, mushroom pasta, vegetable quiche, cheese blintzes, pasta with cream sauce, eggplant parmesan, vegetable fritters, cheese toast, baked potato
+- **Soups (~5):** Chicken soup with kneidlach, lentil soup, vegetable soup, tomato soup, bean soup
+- **Salads (~5):** Israeli salad, quinoa salad, tabbouleh, couscous salad, beet salad
+- **Rice/Pasta/Grains (~5):** Rice pilaf, couscous with vegetables, ptitim, pasta salad, bulgur
+- **Desserts (~5):** Rugelach, honey cake, halva mousse, sufganiyot, apple crumble
 
-### מה ישתנה:
-- **כרטיסי מתכון בסגנון תמונה גדולה** - במקום הפריסה הנוכחית (תמונה קטנה + טקסט בשורה), כל כרטיס מתכון יציג תמונה גדולה יותר (יחס 16:9) עם שכבת טקסט למטה. זה ייתן תחושה יותר "אינסטגרמית" ומזמינה
-- **גריד של 2 עמודות** - במקום רשימה אנכית, המתכונים יוצגו ב-2 עמודות זו ליד זו, מה שמאפשר לראות יותר מתכונים במסך אחד
-- **בדג' חיסכון על התמונה** - תג ה-"חיסכון" ירחף בפינה של התמונה כ-overlay קטן
-- **כפתור לב על התמונה** - כפתור המועדפים ירחף בפינה הנגדית של התמונה
-- **קטגוריות עם אנימציית סקרול** - שיפור ויזואלי קל לבר הקטגוריות עם אפקט fade בקצוות
+### No Other Changes
+- No UI modifications
+- No schema changes
+- No changes to other files (types, pages, etc.)
 
-### מה לא ישתנה:
-- שורת החיפוש
-- ההדר עם תמונת הפרופיל
-- הפונקציונליות של סינון וחיפוש
-
----
-
-## פרטים טכניים
-
-### קבצים שיערכו:
-
-**`src/components/BottomNav.tsx`**
-- הוספת נקודת אינדיקטור (`div` עגול 5px) מתחת לטקסט של כפתור פעיל
-- שינוי האייקונים ל-filled variant במצב פעיל (שימוש ב-`fill-current`)
-- הוספת border לבן לכפתור שפי: `ring-2 ring-white/30` במצב רגיל
-
-**`src/components/RecipeCard.tsx`**
-- עיצוב מחדש של ה-variant הרגיל (לא compact) לפריסת תמונה-מעל-טקסט
-- תמונה ביחס aspect-[4/3] עם rounded-t-2xl
-- overlay של בדג' חיסכון ולב על התמונה
-- טקסט מתחת עם שם, זמן, ועלות
-
-**`src/pages/Recipes.tsx`**
-- שינוי הפריסה מ-`space-y-3` ל-`grid grid-cols-2 gap-3`
-- הוספת אפקט fade mask לבר הקטגוריות
+## Technical Details
+- Each recipe follows the exact `Recipe` interface structure
+- `image: ''` for all new recipes (consistent with existing pattern -- images are mapped separately in `recipeImages.ts`)
+- IDs will be unique kebab-case strings prefixed with `kosher-` for clarity
+- Difficulty range: 1-3
+- Realistic Israeli cost estimates for homeCost and deliveryCost
 
