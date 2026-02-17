@@ -95,6 +95,16 @@ import affogatoImg from '@/assets/recipes/affogato.jpg';
 import matchaLavaCakeImg from '@/assets/recipes/matcha-lava-cake.jpg';
 import dubaiChocolateImg from '@/assets/recipes/dubai-chocolate.jpg';
 
+// Kosher recipe images (new)
+import stuffedPeppersImg from '@/assets/recipes/stuffed-peppers.jpg';
+import cholentImg from '@/assets/recipes/cholent.jpg';
+import jerusalemGrillImg from '@/assets/recipes/jerusalem-grill.jpg';
+import salmonFilletImg from '@/assets/recipes/salmon-fillet.jpg';
+import rugelachImg from '@/assets/recipes/rugelach.jpg';
+import honeyCakeImg from '@/assets/recipes/honey-cake.jpg';
+import halvaMousseImg from '@/assets/recipes/halva-mousse.jpg';
+import sufganiyotImg from '@/assets/recipes/sufganiyot.jpg';
+
 export const recipeImages: Record<string, string> = {
   'hamburger': hamburgerImg,
   'pasta-tomato': pastaTomatoImg,
@@ -193,6 +203,63 @@ export const recipeImages: Record<string, string> = {
   'affogato': affogatoImg,
   'matcha-lava-cake': matchaLavaCakeImg,
   'dubai-chocolate': dubaiChocolateImg,
+  // Kosher recipes - Meat
+  'kosher-chicken-schnitzel': schnitzelImg,
+  'kosher-lamb-kebab': kebabsImg,
+  'kosher-chicken-shawarma': shawarmaImg,
+  'kosher-meatballs-sauce': meatballsMashImg,
+  'kosher-stuffed-peppers': stuffedPeppersImg,
+  'kosher-chicken-stir-fry': vegetableStirFryImg,
+  'kosher-beef-stew': brisketImg,
+  'kosher-chicken-drumsticks': grilledChickenImg,
+  'kosher-turkey-patties': hamburgerImg,
+  'kosher-chicken-cutlets': grilledChickenImg,
+  'kosher-cholent': cholentImg,
+  'kosher-jerusalem-grill': jerusalemGrillImg,
+  'kosher-chicken-liver': grilledChickenImg,
+  'kosher-ground-beef-pita': shawarmaImg,
+  'kosher-roast-chicken': grilledChickenImg,
+  // Kosher recipes - Fish
+  'kosher-salmon-fillet': salmonFilletImg,
+  'kosher-tuna-steak': sashimiImg,
+  'kosher-fish-cakes': fishChipsImg,
+  'kosher-baked-tilapia': fishChipsImg,
+  'kosher-salmon-patties': salmonFilletImg,
+  // Kosher recipes - Vegetarian/Dairy
+  'kosher-cheese-bourekas': burekasImg,
+  'kosher-shakshuka-green': shakshukaGreenImg,
+  'kosher-mushroom-pasta': pastaAlfredoImg,
+  'kosher-vegetable-quiche': omeletteImg,
+  'kosher-cheese-blintzes': crepesImg,
+  'kosher-pasta-cream': pastaAlfredoImg,
+  'kosher-eggplant-parm': lasagnaImg,
+  'kosher-veggie-fritters': falafelImg,
+  'kosher-cheese-toast-zaatar': toastCheeseImg,
+  'kosher-baked-potato': frenchFriesImg,
+  // Kosher recipes - Soups
+  'kosher-chicken-soup': chickenSoupImg,
+  'kosher-lentil-soup': majadaraImg,
+  'kosher-vegetable-soup': chickenSoupImg,
+  'kosher-tomato-soup': matbuchaImg,
+  'kosher-bean-soup': majadaraImg,
+  // Kosher recipes - Salads
+  'kosher-israeli-salad': israeliSaladImg,
+  'kosher-quinoa-salad': proteinSaladImg,
+  'kosher-tabbouleh': israeliSaladImg,
+  'kosher-couscous-salad': couscousImg,
+  'kosher-beet-salad': proteinSaladImg,
+  // Kosher recipes - Grains
+  'kosher-rice-pilaf': riceChickenImg,
+  'kosher-couscous-veggies': couscousImg,
+  'kosher-ptitim': ptitimImg,
+  'kosher-pasta-salad': pastaAlfredoImg,
+  'kosher-bulgur': couscousImg,
+  // Kosher recipes - Desserts
+  'kosher-rugelach': rugelachImg,
+  'kosher-honey-cake': honeyCakeImg,
+  'kosher-halva-mousse': halvaMousseImg,
+  'kosher-sufganiyot': sufganiyotImg,
+  'kosher-apple-crumble': appleCakeImg,
 };
 
 export const getRecipeImage = (recipeId: string): string | undefined => {
