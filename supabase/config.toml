@@ -1,13 +1,13 @@
 project_id = "awgblmeyyvrevnncfqho"
 
-[functions.cooking-assistant]
-verify_jwt = false
-
-[functions.delete-account]
-verify_jwt = false
-
-[functions.import-recipe]
-verify_jwt = false
-
-[functions.trial-reminder]
-verify_jwt = false
+[functions]
+  [functions.auth-email-hook]
+    verify_jwt = false
+  [functions.cooking-assistant]
+    verify_jwt = false
+  [functions.delete-account]
+    verify_jwt = false
+  [functions.import-recipe]
+    verify_jwt = false
+  [functions.trial-reminder]
+    verify_jwt = false
