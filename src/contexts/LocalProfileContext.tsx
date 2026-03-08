@@ -15,6 +15,8 @@ const defaultProfile: LocalProfile = {
   name: '',
   cookingLevel: 1,
   dietaryPreference: 'all',
+  ageRange: '',
+  foodPreferences: [],
   createdAt: '',
 };
 
