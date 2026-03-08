@@ -4,23 +4,25 @@ import { Home, BookOpen, TrendingUp, User } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
 import { triggerHaptic } from '@/hooks/useHaptics';
+import { useLanguage } from '@/contexts/LanguageContext';
 import shefiIcon from '@/assets/shefi-icon.png';
-
-const leftNavItems = [
-  { icon: Home, label: 'בית', path: '/home' },
-  { icon: BookOpen, label: 'מתכונים', path: '/recipes' },
-];
-
-const rightNavItems = [
-  { icon: TrendingUp, label: 'התקדמות', path: '/progress' },
-  { icon: User, label: 'פרופיל', path: '/profile' },
-];
-
-const centerItem = { label: 'שפי', path: '/chat' };
 
 export const BottomNav: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { t } = useLanguage();
+
+  const leftNavItems = [
+    { icon: Home, labelKey: 'nav.home', path: '/home' },
+    { icon: BookOpen, labelKey: 'nav.recipes', path: '/recipes' },
+  ];
+
+  const rightNavItems = [
+    { icon: TrendingUp, labelKey: 'nav.progress', path: '/progress' },
+    { icon: User, labelKey: 'nav.profile', path: '/profile' },
+  ];
+
+  const centerItem = { labelKey: 'nav.chefi', path: '/chat' };
 
   const handleNavClick = (path: string) => {
     triggerHaptic('light');
@@ -29,7 +31,7 @@ export const BottomNav: React.FC = () => {
 
   const isCenterActive = location.pathname === centerItem.path;
 
-  const renderNavItem = (item: { icon: React.ElementType; label: string; path: string }) => {
+  const renderNavItem = (item: { icon: React.ElementType; labelKey: string; path: string }) => {
     const isActive = location.pathname === item.path;
     return (
       <button
@@ -52,7 +54,7 @@ export const BottomNav: React.FC = () => {
           "text-[11px] transition-all duration-200",
           isActive ? "font-semibold" : "font-medium"
         )}>
-          {item.label}
+          {t(item.labelKey)}
         </span>
       </button>
     );
@@ -71,12 +73,10 @@ export const BottomNav: React.FC = () => {
         }}
       >
         <div className="flex items-end justify-around px-2 pt-1">
-          {/* Left nav items */}
           {leftNavItems.map(renderNavItem)}
 
-          {/* Center raised button - שפי with glow */}
+          {/* Center raised button */}
           <div className="relative flex flex-col items-center flex-1">
-            {/* Animated pulsing glow effect - only visible when active */}
             {isCenterActive && (
               <motion.div 
                 className="absolute top-0 w-24 h-24 -mt-7 rounded-full pointer-events-none"
@@ -95,7 +95,6 @@ export const BottomNav: React.FC = () => {
                 }}
               />
             )}
-            {/* Static inner glow - only visible when active */}
             {isCenterActive && (
               <div 
                 className="absolute top-0 w-18 h-18 -mt-5 rounded-full pointer-events-none opacity-60"
@@ -123,7 +122,7 @@ export const BottomNav: React.FC = () => {
             >
               <img 
                 src={shefiIcon} 
-                alt="שפי" 
+                alt={t('nav.chefi')} 
                 className="w-10 h-10 object-cover rounded-full"
               />
             </motion.button>
@@ -131,11 +130,10 @@ export const BottomNav: React.FC = () => {
               "text-[11px] mt-1 transition-all duration-200",
               isCenterActive ? "font-semibold text-primary" : "font-medium text-muted-foreground"
             )}>
-              שפי
+              {t('nav.chefi')}
             </span>
           </div>
 
-          {/* Right nav items */}
           {rightNavItems.map(renderNavItem)}
         </div>
       </nav>

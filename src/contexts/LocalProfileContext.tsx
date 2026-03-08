@@ -6,6 +6,8 @@ export interface LocalProfile {
   name: string;
   cookingLevel: number; // 1-5
   dietaryPreference: string; // 'all' | 'vegetarian' | 'vegan' | 'kosher'
+  ageRange: string;
+  foodPreferences: string[];
   createdAt: string;
 }
 
@@ -13,6 +15,8 @@ const defaultProfile: LocalProfile = {
   name: '',
   cookingLevel: 1,
   dietaryPreference: 'all',
+  ageRange: '',
+  foodPreferences: [],
   createdAt: '',
 };
 
@@ -20,7 +24,7 @@ interface LocalProfileContextType {
   profile: LocalProfile | null;
   hasProfile: boolean;
   loading: boolean;
-  createProfile: (name: string, cookingLevel?: number, dietaryPreference?: string) => void;
+  createProfile: (name: string, cookingLevel?: number, dietaryPreference?: string, ageRange?: string, foodPreferences?: string[]) => void;
   updateProfile: (updates: Partial<LocalProfile>) => void;
   clearProfile: () => void;
 }
@@ -46,11 +50,13 @@ export const LocalProfileProvider: React.FC<{ children: ReactNode }> = ({ childr
     }
   }, []);
 
-  const createProfile = (name: string, cookingLevel = 1, dietaryPreference = 'all') => {
+  const createProfile = (name: string, cookingLevel = 1, dietaryPreference = 'all', ageRange = '', foodPreferences: string[] = []) => {
     const newProfile: LocalProfile = {
       name: name.trim() || 'שף',
       cookingLevel,
       dietaryPreference,
+      ageRange,
+      foodPreferences,
       createdAt: new Date().toISOString(),
     };
     

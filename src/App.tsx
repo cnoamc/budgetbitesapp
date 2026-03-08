@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
 import { LocalProfileProvider } from "@/contexts/LocalProfileContext";
+import { LanguageProvider } from "@/contexts/LanguageContext";
 import { AppProvider } from "@/contexts/AppContext";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { NotificationProvider } from "@/contexts/NotificationContext";
@@ -18,8 +19,12 @@ import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { detectInAppBrowser } from "@/lib/inAppBrowser";
 
 // Eager load critical pages
+import Splash from "./pages/Splash";
+import LanguageSelect from "./pages/LanguageSelect";
 import Welcome from "./pages/Welcome";
+import Auth from "./pages/Auth";
 import CreateProfile from "./pages/CreateProfile";
+import WelcomeDone from "./pages/WelcomeDone";
 
 // Lazy load non-critical pages for faster initial load
 const Home = lazy(() => import("./pages/Home"));
@@ -74,8 +79,12 @@ function AnimatedRoutes(): React.ReactElement {
       <AnimatePresence mode="wait">
         <Suspense fallback={<PageLoader />}>
           <Routes location={location} key={location.pathname}>
-            <Route path="/" element={<PageTransition><Welcome /></PageTransition>} />
+            <Route path="/" element={<PageTransition><Splash /></PageTransition>} />
+            <Route path="/lang" element={<PageTransition><LanguageSelect /></PageTransition>} />
+            <Route path="/welcome" element={<PageTransition><Welcome /></PageTransition>} />
+            <Route path="/auth" element={<PageTransition><Auth /></PageTransition>} />
             <Route path="/create-profile" element={<PageTransition><CreateProfile /></PageTransition>} />
+            <Route path="/welcome-done" element={<PageTransition><WelcomeDone /></PageTransition>} />
             
             <Route path="/home" element={<PageTransition><Home /></PageTransition>} />
             <Route path="/recipes" element={<PageTransition><Recipes /></PageTransition>} />
@@ -118,23 +127,25 @@ function App(): React.ReactElement {
     <ErrorBoundary>
       <QueryClientProvider client={queryClient}>
         <ThemeProvider>
-          <LocalProfileProvider>
-            <AppProvider>
-              <NotificationProvider>
-                <TooltipProvider>
-                  <Toaster />
-                  <Sonner />
-                  <NotificationBanner />
-                  <InAppBrowserBanner />
-                  <BrowserRouter>
-                    <div className="screen-container bg-background">
-                      <AnimatedRoutes />
-                    </div>
-                  </BrowserRouter>
-                </TooltipProvider>
-              </NotificationProvider>
-            </AppProvider>
-          </LocalProfileProvider>
+          <LanguageProvider>
+            <LocalProfileProvider>
+              <AppProvider>
+                <NotificationProvider>
+                  <TooltipProvider>
+                    <Toaster />
+                    <Sonner />
+                    <NotificationBanner />
+                    <InAppBrowserBanner />
+                    <BrowserRouter>
+                      <div className="screen-container bg-background">
+                        <AnimatedRoutes />
+                      </div>
+                    </BrowserRouter>
+                  </TooltipProvider>
+                </NotificationProvider>
+              </AppProvider>
+            </LocalProfileProvider>
+          </LanguageProvider>
         </ThemeProvider>
       </QueryClientProvider>
     </ErrorBoundary>
