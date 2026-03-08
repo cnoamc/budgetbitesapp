@@ -6,6 +6,8 @@ export interface LocalProfile {
   name: string;
   cookingLevel: number; // 1-5
   dietaryPreference: string; // 'all' | 'vegetarian' | 'vegan' | 'kosher'
+  ageRange: string;
+  foodPreferences: string[];
   createdAt: string;
 }
 
