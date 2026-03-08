@@ -50,11 +50,13 @@ export const LocalProfileProvider: React.FC<{ children: ReactNode }> = ({ childr
     }
   }, []);
 
-  const createProfile = (name: string, cookingLevel = 1, dietaryPreference = 'all') => {
+  const createProfile = (name: string, cookingLevel = 1, dietaryPreference = 'all', ageRange = '', foodPreferences: string[] = []) => {
     const newProfile: LocalProfile = {
       name: name.trim() || 'שף',
       cookingLevel,
       dietaryPreference,
+      ageRange,
+      foodPreferences,
       createdAt: new Date().toISOString(),
     };
     
