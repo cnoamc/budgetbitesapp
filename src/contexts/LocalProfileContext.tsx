@@ -24,7 +24,7 @@ interface LocalProfileContextType {
   profile: LocalProfile | null;
   hasProfile: boolean;
   loading: boolean;
-  createProfile: (name: string, cookingLevel?: number, dietaryPreference?: string) => void;
+  createProfile: (name: string, cookingLevel?: number, dietaryPreference?: string, ageRange?: string, foodPreferences?: string[]) => void;
   updateProfile: (updates: Partial<LocalProfile>) => void;
   clearProfile: () => void;
 }
